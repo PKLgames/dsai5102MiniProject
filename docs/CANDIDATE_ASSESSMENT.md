@@ -37,7 +37,8 @@
 
 ## 3. UMAP 核验（9 项）
 
-**书目**：arXiv:1802.03426（2018），63 页；无正式会议/期刊版本（预印本，年份合规）。
+**书目**：被复现对象 = McInnes, L., Healy, J., & Melville, J. (2018). *UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction*. arXiv:1802.03426 [stat.ML]，DOI `10.48550/arXiv.1802.03426`，63 页预印本（无正式会议/期刊版本，年份合规）。
+配套文献（**不是**被复现对象）= Healy, J., & McInnes, L. (2024). *Uniform manifold approximation and projection*. Nature Reviews Methods Primers **4**:82，DOI `10.1038/s43586-024-00363-x`，15 页；属教程性 Primer，不含新实验，只用于交叉核对默认超参（其 Table 1：n_neighbours=15、min_dist=0.1、n_components=2、metric=Euclidean、output_metric=Euclidean、unique=False、init=spectral，与 §5 D2 采用的默认值一致）与结果解读注意事项。
 
 | 检查项 | 结果 |
 |---|---|

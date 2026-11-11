@@ -1,6 +1,6 @@
 # 偏离日志（Deviation Log）
 
-> 论文：UMAP (arXiv:1802.03426)
+> 论文：UMAP (arXiv:1802.03426, DOI 10.48550/arXiv.1802.03426)；配套综述（非复现对象）：Healy & McInnes, Nat. Rev. Methods Primers 4:82 (2024), DOI 10.1038/s43586-024-00363-x
 > 规则（见 `docs/PROTOCOL.md` §5.4）：
 > 1. **预登记**：写代码之前就能预见的偏离，先登记（D1–D15）；**事后**：跑完才发现的偏离，必须标注"事后"，并同时写出"调整前/调整后的判定"。
 > 2. 每条必须写**影响方向**（对哪条主张、偏向谁）。写不出方向 = 说明还没想清楚，不许开工。
@@ -12,7 +12,7 @@
 | ID | 状态 | 类型 | 偏离内容 | 原因 | 影响方向 | 报告位置 |
 |---|---|---|---|---|---|---|
 | D1 | 预登记 | 范围 | 不跑 LargeVis | 无 Python 3.14 轮子、需自编译；Table 1/2 中其数值与 t-SNE 高度重合 | 主表少一列；不影响 C2 的方向判定 | §4 表注、§5 |
-| D2 | 预登记 | 参数 | 所有方法使用**固定默认超参**（UMAP: n_neighbors=15, min_dist=0.1, n_epochs=500, init=spectral；t-SNE: perplexity=30, lr=auto, max_iter=1000, init=pca） | 原文 §5.1 只写"we attempted to tune parameters for each algorithm"，**未披露任何具体取值** | 双向：可能同时低估 t-SNE 与 UMAP 的最佳表现；对"UMAP vs t-SNE"的相对比较影响中性 | §4 表注、§5 "reproducibility gap" |
+| D2 | 预登记 | 参数 | 所有方法使用**固定默认超参**（UMAP: n_neighbors=15, min_dist=0.1, n_epochs=500, init=spectral；t-SNE: perplexity=30, lr=auto, max_iter=1000, init=pca） | 原文 §5.1 只写"we attempted to tune parameters for each algorithm"，**未披露任何具体取值**（2024 Primer 的 Table 1 默认值与这里一致：n_neighbours=15、min_dist=0.1、n_components=2、metric=Euclidean、init=spectral，可作为作者侧默认值旁证） | 双向：可能同时低估 t-SNE 与 UMAP 的最佳表现；对"UMAP vs t-SNE"的相对比较影响中性 | §4 表注、§5 "reproducibility gap" |
 | D3 | 预登记 | 实现 | t-SNE 用 **sklearn**（单线程）而非原文的 **MulticoreTSNE**（C++ 多线程） | 本机 joblib 串行、无 GPU；MulticoreTSNE 无 3.14 轮子 | **C4 的 UMAP 加速比偏乐观**（对 UMAP 有利）；C2 的 t-SNE 精度与实现无关（同一算法） | §4.3 脚注、§5 讨论**必须点名** |
 | D4 | 预登记 | 数据 | C3 稳定性改用 **Shuttle（58k×9）+ COIL-20**，替代原文的 Flow Cytometry（1M×17） | 1M 点超出本机内存（7.5 GB）与时间预算；t-SNE 在 1M 上不可行 | 数据规模小两个数量级；dP **绝对值不可比**，只判方向与曲线形状；原文"5% 时 UMAP 已优于 t-SNE 的任何取值"这一强结论无法逐字复现 | §4.2、§5 |
 | D5 | 预登记 | 数据 | MNIST/FMNIST 用 **20k 分层子采样 + 5 折**（原文 70k / 20 折） | 内存与 t-SNE 时间；且 20 折下测试集仅 1000 点 < k=3200，kNN 无法训练 | C2 在这两个集上**只判方向与排序**，不判幅度；大 k 数值接近先验分类器 | §4.1 表注、§5 |

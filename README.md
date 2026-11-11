@@ -1,6 +1,6 @@
 # DSAI5102 Mini-Project · 论文复现（第二轮）
 
-**选题已定：UMAP**（McInnes, Healy & Melville, arXiv:1802.03426, 2018）。
+**选题已定：UMAP**（McInnes, Healy & Melville, *UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction*, arXiv:1802.03426, 2018；DOI `10.48550/arXiv.1802.03426`）。配套读物（非被复现对象）：Healy & McInnes, *Uniform manifold approximation and projection*, Nature Reviews Methods Primers 4:82 (2024)，DOI `10.1038/s43586-024-00363-x`。
 筛选过程与证据见 `docs/CANDIDATE_ASSESSMENT.md`；**项目计划见 `PLAN.md`；复现协议见 `docs/PROTOCOL.md`（v1，2026-11-11 冻结）**。
 
 Format 2.2「学术论文复现」的工作区。上一轮复现的 SMOTE（Chawla et al., JAIR 2002）已按用户要求移出工作区，
@@ -24,7 +24,7 @@ Format 2.2「学术论文复现」的工作区。上一轮复现的 SMOTE（Chaw
 | 第一轮选题经验 | `selecting_exp.md`；交接背景 `for_next_round.md` |
 | 选题评估与冒烟 | `docs/CANDIDATE_ASSESSMENT.md` |
 
-论文 PDF 与抽取文本：`paper/umap_arxiv2018.pdf`、`paper/umap_arxiv2018.txt`（其余候选已删，否决理由见评估文档 §2）。
+论文 PDF 与抽取文本：`paper/umap_arxiv2018.pdf`、`paper/umap_arxiv2018.txt`（被复现的 2018 预印本）；`paper/s43586-024-00363-x.pdf`（2024 Nature Reviews Methods Primers 配套综述，用于核对默认超参，非复现对象）。其余候选已删，否决理由见评估文档 §2。
 
 ## 目录
 

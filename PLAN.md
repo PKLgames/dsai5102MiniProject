@@ -1,7 +1,8 @@
 # 项目计划 · UMAP 复现（DSAI5102 Mini Project, Format 2.2）
 
 > 版本 v1 · 2026-11-11 · 维护人：A（本机 `/home/pklgames/coding/dsai5102MiniProject`）
-> 论文：McInnes, Healy & Melville, *UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction*, arXiv:1802.03426 (2018)
+> 论文：McInnes, Healy & Melville, *UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction*, arXiv:1802.03426 (2018)，DOI `10.48550/arXiv.1802.03426`
+> 配套综述（非复现对象）：Healy & McInnes, *Uniform manifold approximation and projection*, Nat. Rev. Methods Primers 4:82 (2024)，DOI `10.1038/s43586-024-00363-x`，`paper/s43586-024-00363-x.pdf`
 > 配套文件：`docs/PROTOCOL.md`（做什么 / 怎样算复现）、`docs/TASKS_B.md` + `docs/HANDOFF_B2A.md`（B 的活与交接核验）、`docs/TASKS_C.md`（报告与 slides）、`docs/DEVIATIONS.md`（偏离登记）、`docs/PAPER_NUMBERS.md`（原文数字）、`docs/RUN_STATUS.md`（每日状态）
 
 ---

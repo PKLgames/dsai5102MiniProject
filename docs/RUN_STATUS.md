@@ -8,7 +8,7 @@
 | 项 | 状态 |
 |---|---|
 | 阶段 | 协议冻结（G0 进行中） |
-| 已完成 | 论文筛选、候选核验、冒烟实验（PenDigits/COIL-20 × PCA/t-SNE/UMAP）、环境安装、数据源试探 |
+| 已完成 | 论文筛选、候选核验、冒烟实验（PenDigits/COIL-20 × PCA/t-SNE/UMAP）、环境安装、数据源试探、书目信息核对（用户提供 2024 Nature Reviews Methods Primers 版，已归档为配套综述：非复现对象，仅核默认超参） |
 | 进行中 | 写 PLAN / PROTOCOL / DEVIATIONS / PAPER_NUMBERS / TASKS_B / HANDOFF_B2A |
 | 阻塞 | 无 |
 | 明日首要 | 发 B/C 任务书；A 开始 `src/data.py` + 契约测试；B 跑 H1 |

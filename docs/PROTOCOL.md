@@ -8,7 +8,9 @@
 
 ## 1. 论文与复现目标
 
-McInnes, L., Healy, J., & Melville, J. (2018). *UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction*. arXiv:1802.03426 [stat.ML]. 63 页，预印本（无正式会议/期刊版）。
+McInnes, L., Healy, J., & Melville, J. (2018). *UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction*. arXiv:1802.03426 [stat.ML]. 63 页，预印本（无正式会议/期刊版）。DOI `10.48550/arXiv.1802.03426`。
+
+> **配套文献（非复现对象）**：Healy, J., & McInnes, L. (2024). *Uniform manifold approximation and projection*. Nature Reviews Methods Primers **4**:82, DOI `10.1038/s43586-024-00363-x`（`paper/s43586-024-00363-x.pdf`）。这是 2024 年的教程性 Primer，不含新实验、不改变复现对象；只用于（a）核对默认超参（Table 1：n_neighbours=15、min_dist=0.1、n_components=2、metric=Euclidean、init=spectral），（b）确认"定量距离不可解读"等结论解读注意事项。
 
 论文的实证部分只有 4 个可复现主张，逐条编号如下（C = Claim）。表里"原文证据"是可以逐字核对的锚点，`docs/PAPER_NUMBERS.md` 存了全部数字。
 

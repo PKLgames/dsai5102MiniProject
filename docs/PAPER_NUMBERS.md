@@ -1,6 +1,7 @@
 # 原文数字表（Paper Numbers）
 
 > 来源：`paper/umap_arxiv2018.txt`（arXiv:1802.03426v3 文本抽取），McInnes, Healy & Melville (2018)。
+> 补充：2024 年 Primer（`paper/s43586-024-00363-x.pdf`，Nat. Rev. Methods Primers 4:82，DOI 10.1038/s43586-024-00363-x）只有定性与方法性内容、无新实验数字，**不作为本表来源**。
 > 用途：① 报告 Fig.3 / 主表对照；② `src/knn_eval.py` 的期望值；③ C 写作用，避免翻 PDF 手抄。
 > 校对：逐格与 PDF 表格核对过（2026-11-11）；若与 `results/paper_vs_ours.csv` 冲突，以本文件为准并回查 PDF。
 
