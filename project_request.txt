@@ -1,0 +1,122 @@
+A6 MINI-PROJECT
+DSAI5101_20261_PRINCIPLES OF DATA SCIENCE Mini Project Requirements and Standards
+
+Timeline mini project
+
+0
+
+4&5 Nov. --group register
+
+1
+
+written report
+
+21.Nov-23:59
+
+2
+
+slide
+
+24.Nov-noon
+
+3
+
+presentation
+
+25&26 Nov.
+
+Introduction and Project Objectives
+This Mini Project is a crucial component of the DSAI5102_20261 Principles of Data Science course. It is designed to push students to apply the theoretical knowledge acquired in class to real-world data scenarios. The project aims to deepen students' understanding of  data science techniques through practical application, encouraging independent thinking, teamwork, and the ability to extract valuable insights from data.
+
+ 
+
+Project Format and Scope
+Students may choose one of the following two formats for their Mini Project:
+
+ 
+
+2.1 Format 1: Data Application and Practice
+
+Objective: Select a practical data scenario of interest.
+Data: Utilize open-source datasets, public datasets, or self-collected proprietary datasets.
+Content: Apply statistical data mining, machine learning, deep learning, or other relevant methods covered in the course to conduct in-depth analysis, modeling, prediction, or classification.
+Deliverable: Generate meaningful insights from the data analysis and model results, and propose solutions to a practical problem.
+ 
+
+2.2 Format 2: Academic Paper Reproduction
+
+Objective: Select an academic paper related to statistical data mining or machine learning.
+Requirement: The paper must contain core statistical data mining or machine learning methodologies.
+Content: Attempt to reproduce the key experimental results, core algorithms, or methods presented in the paper.
+Deliverable: Validate the effectiveness of the paper's methodology and discuss the challenges encountered and potential areas for improvement during the reproduction process.
+ 
+
+Submission Requirements and Team Collaboration
+Submission Item
+
+Requirement Details
+
+Submission Format
+
+Written Document (Report) + slide +  Oral Presentation
+
+Team Requirement
+
+Completed in groups, with one submission per group.
+
+Grading Principle
+
+The final score will be based on the overall group output, combined with an assessment of each member's individual contribution. Fair and effective teamwork is highly encouraged.
+
+Evaluation Criteria and Grading Rubric
+The Mini Project will be evaluated based on the following six key aspects to ensure project quality and learning effectiveness:
+
+ 
+
+Evaluation Dimension
+
+Key Focus
+
+Detailed Description
+
+Time
+
+Oral Presentation Duration
+
+The presentation must strictly adhere to the allocated time limit. Penalties will be applied for exceeding or significantly underutilizing the time.
+
+Team
+
+Division of Labor and Contribution
+
+The project report must clearly outline the team members' roles, individual contributions, and collaboration methods. Evaluates the effectiveness of teamwork.
+
+Slides
+
+Visual and Content Presentation
+
+Slides should be clear, professional, aesthetically pleasing, and logically structured to effectively support the oral presentation.
+
+Completeness
+
+Achievement of Objectives
+
+The extent to which the project meets its pre-set goals, and whether all stages—data processing, model training, and results analysis—are complete.
+
+Methodology
+
+Method Selection and Application
+
+Appropriateness of the chosen methods, soundness of the theoretical foundation, rigor of the application process, and reasonableness of the result interpretation.
+
+Novelty
+
+Topic and Method Innovation
+
+Originality of the topic, uniqueness of the data source, improvement of existing methods, or application to a novel scenario.
+
+Suggestions and Notes
+Topic Selection: It is recommended to choose a topic that is closely related to the course content and of moderate difficulty, ensuring high-quality completion within the project timeline.
+Data: Ensure the legality and reliability of the data. Clearly state the data source and pre-processing steps in the report.
+Report: The written report should have a complete structure, including an introduction, data description, methodology, experimental results, discussion, and conclusion.
+Contribution: Team members should include a Statement of Individual Contribution at the end of the written report, which will be used by the TA for assessing individual scores.

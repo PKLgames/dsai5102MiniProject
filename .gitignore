@@ -1,0 +1,37 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.ipynb_checkpoints/
+
+# --- 数据（原始与中间产物不入库；只提交可重跑脚本与汇总产物）---
+data/raw/**
+data/processed/*
+!data/processed/.gitkeep
+data/manifests/*.log
+*.parquet
+*.arff
+
+# --- 实验结果原始文件（汇总的 json/csv 才入库）---
+results/raw/**
+!results/raw/.gitkeep
+results/**/*.parquet
+
+# --- 论文大文件（PDF 不入库，放本地；引用用 DOI/arXiv 链接）---
+paper/*.pdf
+paper/*.txt
+
+# --- 报告/PPT 的临时产物 ---
+report/**/*.aux
+report/**/*.log
+report/**/*.out
+report/**/*.toc
+report/**/*.synctex.gz
+slides/**/*.tmp
+*~
+
+# --- 系统 / 编辑器 ---
+.DS_Store
+.vscode/
+.idea/
