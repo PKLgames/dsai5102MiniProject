@@ -73,26 +73,37 @@
 - ✗ **正文 PDF 不可得**：Semantic Scholar `CLOSED`、OpenAlex `is_oa: false`、JCU 仓库 PDF 返回 401（页面写明 `Restricted to Repository staff only`）、ACM DL 与 Springer 均为拦截页、arXiv 无此文。手稿记的“JMLR 2015”是错的，需更正。
 - 无法核对实验数据集与样本数 → 检查表第 1 项不通过，一票否决（若组内有 ACM DL 权限可重议，但 11-12 前拿不到就放弃）。
 
-### 2.8 Kovács (2019)：85 种少数类过采样在 104 个不平衡数据集上的实证比较（用户 m00404 追加）
+### 2.8 Kovács (2019)：85 种少数类过采样在 104 个不平衡数据集上的实证比较（用户 m00404 追加；m00488 提供原文后重评）
 
-**书目**：Kovács, Gy. *An empirical comparison and evaluation of minority oversampling techniques on a large number of imbalanced datasets.*
-Applied Soft Computing 83:105662, 2019. DOI 10.1016/j.asoc.2019.105662（Crossref：journal-article，112 条参考文献，被引 322）。
+**书目**：Applied Soft Computing 83:105662, 2019. DOI 10.1016/j.asoc.2019.105662（Crossref：112 条参考文献，被引 322）。
+**正文来源**：用户提供 `paper/An_empirical_comparison_and_evaluation_of_minority.pdf`（13 页）；文本抽取用 `pdfminer.six`（pypdf 会把词粘成 `Anempiricalcomparison`，不可用），输出 `/tmp/kovacs_ml.txt`（87,287 字符）。
 
 | 检查项 | 结果 |
 |---|---|
-| PDF 可取 | ✗ **不可得**：Unpaywall `is_oa: false`；Semantic Scholar `openAccessPdf.url` 为空、status `null`；OpenAlex 仅 1 个 location 且 `is_oa: false`；无 arXiv 版（arXiv 全库按标题/作者检索均无）；Elsevier 与 ACM DL 摘要页均付费 |
-| 实验表含数据集与样本数 | △ 摘要给出规模（**85 种变体 × 104 个不平衡数据集**），但数据集清单、样本数、折数、指标、排序方法全在正文——正文读不到 |
-| 数据集可核 | ✓ 大概率来自 **KEEL imbalanced**（`https://sci2s.ugr.es/keel/imbalanced.php` 实测 HTTP 200，155 KB 索引页），104 个 .dat 数据集 + 5 折预处理脚本可下 |
-| baseline 可 import | ✓ 但见下方：85 种方法的实现就是作者自己的 `smote_variants`（PyPI 1.0.1，`uv pip install --dry-run` 在 py3.14 解析通过）→ 是“跑作者的代码”，不是“实现算法” |
-| 核心主张 ≤4 条 | ✓（哪类过采样原则在多数数据集上更好、新 baseline） |
-| 单配置 ≤30 min CPU | ✓ 单数据集单方法秒级；但矩阵 = 104 数据集 × 85 方法 × 折数 ≈ 4.4 万次拟合（kNN 型方法在 1 万样本上可达分钟级）→ 估计 10–50 h，边界可接受 |
-| 一张图讲直觉 | △ 基准论文，直觉图是“排名/临界差异图”，需要 Friedman + Nemenyi 才能讲 |
-| ≥1 个自设扩展 | ✓ 可加现代分类器（如 XGBoost）或新指标重做排序 |
+| PDF 可取 | ✓ 本地正文已读（9 节 + 附录，含全部实验表） |
+| 实验表含数据集与样本数 | ✓ Table 2 给出 **104 个数据集**的名称、IR、样本数、属性数；来自 KEEL imbalanced（多类 UCI 重构为二类）+ kNN 文献常用集；剔除 ADA/HIVA/sylva/satimage/dermathology_6/page_blocks0（过大） |
+| 数据集可核 | ✓ KEEL 索引页 `https://sci2s.ugr.es/keel/imbalanced.php` HTTP 200；实测下载 `glass1`（214×9）、`pima`（768×8）均 200；预处理写明：删常数列、二值转浮点、名义 <5 值 one-hot 否则 label encode |
+| baseline 可 import | ✓ 但性质特殊：85 种方法的实现就是作者自己的 `smote_variants`（GitHub `gykovacs/smote_variants`，PyPI 1.0.1）。实测 `--target /tmp/sv --no-deps` 安装 + 补 `metric-learn/minisom/seaborn` 后 import 成功，`get_all_oversamplers()` = **91 个**（论文 85 + 附加）；声明的 tensorflow/keras/mkl 在 import 时未被真正加载 |
+| 核心主张 ≤4 条 | ✓ ① 在 104 个数据集上对 85 种过采样做统一比较；② 高级方法相对 SMOTE 的提升远小于既往小样本研究（AUC +0.01、F1 +0.01、G +0.02、P20 +0.0025）；③ 给出 Table 4 总体排名（前 10 名）；④ 分析前三名的机制（polynom-fit-SMOTE 的 4 种拓扑、ProWSyn 的距离权重、...） |
+| 单配置 ≤30 min CPU | ✓ 单 (数据集 × 方法) 约 1–2 min；✗ **但全矩阵**按实测推算 ≈ **258 h ≈ 11 天单核**（见下），超出 10 天总预算 |
+| 一张图讲直觉 | △ 基准论文，直觉要靠“平均秩排名 / 临界差异图”；6 分钟能讲，但不如方法论文好讲 |
+| ≥1 个自设扩展 | ✓ 加分类器（XGBoost/LightGBM）或加指标重排；也可只对前 10 名补做多种子稳定性 |
 | 年份双证 | ✓ 2019，Crossref + 期刊卷页 |
 
-**否决理由**：检查表第 1 项不通过（PDF 不可得）→ 与 HDBSCAN 同一处理。**不能靠摘要写协议**：分类器（是否用 Weka J48/C4.5）、CV 折数、指标（AUC/G-mean/F-measure）、排序方法任何一项猜错，整个“排名结论”就换了答案——这正是上一轮 C4.5→CART 翻转结论的坑。
-**即使拿到 PDF 的预判**（未评分，仅风险登记）：体裁是“基准比较”而非“提出算法”，复现对象是评估协议；作者自家 `smote_variants` 覆盖 85 种方法，容易变成“调包跑一遍”；且这是候选池里第三次落到 SMOTE 家族，题面差异化弱。
-**可重议条件**：组内有 Elsevier 权限拿到正文，且确认分类器是 sklearn 可复现的（非 Weka J48）。
+**协议（已从正文读出，口径 5 分）**：重复分层 **5 折 × 3 次重复**；每个 oversampler 至多 **35 组随机参数**；4 个分类器——kNN（k∈{3,5,7} × standard/distance）、SVM（hinge/gamma 等 6 组）、DT、MLP，各 6 组参数；指标 **G-mean / AUC / F1 / P20**；
+**模型选择 = 每个 (数据集, 过采样器, 分类器) 取网格内最高分**；排序 = 先按分类器平均各指标 → 对每个 oversampler 赋秩 → 取平均秩（原文明确“平均秩比平均分数更有意义”，Table 4 为总排名）；论文自报总作业量 “over 76 million”。
+
+**算力实测（决定性的重评证据）**：
+- 计时脚本：`RepeatedStratifiedKFold(5, n_repeats=3)`、4 分类器各 1 组默认参数、过采样器默认参数。
+- 每个 split（1 次采样 + 4 次拟合计）：glass1 SMOTE 2.5 + 77.0 = **79.6 ms**；ProWSyn 4.6 + 115.4 = 120.0 ms；SMOTE_IPF 32.7 + 69.3 = 101.9 ms。pima：SMOTE 143.1 ms；ProWSyn 149.1 ms；SMOTE_IPF 221.2 ms。
+- 外推：×6 分类器参数组合 ≈ 0.5–1.0 s/(split·sampler-combo)；×15 splits ≈ 8–15 s；×约 10 个 sampler-combo ≈ **100 s/(数据集·方法)**；×104×85 = 8,840 对 → **≈ 26 万 s ≈ 258 h ≈ 11 天单核**。
+- **并行不可用**：`multiprocessing.get_context('fork').Pool(4)` 抛 `PermissionError: [Errno 13] Permission denied`（SemLock 被沙箱拒绝），joblib 同样退化为串行 → 258 h 无法靠 16 核压缩。
+
+**重评结论**：检查表前两项与口径全部通过（正文可得、数据集可核、协议逐条写明、代码就是作者自己的包），
+但算力闸门不通过——**全量复现需 11 天单核 > 10 天总预算**。可行压缩方案：重复数 3→1（约 86 h ≈ 3.6 天）或 1/3 子集（约 30 数据集 × 85 方法 ≈ 3 天），两者都须写进偏离日志并放弃“104 数据集总体排名”这一核心主张。
+评分：数据 5 / 基准 5 / 口径 5 / 算力 2 / 可讲 3 / 年份 5 → 加权 **87**（线性加权下高于 SHAP，低于 UMAP 93）；若降到 1 次重复按算力 3 计为 90，仍低于 UMAP。
+体裁风险：这是“基准比较”而非“提出算法”，复现主要是重跑作者自家 `smote_variants` 包；且候选池里第三次落在 SMOTE 家族（上一轮 JAIR 2002 SMOTE 已按用户要求移出工作区）。
+**可重议条件**：用户接受“1 次重复 + 104 数据集”或“3 次重复 + 30 数据集”的偏离版本，并认为“重跑作者基准”可作为本课复现对象。
 
 ### 2.9 Cui et al. (2019)：Class-Balanced Loss Based on Effective Number of Samples（用户 m00404 追加）
 
@@ -176,20 +187,21 @@ t-SNE 用 sklearn（原文用 MulticoreTSNE），单核，`random_state=42`，pe
 | HDBSCAN | 1 | 5 | 4 | 5 | 5 | 5 | 73 | ✗ 一票否决（PDF 不可得） |
 | NCF | 4 | 2 | 3 | 3 | 4 | 5 | 68 | ✗ 核心 baseline eALS 缺失 |
 | LightGBM | 1 | 3 | 4 | 1 | 5 | 5 | 53 | ✗ 数据/内存不可行 |
-| Kovács 基准比较（2019） | 4 | 5 | — | 4 | 3 | 5 | 不评分 | ✗ 一票否决（PDF 不可得，协议不可核验） |
+| Kovács 基准比较（2019） | 5 | 5 | 5 | 2 | 3 | 5 | **87** | ✗ 算力闸门（全量 11 天单核）；备选 #2 |
 | Class-Balanced Loss（2019） | 4 | 4 | 5 | 0 | 4 | 5 | 73¹ | ✗ 闸门否决（实测单配置 8.0 h ≫ 30 min） |
 
 ¹ 只是线性加权的算术结果，用于说明权重设计的缺陷：算力 0 分仍能得 73。按检查表第 6 项做闸门后直接淘汰。
-Kovács 一行的“口径”给不出分——协议（分类器/折数/指标/排序）全在拿不到的正文里，这正是它被否决的原因。
+Kovács 拿回正文后“口径”从不可核验变为 5 分（协议逐条写明），但算力实测把总分压在 87：全量 104×85 需 11 天单核，且沙箱禁用了多进程 → 只能降重复数或缩子集，核心主张（104 数据集总体排名）随之失去。
 
 淘汰顺序与理由（对应 `selecting_exp.md` 的“换题信号”）：
-1. LightGBM / HDBSCAN / Kovács 比较：数据或正文不可得（一票否决）。
+1. LightGBM / HDBSCAN：数据或正文不可得（一票否决）。
 2. Class-Balanced Loss：算力闸门（单配置 8 h、主矩阵 20 天、无 GPU）。
+2b. Kovács 基准比较：算力闸门（全量 11 天单核，且无法并行；压缩后核心主张失效）。
 3. NCF：核心 baseline 需自实现（eALS）+ 协议争议。
 4. Geometric SMOTE：与上轮同族、无官方码、评估口径重且膨胀。
 5. TabPFN：训练不可复现（8 GPU×20 h），只能跑官方权重。
 
-结论不变：**UMAP 仍为唯一通过全部检查表与冒烟的对象**（新增两篇不影响排序，且都落在“SMOTE 家族 / 深度视觉”两个已知不合适的区间）。
+结论：**UMAP（93）仍为唯一同时通过全部检查表、冒烟与算力闸门的对象**；Kovács 重评后升为备选 #2（87，若接受偏离版本可到 90），Cui 与其余候选仍不通过。二选一建议：保留 UMAP，因为切换需重写协议并放弃“104 数据集排名”这一主结论，而 UMAP 已完成冒烟、协议骨架可直接落 `docs/PROTOCOL.md`。
 
 ## 5. 选定后的复现框架（UMAP）
 
@@ -217,6 +229,7 @@ Kovács 一行的“口径”给不出分——协议（分类器/折数/指标/
 3. 铺代码：`src/data.py`（load_digits / coil20 / openml shuttle,mnist,fmnist）、`src/umap_impl.py`、`scripts/run_table.py`。
 4. 交 B：数据卡（5 数据集）+ EDA；交 C：报告骨架与 Fig.2/Fig.3 占位。
 5. 时间锚点：11-12 选题定稿（本文件）；11-14 自研实现跑通 PenDigits；11-16 主表出数；11-18 扩展与敏感性；11-19 交 C。
+6. 备选预案：若 11-14 自研 UMAP 仍不收敛，切换到 Kovács 基准（备选 #2）——协议用 `scripts/probe_kovacs_runtime.py` 已测的成本重写，采用「104 数据集 × 5 折 × 1 次重复」或「30 数据集 × 85 方法 × 5 折 × 3 次重复」，两者都必须在协议里登记偏离。
 
 ## 附：核验过程的一次更正
 
