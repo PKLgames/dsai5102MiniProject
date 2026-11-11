@@ -5,7 +5,8 @@
 
 - 论文全文（本地缓存，不入库）：`paper/chawla2002_smote.pdf`
 - 计划与分工：`../PLAN.md`
-- 复现协议：`docs/PROTOCOL.md` ｜ 偏离清单：`docs/DEVIATIONS.md`
+- 复现协议：`docs/PROTOCOL.md` ｜ 偏离清单：`docs/DEVIATIONS.md` ｜ 运行状态：`docs/RUN_STATUS.md`
+- 分工任务书：`docs/TASKS_B.md`（B：数据准备 + EDA）｜ 报告结构：`docs/REPORT_OUTLINE.md`（C）
 
 ## 目录
 
