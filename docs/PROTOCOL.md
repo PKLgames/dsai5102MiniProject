@@ -62,9 +62,9 @@ AUC（主）｜PR-AUC ｜ G-mean（阈值 0.5，√(TPR·TNR)）｜少数类 F1 
 | covertype | 150 | `class` | 类 1（Cottonwood/Willow） | 需取 2 类子集，与论文 2747/35754 对应 |
 | mammography | 310 | `class` | `1` | 260/10923 |
 | oil | 311 | `class` | `1` | 41/896 |
-| qsar-biodeg（替代 E-state） | 1494 | `class` | 最少类 | 替代理由见 DEVIATIONS |
-| kddcup99（替代 Can） | 1113 | `class` | 非 `normal.` | **二分类化规则：`y = (label != "normal.")`**，硬编码 `datasets.KDDCUP99_NORMAL` |
-| creditcard（外部） | 1597 | `Class` | `1` | 扩展用；行数大，必要时分层采样 ≤100k |
+| qsar-biodeg（替代 E-state） | 1494 | `class` | 最少类（356/699，IR 1.96） | 替代理由见 DEVIATIONS D3 |
+| kddcup99（可选补充） | 1113 | `label` | 非 `normal` | **二分类化规则：`y = (label != "normal")`**，10% 分层子集；该集“攻击”是多数类（IR 0.25），只适合作为异常类语义的补充，不进主表 |
+| creditcard（外部 + Can 角色） | 1597 | `Class` | `1` | 35% 分层子集（99,682 行，IR 578:1）；全量留扩展 |
 
 编码：数值列中位数填充；类别列 one-hot（`datasets._encode`）。B 可在 `src/data_prep.py` 提供更细策略，但必须产出同样的 `data/processed/*.csv` + `splits.json`，并保证与 `run_grid.py` 一致的切分种子。
 

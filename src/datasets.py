@@ -35,14 +35,17 @@ DATASETS: dict[str, dict] = {
     "oil": dict(did=311, target="class", minority=1, paper=(41, 896)),
     # --- 替代集（E-state / Can 无公开镜像，见 docs/DEVIATIONS.md D3/D4）---
     "qsar-biodeg": dict(did=1494, target="class", minority=None, paper=None),
-    "kddcup99": dict(did=1113, target="class", minority=None, paper=None,
-                     binarize="kddcup99_attack"),
-    # --- 外部验证 ---
-    "creditcard": dict(did=1597, target="Class", minority=1, paper=None),
+    # 全量 494,021 行对 CPU 上的 SMOTE（kNN）太重，按论文“10% 子集”的思路分层抽样
+    "kddcup99": dict(did=1113, target="label", minority=None, paper=None,
+                     binarize="kddcup99_attack", subsample=0.1, expected_ir=None),
+    # --- 外部验证：同时承担论文 Can 的“超大规模 + 极端 IR”角色（见 DEVIATIONS D4）---
+    # 全量 284,807 行在 CPU 上跑树的内层剪枝太慢，主网格用 35% 分层子集（IR 不变），全量留给扩展实验
+    "creditcard": dict(did=1597, target="Class", minority=1, paper=None,
+                       subsample=0.35, subsample_seed=0),
 }
 
-# KDDCup99：normal. 为多数类（0），其余攻击类型合并为 1
-KDDCUP99_NORMAL = "normal."
+# KDDCup99：normal / normal. 为多数类（0），其余攻击类型合并为 1
+KDDCUP99_NORMAL = "normal"
 
 
 def log(msg: str) -> None:
@@ -112,8 +115,16 @@ def load(name: str) -> tuple[pd.DataFrame, np.ndarray]:
         mask = df[target].map(lambda v: any(_same_label(v, k) for k in keep))
         df = df[mask].reset_index(drop=True)
 
+    frac = cfg.get("subsample")
+    if frac:  # 分层抽样，保持原始不平衡比
+        from sklearn.model_selection import train_test_split
+
+        df, _ = train_test_split(df, train_size=frac, random_state=cfg.get("subsample_seed", 0),
+                                 stratify=df[target])
+
     if cfg.get("binarize") == "kddcup99_attack":
-        y = (df[target].astype(str).str.strip() != KDDCUP99_NORMAL).astype(int).to_numpy()
+        norm = df[target].astype(str).str.strip().str.rstrip(".").str.lower()
+        y = (norm != KDDCUP99_NORMAL).astype(int).to_numpy()
     else:
         m = cfg["minority"]
         if m is None:  # 取样本数最少的类为少数类
