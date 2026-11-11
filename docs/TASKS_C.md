@@ -13,7 +13,8 @@
 
 ### C1 报告（`report/`）
 
-- 章节按 `docs/REPORT_OUTLINE.md` §1，六节 + 数据来源与预处理 + Statement of Individual Contribution（课程强制）；篇幅 6–8 页（不含附录）。
+- 章节按 `docs/REPORT_OUTLINE.md` §1，六节 + 数据来源与预处理 + Statement of Individual Contribution（课程强制）；篇幅 **6–8 页**（不含附录），其中 **§3 只写我们自己的实现，硬上限 2 页**。
+- ⚠️ 范围修订 v2（`deviations` D18）：本轮**只复现 C2**。报告里不得出现稳定性曲线、九数据集时间表、超参热力图；未做的部分写进 §5 Limitations / Future work，**不写成已复现**。
 - 格式二选一：`report/main.tex`（推荐，投稿风格）或 `report/main.docx`；**11-13 定下后不再换**。
 - 必备元素（缺一不可）：
 
@@ -21,17 +22,16 @@
 |---|---|
 | 表 1 数据集摘要（源、n×d、类数、用途、替换说明） | `docs/DATA_CARD.md` §1 |
 | 表 2 主结果（均值 ± 折间 std，方法 × 数据集） | `results/grid_knn_summary.csv` |
-| 表 3 原文 vs 我们 + 判定（复现/部分复现/未复现） | `results/paper_vs_ours.csv` + `docs/PAPER_NUMBERS.md` |
+| 表 3 原文 vs 我们 + 判定（复现/部分复现/未复现/unverifiable） | `results/paper_vs_ours.csv` + `docs/PAPER_NUMBERS.md` |
 | 表 4 运行时间（同机，标注硬件） | `results/runtime.csv` |
 | Fig.1 方法示意（自绘，不截图） | 自己画（用 matplotlib/tikz 都行） |
-| Fig.2 定性嵌入网格（5 数据集 × 4 方法） | `figures/results/fig2_qualitative.png` |
+| Fig.2 定性嵌入（**只 COIL-20**，UMAP-ours vs t-SNE 两联图） | `figures/results/fig2_qualitative_coil20.png` |
 | Fig.3 原文 vs 我们 散点（y=x 参考线） | `results/paper_vs_ours.csv` |
-| Fig.4 稳定性曲线（dP vs 子采样率） | `results/stability_procrustes.csv` |
-| Fig.5 超参热力图（扩展，Novelty 的落点） | `figures/results/fig5_extension_heatmap.png` |
-| 附录 A 偏离清单表 | `docs/DEVIATIONS.md` 转表（D1–D16，含影响方向） |
+| 附录 A 偏离清单表 | `docs/DEVIATIONS.md` 转表（**D1–D18**，含影响方向；D18 必须出现） |
 | 附录 B 复现指南（环境 + 命令 + 实测时长） | `scripts/repro.sh` + `PLAN.md` §7 |
 | Statement of Individual Contribution | 每人一段：负责范围 + 工作量占比 + 对应 commit/文件 |
 
+- **降重要求（硬性）**：与原文的 8-gram 重合率 **<5%**（`scripts/similarity_check.py` 自查，11-19 与 11-20 各跑一次）。做法：§3 不复述原文公式推导（理论三句话 + 一张自绘示意图即可），主体写「我们的过程 / 我们的数字 / 我们的诊断」，结构用「主张→判据→结果→诊断」而不是照抄原文 §5.1→§5.4。
 - 写作规范：
   - 每个数字后标注 `n_folds`；表格下注写清"transductive 嵌入"（见 PROTOCOL §4 E2），避免被读成数据泄漏；
   - 图注首句必须是**结论**，不是"图 X 展示…"；
@@ -61,13 +61,13 @@
 
 | 时点 | 交付 | 依赖 |
 |---|---|---|
-| 11-13 | 骨架 + Fig.1 + §2 相关工作 | 无（先写不依赖数据的两节） |
-| 11-15 | §1/§3 方法草稿 | `PROTOCOL.md`、`DATA_CARD.md`（可先占位） |
-| 11-18 | §4 结果主体 + 表 2/3/4 + Fig.2/3/4 | `results/README_numbers.md` v1（G5a，11-18 22:00 到） |
-| 11-19 24:00 | **报告 v1（全文）** | G5 |
-| 11-20 | 数字复核 + 排版 + 附录 A/B | A 复核 |
+| **11-12** | **P4**：骨架 + Fig.1 + §2 相关工作 | 无（先写不依赖数据的两节） |
+| **11-13** | **P9**：§3（≤2 页）+ §4 骨架，表 1–4 填我们的数字、Fig.2/3 就位 | P6 主表 + P8 `README_numbers.md` |
+| 11-14～11-17 | §1 / §5（诊断与偏离）/ §6 成稿；补 §3 的示意图说明 | `DATA_CARD.md` 终版、`DEVIATIONS.md` |
+| 11-18 | **报告 v1（全文六节）** | 三块素材齐 |
+| 11-19～11-20 | 8-gram 查重（目标 <5%，跑两次）+ 图注 + 参考文献 + 附录 A/B + 贡献声明 | A 复核数字 |
 | 11-21 23:59 | **提交版 PDF** | — |
-| 11-22/23 | slides + 讲稿 + 彩排 ×2 | 报告定稿 |
+| 11-22/23 | slides 8 页 + 讲稿 + 彩排 ×2 | 报告定稿 |
 | 11-24 12:00 | **Slides PDF** | — |
 
 ## 3. 验收清单（对照评分表）

@@ -1,35 +1,34 @@
 # 运行状态板（RUN STATUS）
 
 > 每天 22:00 由 A 更新。三行规则：**只写事实**（命令跑过就是跑过）、**只写阻塞**（不是计划）、**每个 pending 都有日期**。
-> 质量门定义见 `PLAN.md` §4；交接见 `docs/HANDOFF_B2A.md`。
+> 交付点 P1–P9 定义见 `PLAN.md` §2；B→A 交接的核验命令见 `docs/HANDOFF_B2A.md`（V0–V8）。
 
-## 当前状态 · 2026-11-11（周三）夜
+## 当前状态 · 2026-11-11（周三）夜 · 计划 v2
 
 | 项 | 状态 |
 |---|---|
-| 阶段 | G0 已完成（2026-11-11 22:00）；等 B 的 H1（11-13 22:00），A 期间推自研实现 |
-| 排期变更 | 2026-11-11：用户决定「允许一定空转」；H1 定为 **11-13 22:00**（B 11-13 才开工），其后各门顺延 1 天（详见 `PLAN.md` §4），报告截止日不变 |
-| 已完成 | 论文筛选、候选核验、冒烟实验（PenDigits/COIL-20 × PCA/t-SNE/UMAP）、环境安装、数据源试探、书目信息核对（用户提供 2024 Nature Reviews Methods Primers 版，已归档为配套综述：非复现对象，仅核默认超参） |
-| 进行中 | G1 A 侧：`src/data.py` + `tests/test_data_contract.py`（只读 `data/raw`，不等 B） |
+| 阶段 | **两日核心计划启动**：只复现 C2，只跑 PenDigits + COIL-20（`PLAN.md` v2，`DEVIATIONS` D18） |
+| 为什么缩 | v1 全量 ≈5–6 h 算力 + ≈20 h 开发，两天窗口装不下；砍数据集与方法数，**不砍判据**（C2 仍是原规模、原折数） |
+| 已完成 | 论文筛选、候选核验、冒烟（PenDigits/COIL-20 × PCA/t-SNE/UMAP）、环境、数据源试探、书目核对；计划/协议/偏离/交接/任务书成文（PROTOCOL **v2**、D1–D18） |
+| 进行中 | A：`src/data.py` + 契约测试（只读 `data/raw`，不等 B）；B/C 任务书已按 2 数据集改写待发 |
 | 阻塞 | 无 |
-| 明日首要（11-12） | 发 B/C 任务书；A 写 `src/data.py` + 契约测试；B 11-13 开工跑 H1 |
+| 下一步 | 11-12：B 交 P1 数据冻结；A 交 P2 契约、P3 自研前两件；C 交 P4 骨架 |
 
-### 质量门追踪
+### 交付点追踪（P1–P9，`PLAN.md` §2）
 
-| 门 | 到期 | 状态 | 证据 | 备注 |
+| 点 | 负责人 | 到期 | 状态 | 证据 / 验收命令 |
 |---|---|---|---|---|
-| G0 协议冻结 | 11-11 22:00 | 🟢 完成 | `docs/PROTOCOL.md` v1 + `DEVIATIONS.md` D1–D17 | 协议/偏离已冻结，改动只能新增条目 |
-| H1 数据可达 | **11-13 22:00** | ⚪ 未开始 | — | B 负责；11-13 24:00 未过触发 R6 兜底 |
-| G1 A 侧契约 | **11-13 22:00** | ⚪ 未开始 | `src/data.py`、`tests/test_data_contract.py` | 只依赖 `data/raw`，不等 B |
-| H2 数据包 | **11-14 22:00** | ⚪ 未开始 | npz + manifest + splits | B 负责；含与 A 的 V4 对拍 |
-| G2 自研可用 | **11-15 22:00** | ⚪ 未开始 | `src/umap_impl/` 在 PenDigits ≈ umap-learn | **最关键的门**，不过则触发 R1 降级 |
-| G3 主表 | **11-17 22:00** | ⚪ 未开始 | `results/grid_knn*.csv` | |
-| G5a 数字 v1 | **11-18 22:00** | ⚪ 未开始 | `README_numbers.md` v1 | 让 C 先写 §4 主体 |
-| H3 数据卡 | **11-18 22:00** | ⚪ 未开始 | `docs/DATA_CARD.md` + EDA | B 负责 |
-| G4 扩展 | **11-19 22:00** | ⚪ 未开始 | 热力图 | 可砍项（R7） |
-| G5 交付 C | **11-19 24:00** | ⚪ 未开始 | `results/README_numbers.md` 终版 | |
-| 报告 v1 / final | **11-20 12:00** / 11-21 23:59 | ⚪ 未开始 | `report/` | C 负责 |
-| Slides / 彩排 | 11-24 12:00 | ⚪ 未开始 | `slides/` | C 负责 |
+| **P1** 数据冻结（2 数据集 npz+manifest+splits） | B | 11-12 | ⚪ 未开始 | A 跑 `HANDOFF_B2A.md` V0–V5 |
+| **P2** 数据契约（`src/data.py` + pytest） | A | 11-12 | 🟡 进行中 | `pytest -q`；`max|dX|=0` 对 P1 |
+| **P3** 自研 fuzzy + spectral | A | 11-12 | ⚪ 未开始 | ρ/σ 相对误差 <1e-6；余弦 >0.99 |
+| **P4** 报告骨架 + Fig.1 + §2 | C | 11-12 | ⚪ 未开始 | §3 ≤2 页；引用 ≤15 条 |
+| **P5** 自研闭环（SGD） | A | 11-13 | ⚪ 未开始 | PenDigits kNN@10 差 ≤0.02；无 NaN；silhouette >0.1 |
+| **P6** 主表（2 数据集 × 10 折 × 4 方法 × 5 k = 400 行） | A | 11-13 | ⚪ 未开始 | 重跑逐折差 = 0；`results/grid_knn.csv` |
+| **P7** 数据卡终版 + 3 张 EDA | B | 11-13 | ⚪ 未开始 | V7–V8；dpi≥160 |
+| **P8** 数字交底 `README_numbers.md` | A→C | 11-13 | ⚪ 未开始 | 每个数字可指到 csv 行 + 判定词 |
+| **P9** §3+§4 成稿（表 1–4、Fig.2/3） | C | 11-13 | ⚪ 未开始 | 用**我们的**数字，不抄原文 |
+
+放弃顺序（`PLAN.md` §4，A 可当场执行）：1) 自研 SGD → 2) COIL-20 的 t-SNE 对照 → 3) 定性图与时间表。**P1/P2/P6/P8 不砍。**
 
 图例：⚪ 未开始 · 🟡 进行中 · 🟢 完成 · 🔴 阻塞/失败 · ⚫ 已降级（写了偏离）
 
@@ -51,8 +50,8 @@
 
 - 计划：G0（协议冻结）
 - 实际：PLAN/PROTOCOL/DEVIATIONS/PAPER_NUMBERS/TASKS_B/HANDOFF_B2A/DATA_CARD/RUN_STATUS 成文；git 分支 `main-v2`
-- 偏差：无
-- 明日：发任务书；`src/data.py` + `tests/test_data_contract.py`；B 跑 H1
+- 偏差：**范围缩减**（用户决定两天交付）→ 落为 `PROTOCOL` v2 §0 + `DEVIATIONS` D18；`configs/*.yaml` 裁到 2 数据集
+- 明日：发 B/C 任务书（按 2 数据集版）；`src/data.py` + 契约测试；B 跑 P1
 
 ### 模板（复制）
 

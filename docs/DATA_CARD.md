@@ -54,12 +54,12 @@
 
 | 文件 | 内容 | 一句结论（图注首句，B 填） | 状态 |
 |---|---|---|---|
-| `eda_01_class_counts.png` | 5 集类分布（Shuttle 对数轴） | 待填 | ⏳ |
-| `eda_02_sample_grid.png` | COIL-20/MNIST/FMNIST 各 5×5 样本 | 待填 | ⏳ |
+| `eda_01_class_counts.png` | 2 集类分布（PenDigits 10 类、COIL-20 20 类） | 待填 | ⏳ |
+| `eda_02_sample_grid.png` | COIL-20 各 5×5 样本网格 | 待填 | ⏳ |
 | `eda_03_pixel_hist.png` | 像素直方图（/255 前后） | 待填 | ⏳ |
-| `eda_04_class_means.png` | COIL-20 每类均值图（4×5） | 待填 | ⏳ |
-| `eda_05_pca_scatter.png` | 每集 PCA 前两维散点 | 待填 | ⏳ |
-| `eda_06_data_quality.png` | 重复行/NaN/近零方差特征计数 | 待填 | ⏳ |
+| ~~`eda_04`~~ | 本轮不做（D18） | — | ⚫ |
+| ~~`eda_05`~~ | 本轮不做（D18） | — | ⚫ |
+| ~~`eda_06`~~ | 本轮不做（D18） | — | ⚫ |
 
 ## 5. 自检结果（B 在 H2/H3 贴输出）
 

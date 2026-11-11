@@ -13,8 +13,8 @@ Format 2.2「学术论文复现」的工作区。上一轮复现的 SMOTE（Chaw
 
 | 想做的事 | 读这个 |
 |---|---|
-| 知道 10 天怎么排、谁在什么时候交什么 | **`PLAN.md`** |
-| 知道"做什么、怎样算复现成功" | `docs/PROTOCOL.md`（C1–C4 主张 + 等价判据阈值） |
+| 知道这两天怎么排、谁交什么（P1–P9 交付点） | **`PLAN.md`**（v2 两日核心计划） |
+| 知道"做什么、怎样算复现成功" | `docs/PROTOCOL.md`（v2 §0 范围修订 + C2 判据阈值） |
 | 知道哪些地方和原文不一样、影响哪条结论 | `docs/DEVIATIONS.md`（D1–D16） |
 | 要原文数字做图/做表 | `docs/PAPER_NUMBERS.md`（Table 1/2/3 全量） |
 | 做数据准备（B） | `docs/TASKS_B.md` |
@@ -31,9 +31,9 @@ Format 2.2「学术论文复现」的工作区。上一轮复现的 SMOTE（Chaw
 ```
 src/              UMAP 自研实现（umap_impl/：fuzzy / spectral / optimize / umap）+ data.py + 评估模块
 src/data.py       建模侧 loader（A）；B 的 src/data_prep.py 是独立第二实现，两者对拍
-scripts/          一次性脚本（fetch_data、make_splits、run_grid、run_stability、run_runtime、run_extension、make_figures、repro.sh）
+scripts/          一次性脚本（fetch_data、make_splits、run_grid、run_runtime、run_extension、make_figures、similarity_check、repro.sh）
 tests/            pytest（数据契约、划分重放、自研实现与 umap-learn 对拍）
-configs/          main.yaml（主矩阵）/ extension.yaml（超参热力图）—— 机器可读版协议 §6
+configs/          main.yaml（2 数据集 × 4 方法）/ extension.yaml（未执行，标 executed:false）—— 协议 §6 的机器可读版
 docs/             协议 / 偏离 / 原文数字 / 数据卡 / 交接核验 / 任务书 / 报告大纲 / 运行状态
 paper/            论文 PDF 与抽取文本（本地保留，按 .gitignore 不入库）
 data/raw/         原始数据（不入库）
@@ -56,7 +56,7 @@ UV_CACHE_DIR=/home/pklgames/coding/.uvcache \
 UV_PYTHON_INSTALL_DIR=/home/pklgames/coding/.uvpython \
 uv pip install --python .venv/bin/python -r requirements.txt
 
-# 测试（A 在 G1 之后提供 tests/）
+# 测试（A 在 P2 之后提供 tests/）
 .venv/bin/python -m pytest tests/ -q
 ```
 

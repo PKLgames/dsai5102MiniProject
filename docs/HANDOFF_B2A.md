@@ -16,9 +16,11 @@
 
 | 时点 | 内容 | 形式 | 核验预算 |
 |---|---|---|---|
-| **H1 · 2026-11-13 22:00** | 5 个数据源可达性 + 每个 `(n, d)` 实测 + 下载耗时 | `data-prep` 分支 push + tag `handoff-h1` + `HANDOFF_LOG.md` 一行 | 20 min（只跑 V0/V1） |
-| **H2 · 2026-11-14 22:00** | `npz` + `manifest` + `splits.json` 全量 | push + tag `handoff-h2` | 60 min（V1–V6） |
-| **H3 · 2026-11-18 22:00** | 数据卡终版 + 6 张 EDA 图 + 哈希复核 | push + tag `handoff-h3` | 30 min（V7–V8） |
+| **H1 · 2026-11-12 12:00** | **2 个**数据源（`pendigits`、`coil20`）可达性 + 每个 `(n, d)` 实测 + 下载耗时 | `data-prep` 分支 push + tag `handoff-h1` + `HANDOFF_LOG.md` 一行 | 20 min（只跑 V0/V1） |
+| **H2 · 2026-11-12 22:00** | `npz` + `manifest` + `splits.json` 全量（= `PLAN.md` **P1**） | push + tag `handoff-h2` | 60 min（V1–V6） |
+| **H3 · 2026-11-13 22:00** | 数据卡终版 + **3 张** EDA 图 + 哈希复核（= `PLAN.md` **P7**） | push + tag `handoff-h3` | 30 min（V7–V8） |
+
+> ⏱ 时点按**两日核心计划**（`PLAN.md` v2）压缩：H1 12:00 / H2 22:00 / H3 次日 22:00。**核验项一个不删**，只是窗口更短——所以 B 的自检必须一次过。
 
 - **同机交接**（B 也在这台机器上）：文件直接在工作区，仍必须走同一个分支 + tag 流程，保证 A 看到的是"B 提交过的版本"而不是 B 工作区里的半成品。
 - **远程交接**：`git push origin data-prep --tags`；A 先 `git fetch --tags` 再核验。**不允许**用聊天窗口发文件。
@@ -34,7 +36,7 @@
 | 4 | `data/manifests/{name}.json` ×5 | §B3 的 **全部**键（n/n_features/n_classes/class_counts/label_map/nan/inf/duplicate_rows/min/max/array_sha256/source/source_sha256/retrieved_utc/prep_seconds/notes） | V2/V5 |
 | 5 | `data/manifests/splits.json` | `seed`、每数据集 `n/n_folds/folds[train,test]`、`config_sha256` | V3 |
 | 6 | `docs/DATA_CARD.md` | 六节齐全（§B5），每个数字来自 manifest，处理步骤带 `data_prep.py:行号` | V7 |
-| 7 | `figures/eda/eda_0{1..6}_*.png` | 6 张，英文标注，dpi ≥ 160 | V8 |
+| 7 | `figures/eda/eda_0{1..3}_*.png` | **3 张**，英文标注，dpi ≥ 160 | V8 |
 | 8 | `docs/HANDOFF_LOG.md` 一行 | 时间、tag、B 的自证清单勾选、未解决项 | 人工 |
 
 ## 3. A 的核验流程（V0–V8）
@@ -52,7 +54,8 @@ for k, v in log.items():
 EOF
 ```
 
-- 期望：5 个 key（pendigits 可标 `sklearn`）；每个 `sha256` 非空；`bytes > 0`。
+- 期望：**2 个 key**（`pendigits`、`coil20`；前者可标 `sklearn`）；每个 `sha256` 非空；`bytes > 0`。
+- 范围提醒（D18）：`shuttle`/`mnist`/`fmnist` 本轮不交付，`_fetch_log.json` 里**没有**这 3 个 key 属正常，不算缺项。
 - 判定：缺 key / sha 为空 → **退**（无法证明用的是哪个版本的数据）。
 
 ### V1 · 路径边界
@@ -121,7 +124,7 @@ EOF
 python - <<'EOF'
 import numpy as np, json
 from src.data import load            # A 的实现
-for name in ["pendigits", "coil20", "shuttle", "mnist", "fmnist"]:
+for name in ["pendigits", "coil20"]:  # D18：本轮只 2 个
     Xa, ya = load(name)
     z = np.load(f"data/processed/{name}.npz"); Xb, yb = z["X"], z["y"]
     assert Xa.shape == Xb.shape and ya.shape == yb.shape, name
@@ -143,7 +146,7 @@ EOF
 ```bash
 python - <<'EOF'
 import json, numpy as np
-for name in ["pendigits", "coil20", "shuttle", "mnist", "fmnist"]:
+for name in ["pendigits", "coil20"]:  # D18：本轮只 2 个
     z = np.load(f"data/processed/{name}.npz"); X, y = z["X"], z["y"]
     m = json.load(open(f"data/manifests/{name}.json"))
     nan = int(np.isnan(X).sum() + np.isnan(y).sum())
@@ -198,7 +201,7 @@ for p in sorted(pathlib.Path("figures/eda").glob("eda_*.png")):
 EOF
 ```
 
-- 期望：6 张；`dpi ≥ 160`；单张 ≥ 50 KB（太小说明是空白/纯色）。
+- 期望：**3 张**（`eda_01`/`02`/`03`）；`dpi ≥ 160`；单张 ≥ 50 KB（太小说明是空白/纯色）。
 - 人工项（A 自己看）：**图内无中文方框**（本机无中文字体）、坐标轴有单位/类别名、每张图注首句给结论。
 - 判定：缺图 → 退（H3）；出现方框 → 退（说明用了中文标签）。
 
@@ -206,8 +209,8 @@ EOF
 
 | 项 | 阈值 | 来源 |
 |---|---|---|
-| `n`（原始） | pendigits 1797 / coil20 1440 / shuttle 58000 / mnist 70000 / fmnist 70000，**精确相等** | 原文 §5 |
-| `n`（processed） | 前三个同原始；mnist/fmnist 20000（±0，且每类 2000） | 协议 P9 |
+| `n`（原始） | **pendigits 1797 / coil20 1440**，精确相等（D18：其余 3 个本轮不交付） | 原文 §5 |
+| `n`（processed） | 与原始相同：1797 / 1440（本轮无子采样） | 协议 P9 |
 | `d` | 64 / 16384 / 9 / 784 / 784，**精确相等** | 原文 §5 |
 | `X.dtype` / `y.dtype` | `float32` / `int64` | 协议 P1 |
 | `array_sha256` | 重放后**完全一致** | V2 |
@@ -216,7 +219,7 @@ EOF
 | `X` 范围 | `[0, 1]`（容差 1e-6） | 协议 P2 |
 | 预处理总时长 | ≤ 30 min | V6 |
 | 预处理峰值内存 | ≤ 3 GB | V6 |
-| EDA 图 | 6 张，dpi ≥ 160，英文 | V8 |
+| EDA 图 | 3 张，dpi ≥ 160，英文 | V8 |
 
 ## 5. 拒收条件（任一命中即退回，不逐条商量）
 
@@ -232,7 +235,7 @@ EOF
 
 **退回话术**（复制粘贴即可）：
 
-> H2 退回：V2 在 `mnist` 上 MISMATCH（你的 sha 与我重放的不同）。原因大概率是子采样用了未固定种子的 `np.random`。请按 `PROTOCOL.md` P9（`default_rng(42+c)`，类内 `replace=False`）改，重跑后重新打 `handoff-h2b`。其余 4 个数据集 V2 通过，不用重跑。
+> H2 退回（示例格式，本轮适用对象为 `pendigits`/`coil20`）：V2 在 `coil20` 上 MISMATCH（你的 `array_sha256` 与我重放的不同，Δmax = 0.0039）。原因大概率是 PNG 读入后先做了 `astype(float32)` 再 `/255`，而协议 P2 要求先 `/255` 再转 float32（顺序反了会在 float32 舍入上出现末位差异）。请按 `PROTOCOL.md` P2 改，重跑后重新打 `handoff-h2b`。`pendigits` 的 V2 通过，不用重跑。
 
 ## 6. 核验记录格式（`docs/HANDOFF_LOG.md`）
 

@@ -1,14 +1,19 @@
-# 扩展实验配置（Novelty）—— 对应 docs/PROTOCOL.md §4 E6
-# 原文 Fig.2/Fig.3 只给了超参的定性插图，没有量化；这里把它变成可读的热力图。
+# 扩展实验配置 —— 本轮**未执行**（范围缩减，见 docs/DEVIATIONS.md D18）
+# 两日计划里没有超参热力图的位置；若 11-18 之后有余量，用本文件直接跑：
+#   .venv/bin/python scripts/run_extension.py --config configs/extension.yaml
+# 48 组嵌入在 PenDigits 上约 10 min，COIL-20 上约 14 min。
+
+executed: false
+reason: "D18 范围缩减：本轮只复现 C2；热力图列为放弃项"
 
 seed: 42
-datasets: [pendigits, coil20]        # 两个小数据集，48 组嵌入 ≈ 20 min
+datasets: [pendigits, coil20]
 
 grid:
   n_neighbors: [5, 10, 15, 30, 50, 100]
   min_dist: [0.0, 0.1, 0.5, 0.8]
 
-base:                                # 不在网格里的参数固定
+base:
   n_components: 2
   n_epochs: 500
   init: spectral
@@ -22,15 +27,10 @@ metrics:
     params: {k: 10}
   - name: knn_acc
     params: {k: 100}
-  - name: silhouette                 # 2D 嵌入上的类间可分性
+  - name: silhouette
   - name: trustworthiness
     params: {n_neighbors: 15}
 
 outputs:
   table: results/extension_heatmap.csv
   figure: figures/results/fig5_extension_heatmap.png
-  figure_layout: "2 数据集 × 2 指标（kNN@k=10 / silhouette）的 4 联热力图；横轴 n_neighbors，纵轴 min_dist"
-
-# 预期结论句（跑完用实际值校正；写报告时若与数据不符必须改，不许硬套）：
-# "min_dist 主导簇内紧致度，n_neighbors 主导全局连通性；kNN 精度在 n_neighbors∈[15,30]
-#  出现平台，n_neighbors=5 时显著下降，min_dist 过大会把类压在一起、kNN 精度反而略降。"
