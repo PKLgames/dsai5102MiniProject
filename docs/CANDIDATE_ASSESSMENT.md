@@ -7,7 +7,10 @@
 
 - 评分卡权重：数据可得性 30 / 基准可实现性 20 / 评估口径明确 15 / 算力可行性 15 / 结论可讲性 10 / 年份 10。
   子项 0–5 分，加权分 = Σ(权重×子项)/5（满分 100）；**加权 < 70 不冒烟**。
-- 一票否决：数据可得性 < 4；核心 baseline 缺失；论文 < 2010；**PDF 正文不可得（检查表第 1 项）**。
+- 一票否决：数据可得性 < 4；核心 baseline 缺失；论文 < 2010；**PDF 正文不可得（检查表第 1 项）**；
+  **单配置成本 > 30 min CPU 且矩阵无法压到 10 天预算内（检查表第 6 项，按通过/不通过处理）**。
+  注：第 4 条否决是因为线性加权里“算力可行性”只占 15 分，一个其余四项满分的 GPU 重文章仍能拿到 73 分——
+  与“10 天内做出可交付结果”的硬约束不符，故把第 6 项从评分项提升为闸门（2026-11-11 增补，适用于 §2.8/§2.9）。
 - 核验证据（PDF 已下载 + 抽文本，均在 `paper/`）：`umap_arxiv2018`、`shap_neurips2017`、`ncf_www2017`、
   `lightgbm_neurips2017`、`tabpfn_arxiv2207`、`gsmote_arxiv1709`。
 - 数据落地点（实测，非推断）：PenDigits = `sklearn.datasets.load_digits()`（1797×64，与原文 8×8 灰度图一致）；
@@ -70,6 +73,56 @@
 - ✗ **正文 PDF 不可得**：Semantic Scholar `CLOSED`、OpenAlex `is_oa: false`、JCU 仓库 PDF 返回 401（页面写明 `Restricted to Repository staff only`）、ACM DL 与 Springer 均为拦截页、arXiv 无此文。手稿记的“JMLR 2015”是错的，需更正。
 - 无法核对实验数据集与样本数 → 检查表第 1 项不通过，一票否决（若组内有 ACM DL 权限可重议，但 11-12 前拿不到就放弃）。
 
+### 2.8 Kovács (2019)：85 种少数类过采样在 104 个不平衡数据集上的实证比较（用户 m00404 追加）
+
+**书目**：Kovács, Gy. *An empirical comparison and evaluation of minority oversampling techniques on a large number of imbalanced datasets.*
+Applied Soft Computing 83:105662, 2019. DOI 10.1016/j.asoc.2019.105662（Crossref：journal-article，112 条参考文献，被引 322）。
+
+| 检查项 | 结果 |
+|---|---|
+| PDF 可取 | ✗ **不可得**：Unpaywall `is_oa: false`；Semantic Scholar `openAccessPdf.url` 为空、status `null`；OpenAlex 仅 1 个 location 且 `is_oa: false`；无 arXiv 版（arXiv 全库按标题/作者检索均无）；Elsevier 与 ACM DL 摘要页均付费 |
+| 实验表含数据集与样本数 | △ 摘要给出规模（**85 种变体 × 104 个不平衡数据集**），但数据集清单、样本数、折数、指标、排序方法全在正文——正文读不到 |
+| 数据集可核 | ✓ 大概率来自 **KEEL imbalanced**（`https://sci2s.ugr.es/keel/imbalanced.php` 实测 HTTP 200，155 KB 索引页），104 个 .dat 数据集 + 5 折预处理脚本可下 |
+| baseline 可 import | ✓ 但见下方：85 种方法的实现就是作者自己的 `smote_variants`（PyPI 1.0.1，`uv pip install --dry-run` 在 py3.14 解析通过）→ 是“跑作者的代码”，不是“实现算法” |
+| 核心主张 ≤4 条 | ✓（哪类过采样原则在多数数据集上更好、新 baseline） |
+| 单配置 ≤30 min CPU | ✓ 单数据集单方法秒级；但矩阵 = 104 数据集 × 85 方法 × 折数 ≈ 4.4 万次拟合（kNN 型方法在 1 万样本上可达分钟级）→ 估计 10–50 h，边界可接受 |
+| 一张图讲直觉 | △ 基准论文，直觉图是“排名/临界差异图”，需要 Friedman + Nemenyi 才能讲 |
+| ≥1 个自设扩展 | ✓ 可加现代分类器（如 XGBoost）或新指标重做排序 |
+| 年份双证 | ✓ 2019，Crossref + 期刊卷页 |
+
+**否决理由**：检查表第 1 项不通过（PDF 不可得）→ 与 HDBSCAN 同一处理。**不能靠摘要写协议**：分类器（是否用 Weka J48/C4.5）、CV 折数、指标（AUC/G-mean/F-measure）、排序方法任何一项猜错，整个“排名结论”就换了答案——这正是上一轮 C4.5→CART 翻转结论的坑。
+**即使拿到 PDF 的预判**（未评分，仅风险登记）：体裁是“基准比较”而非“提出算法”，复现对象是评估协议；作者自家 `smote_variants` 覆盖 85 种方法，容易变成“调包跑一遍”；且这是候选池里第三次落到 SMOTE 家族，题面差异化弱。
+**可重议条件**：组内有 Elsevier 权限拿到正文，且确认分类器是 sklearn 可复现的（非 Weka J48）。
+
+### 2.9 Cui et al. (2019)：Class-Balanced Loss Based on Effective Number of Samples（用户 m00404 追加）
+
+**书目**：Cui, Y., Jia, M., Lin, T.-Y., Song, Y., Belongie, S. *Class-Balanced Loss Based on Effective Number of Samples.*
+CVPR 2019, DOI 10.1109/CVPR.2019.00949；arXiv:1901.05555（**OA**，已下载 `paper/cui_cvpr2019.pdf`，11 页）。代码：`https://github.com/richardaecn/class-balanced-loss`（PyTorch，作者放出代码/数据/预训练模型）。
+
+| 检查项 | 结果 |
+|---|---|
+| PDF 可取 | ✓ arXiv + CVPR 正式版 |
+| 实验表含数据集与样本数 | ✓ Table 1：Long-Tailed CIFAR-10（10 类，不平衡因子 10–200）、CIFAR-100（100 类，10–200）、iNaturalist 2017（5,089 类 / 579,184 训练图 / 因子 435.44）、iNaturalist 2018（8,142 类 / 437,513 张 / 因子 500）、ILSVRC 2012（1,281,167 训练 / 50,000 验证） |
+| 数据集可核 | ✓ CIFAR-10/100 走 torchvision 可下，长尾重划分规则在论文 §5.2 写明；iNat 2017/2018 与 ImageNet 需 100 GB+ 且下载慢 → 只能做 CIFAR 部分 |
+| baseline 可 import | ✓ softmax / sigmoid CE / focal（γ=0.5,1,2）都是几行代码；官方仓库给了全部损失实现 |
+| 核心主张 ≤4 条 | ✓（有效样本数 (1−β^n)/(1−β) 重加权；CIFAR 上一致提升；大规模数据集上也提升；β 与类别粒度相关） |
+| 单配置 ≤30 min CPU | ✗ **实测否决**：ResNet-32、batch 128、32×32，本机 16 线程 CPU 实测 **366.7 ms/iter → 2.4 min/epoch → 200 epochs ≈ 8.0 h/配置**（脚本见 §2.9 末）；原文 Table 2 是 10 个数据集变体 × 6 种损失，且 CB 的超参（损失类型 3 × β 4 × γ 3 = 36 组合）靠交叉验证选 → 主表 ≈ 60 次训练 × 8 h ≈ 480 h（20 天），仅超参搜索就再乘数倍；Table 3 的 ResNet-50/101/152 + iNat/ImageNet 原文用 TPU、batch 1024 → 本机完全不可能 |
+| 一张图讲直觉 | ✓ “有效样本数”曲线 + 长尾分布图，6 分钟能讲清 |
+| ≥1 个自设扩展 | ✓ 可把 CB 权重接到非视觉任务（表格长尾分类）或用轻量 MLP 做消融——但那就偏离原文设定 |
+| 年份双证 | ✓ 2019，arXiv + CVPR proceedings |
+
+**否决理由**：检查表第 6 项（单配置 ≤30 min CPU）按闸门处理，实测超 16 倍；主矩阵 20 天 > 10 天总预算，且无 GPU。
+**可重议条件**：有 GPU（哪怕 1 张）且预算 ≥3 周，只做 CIFAR-10 单不平衡因子。
+
+实测脚本（CPU 训练吞吐，用于上面 8.0 h 的推算）：
+
+```python
+# .venv-tabpfn/bin/python（py3.12 + torch 2.15），16 线程
+# ResNet-32（3 stage × 5 basic block，与 CIFAR 版一致，0.47 M 参数）
+# batch 128, 32×32, SGD+momentum, CrossEntropy；10 iter 计时 → 391 iter/epoch → 200 epochs
+# 输出：per iter(128) 366.7 ms -> epoch 2.4 min -> 200 epochs 8.0 h
+```
+
 ## 3. 冒烟测试（UMAP，1 h 预算内完成）
 
 脚本：`scripts/smoke_umap.py`（结果 JSON 在 `results/smoke_umap/`）。协议照原文：先嵌入到 2 维，再在嵌入空间做
@@ -123,12 +176,20 @@ t-SNE 用 sklearn（原文用 MulticoreTSNE），单核，`random_state=42`，pe
 | HDBSCAN | 1 | 5 | 4 | 5 | 5 | 5 | 73 | ✗ 一票否决（PDF 不可得） |
 | NCF | 4 | 2 | 3 | 3 | 4 | 5 | 68 | ✗ 核心 baseline eALS 缺失 |
 | LightGBM | 1 | 3 | 4 | 1 | 5 | 5 | 53 | ✗ 数据/内存不可行 |
+| Kovács 基准比较（2019） | 4 | 5 | — | 4 | 3 | 5 | 不评分 | ✗ 一票否决（PDF 不可得，协议不可核验） |
+| Class-Balanced Loss（2019） | 4 | 4 | 5 | 0 | 4 | 5 | 73¹ | ✗ 闸门否决（实测单配置 8.0 h ≫ 30 min） |
+
+¹ 只是线性加权的算术结果，用于说明权重设计的缺陷：算力 0 分仍能得 73。按检查表第 6 项做闸门后直接淘汰。
+Kovács 一行的“口径”给不出分——协议（分类器/折数/指标/排序）全在拿不到的正文里，这正是它被否决的原因。
 
 淘汰顺序与理由（对应 `selecting_exp.md` 的“换题信号”）：
-1. LightGBM / HDBSCAN：数据或正文不可得（一票否决）。
-2. NCF：核心 baseline 需自实现（eALS）+ 协议争议。
-3. Geometric SMOTE：与上轮同族、无官方码、评估口径重且膨胀。
-4. TabPFN：训练不可复现（8 GPU×20 h），只能跑官方权重。
+1. LightGBM / HDBSCAN / Kovács 比较：数据或正文不可得（一票否决）。
+2. Class-Balanced Loss：算力闸门（单配置 8 h、主矩阵 20 天、无 GPU）。
+3. NCF：核心 baseline 需自实现（eALS）+ 协议争议。
+4. Geometric SMOTE：与上轮同族、无官方码、评估口径重且膨胀。
+5. TabPFN：训练不可复现（8 GPU×20 h），只能跑官方权重。
+
+结论不变：**UMAP 仍为唯一通过全部检查表与冒烟的对象**（新增两篇不影响排序，且都落在“SMOTE 家族 / 深度视觉”两个已知不合适的区间）。
 
 ## 5. 选定后的复现框架（UMAP）
 

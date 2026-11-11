@@ -93,9 +93,15 @@ docs/templates/              三个代码骨架（划分 / CV 网格 / 数据契
 | LightGBM（Ke et al., NeurIPS 2017） | 2017 | GBDT + 直方图/GOSS/EFB | 中–高（原文含 Higgs 等大集，7.5 GB 内存吃紧） | 高（加速比表格直观） | ❌ 加权 53：原文实验为 LETOR/Allstate/KDD10 19M×29M/KDD12 119M×54M，多需 Kaggle，7.5 GB 内存不可行 |
 | Geometric SMOTE（Douzas & Bacao, *Information Sciences* 501:118–135） | 2019 | 在少数类超球体内按截断因子生成样本，"drop-in 替换 SMOTE" | 低（算法本体 <400 行，CPU 分钟级） | 中–高（几何直觉好讲；但原表是 30+ 数据集的 AUC 大表，需挑 6–8 个复现） | ❌ 加权 71：**无官方代码**（作者 GitHub 404、PyPI 404、imbalanced-learn 0.14.2 无此类）；13 数据集 × 2 分类器 × 网格取最高 CV 分的口径重且易膨胀；与上轮 SMOTE 同族 |
 | TabPFN / 表格基础模型（Hollmann et al., *Nature* 637:319–326；源头 ICLR 2023） | 2025 | 先验数据拟合网络（PFN），一次前向完成小表格分类 | 中–高（需 torch + 预训练权重；`tabpfn` 9.2.0 要求 Python ≥3.10，本机 3.14 兼容性未知；CPU 可推理但"打败调参树模型"的基准本身很重） | 高（"基础模型 vs 调参树模型"话题性强，答辩好讲） | ❌ 加权 80 但**只能"使用"权重**：核心方法 8 GPU×20 h 预训练，本体无 GPU；flagship 对比需每数据集 1 h AutoML（AutoGluon），18 数据集不可行 |
+| 少数类过采样基准比较（Kovács, *Applied Soft Computing* 83:105662） | 2019 | 85 种过采样 × 104 个不平衡数据集的实证比较 | 低–中（`smote_variants` 实现全部方法，单配置秒级；矩阵约 4.4 万次拟合 → 10–50 h） | 中（排名 + 临界差异图，需 Friedman/Nemenyi） | ❌ 一票否决：正文付费墙且无 OA 副本（Unpaywall/S2/OpenAlex 全 closed、arXiv 无此文），分类器/折数/指标/排序不可核验 → 协议只能靠猜 |
+| Class-Balanced Loss（Cui et al., CVPR 2019） | 2019 | 用有效样本数 (1−β^n)/(1−β) 对长尾损失重加权 | 高（ResNet-32、batch 128、200 epochs；**本机 CPU 实测 8.0 h/配置**；Table 3 的 ResNet-50/101/152 + iNat/ImageNet 原文用 TPU） | 高（有效样本数曲线 + 长尾分布图，6 分钟讲得清） | ❌ 闸门否决：单配置超 30 min 预算 16 倍、主表约 20 天、无 GPU；数据（CIFAR 长尾）与代码（richardaecn/class-balanced-loss）本身可得 |
 | （备选）CatBoost / TabNet / AutoInt | 2018–2019 | 梯度提升类别特征 / 表格深度模型 | 高（训练成本大） | 高 | 未核验（按需再议，不推荐） |
 
 核验后的选择（取代旧建议）：**UMAP 为主复现对象**；SHAP 作备选（若 11-12 前 UMAP 自研实现遇阻）。
+
+2026-11-11 追加核验（用户 m00404）：Kovács 基准比较与 Class-Balanced Loss 均**未通过**——
+前者正文不可得（协议不可核验，与 HDBSCAN 同一处理），后者实测单配置 8.0 h（CPU）远超预算。
+两篇的完整核验表、实测数据与“可重议条件”见 `docs/CANDIDATE_ASSESSMENT.md` §2.8–§2.9 与 §4。
 历史建议（保留备查）：原计划先核验 HDBSCAN 与 SHAP、都过则优先 HDBSCAN——实际 HDBSCAN 因正文 PDF 不可得被否。
 
 增补说明（用户 m00654 点名加入；m00715 把年份窗口放宽到「2010 至今」）：
