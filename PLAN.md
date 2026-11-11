@@ -50,18 +50,26 @@
 
 | 门 | 时间 | 负责人 | 产物 | 通过条件 |
 |---|---|---|---|---|
-| **G0 协议冻结** | 11-12 12:00 | A | `docs/PROTOCOL.md` v1、`docs/DEVIATIONS.md` | C1–C4 有可判定阈值；数据表出处齐全 |
-| **H1 数据可达** | 11-12 22:00 | B→A | 每个数据集的 `(n, d)` 实测 + 下载耗时 | 5 数据集全部能 `load_raw()`；A 用 V1–V2 核验通过 |
-| **G1 环境与契约** | 11-13 12:00 | A | `src/data.py`、`tests/test_data_contract.py` 绿 | `pytest -q` 通过；A 与 B 的 npz 逐元素相等 |
-| **H2 数据包** | 11-13 22:00 | B→A | `data/processed/*.npz` + manifest + `splits.json` | V1–V6 全通过 |
-| **G2 自研可用** | 11-14 22:00 | A | `src/umap_impl/` 在 PenDigits 上 ≈ `umap-learn` | 2D 嵌入 kNN 精度差 ≤0.02；不出现 NaN/塌缩 |
-| **G3 主表** | 11-16 22:00 | A | `results/grid_knn*.csv` + 3 张图 | 5 数据集 × 5 方法 × k 全齐，逐折可追 |
-| **G4 扩展** | 11-18 22:00 | A | 热力图 + `results/extension_*.csv` | 48 配置跑完，结论非平凡 |
-| **H3 数据卡终版** | 11-17 22:00 | B→A | `docs/DATA_CARD.md` + EDA 图 | V7–V8 通过 |
-| **G5 交付** | 11-19 22:00 | A→C | `results/README_numbers.md` + 全部图 | C 能只靠该文件写报告 |
-| Report v1 | 11-19 24:00 | C | `report/report_v1.pdf` | 六节齐全 |
+| **G0 协议冻结** | ~~11-12 12:00~~ **11-11 22:00 ✅ 已完成** | A | `docs/PROTOCOL.md` v1、`docs/DEVIATIONS.md` | C1–C4 有可判定阈值；数据表出处齐全 |
+| **G1 A 侧契约** | 11-13 22:00 | A | `src/data.py` + `tests/test_data_contract.py` 绿 | `pytest -q` 通过；只用 `data/raw` 直读，**不等 B** |
+| **H1 数据可达** | **11-13 22:00**（B 11-13 才能开工） | B→A | 每个数据集的 `(n, d)` 实测 + 下载耗时 | 5 数据集全部能 `load_raw()`；A 用 V0–V1 核验通过 |
+| **H2 数据包** | **11-14 22:00** | B→A | `data/processed/*.npz` + manifest + `splits.json` | V1–V6 全通过；与 A 的 npz 逐元素相等（V4） |
+| **G2 自研可用** | **11-15 22:00** | A | `src/umap_impl/` 在 PenDigits 上 ≈ `umap-learn` | 2D 嵌入 kNN 精度差 ≤0.02；不出现 NaN/塌缩 |
+| **G3 主表** | **11-17 22:00** | A | `results/grid_knn*.csv` + 3 张图 | 5 数据集 × 5 方法 × k 全齐，逐折可追 |
+| **G5a 数字 v1** | **11-18 22:00** | A→C | `results/README_numbers.md` v1（主表数字 + Fig.2/3） | C 能先写 §4 主体，不必等 G4 |
+| **H3 数据卡终版** | **11-18 22:00** | B→A | `docs/DATA_CARD.md` + EDA 图 | V7–V8 通过 |
+| **G4 扩展** | **11-19 22:00** | A | 热力图 + `results/extension_*.csv` | 48 配置跑完，结论非平凡 |
+| **G5 交付终版** | **11-19 24:00** | A→C | `README_numbers.md` 终版 + 全部图 | C 能只靠该文件写报告 |
+| Report v1 | **11-20 12:00** | C | `report/report_v1.pdf` | 六节齐全 |
 | Report final | 11-21 23:59 | C（A 审） | 提交版 PDF | 数字全部对齐 `README_numbers.md` |
 | Slides | 11-24 12:00 | C | 8 页 PDF | 彩排 2 次，6 分钟 |
+
+**缓冲与空转（2026-11-11 用户决定：允许一定空转）**
+
+- 每个门后面留 **≥3 h 缓冲**，排期不按 100% 利用率算；A 在 11-13 白天等 B 数据的时间是**计划内的空转**，不用拿 B 的活来填。
+- 空转的正确用法：A 用自己的 `src/data.py` 直读 `data/raw`（PenDigits 走 sklearn、COIL-20 本地已有）继续推 A2，只把"对拍"留给 H2；**不等于接管 B 的取数脚本**。
+- 只有 H1 在 **11-13 24:00 仍未过** 时才触发 R6 兜底（A 自建并标注"A 侧产出，B 未交付"）。
+- 顺延规则：H1 每滑 1 天，G2/G3/G5a 各滑 1 天，但 **Report final 11-21 23:59 不动**——从 G4（扩展）里扣，最后 2 天不许再压 C 的写作时间。
 
 ## 5. 工作分解（WBS）
 
@@ -85,12 +93,12 @@
 
 | ID | 任务 | 估时 | 时点 | 产出 |
 |---|---|---|---|---|
-| B1 | `scripts/fetch_data.py`：5 个源可重复下载（校验 sha256） | 3 h | 11-12 | `data/raw/` |
-| B2 | `src/data_prep.py`：独立 loader → 规范 npz + manifest | 5 h | 11-12 | `data/processed/*.npz`、`data/manifests/*.json` |
-| B3 | `splits.json`（按 `configs/main.yaml` 的折数） | 1 h | 11-13 | `data/manifests/splits.json` |
-| B4 | `docs/DATA_CARD.md` 填满（6 节 + 行号引用） | 3 h | 11-13→17 | 数据卡 |
-| B5 | 6 张 EDA 图（类分布/样本网格/像素直方/类均值/PCA 散点/重复与缺失） | 4 h | 11-14 | `figures/eda/*.png` |
-| B6 | 交接（跑 `docs/HANDOFF_B2A.md` 自查表，写 `HANDOFF_LOG.md`） | 2 h | 11-12/13/17 | 交接记录 |
+| B1 | `scripts/fetch_data.py`：5 个源可重复下载（校验 sha256） | 3 h | 11-13 | `data/raw/` |
+| B2 | `src/data_prep.py`：独立 loader → 规范 npz + manifest | 5 h | 11-13→14 | `data/processed/*.npz`、`data/manifests/*.json` |
+| B3 | `splits.json`（按 `configs/main.yaml` 的折数） | 1 h | 11-14 | `data/manifests/splits.json` |
+| B4 | `docs/DATA_CARD.md` 填满（6 节 + 行号引用） | 3 h | 11-14→18 | 数据卡 |
+| B5 | 6 张 EDA 图（类分布/样本网格/像素直方/类均值/PCA 散点/重复与缺失） | 4 h | 11-16→18 | `figures/eda/*.png` |
+| B6 | 交接（跑 `docs/HANDOFF_B2A.md` 自查表，写 `HANDOFF_LOG.md`） | 2 h | 11-13/14/18 | 交接记录 |
 
 ### C（报告 + slides）
 
@@ -112,8 +120,8 @@ B1 ──> B2 ──> B3 ──┘
 C1（不依赖数据，先写方法与相关工作）
 ```
 
-- 唯一真正的瓶颈是 **A2（自研 UMAP 正确性）**。11-14 22:00 是硬检查点：若 G2 未过，按 §8 R1 降级。
-- B 的 H1（数据集可达性）必须 11-12 夜里就绪，否则 A1 空转。
+- 唯一真正的瓶颈是 **A2（自研 UMAP 正确性）**。**11-15 22:00** 是硬检查点：若 G2 未过，按 §8 R1 降级（不占用 C 的写作时间）。
+- **A1 不等 B**：`src/data.py` 直接读 `data/raw`（PenDigits 用 sklearn、COIL-20 已下载），B 的 npz 只用于 V4 对拍。H1 定在 **11-13 22:00**（B 11-13 才能开工）；11-13 24:00 还没过才走 R6 兜底。
 - C 的 C1 不依赖任何数据，必须并行启动，避免最后两天才写。
 
 ## 7. 算力与内存预算（本机 16 vCPU / ~7.5 GB / 无 GPU / 单线程有效）
@@ -138,12 +146,12 @@ C1（不依赖数据，先写方法与相关工作）
 
 | ID | 风险 | 触发信号 | 缓解 | 降级方案（预案） |
 |---|---|---|---|---|
-| R1 | 自研实现不收敛 / 与 `umap-learn` 差太远 | 11-14 22:00 前 PenDigits 精度差 >0.02 或 NaN | 逐部件对拍（先只换 fuzzy 图，再换谱初始化，再换 SGD）；用 `umap-learn` 的 4 个部件做参照 | 自研只保留 fuzzy + 谱初始化（可证明正确），SGD 用 `umap-learn` 的 `optimize_layout_euclidean`；报告如实写"部分自研"，Methodology 打分不受致命影响 |
+| R1 | 自研实现不收敛 / 与 `umap-learn` 差太远 | 11-15 22:00 前 PenDigits 精度差 >0.02 或 NaN | 逐部件对拍（先只换 fuzzy 图，再换谱初始化，再换 SGD）；用 `umap-learn` 的 4 个部件做参照 | 自研只保留 fuzzy + 谱初始化（可证明正确），SGD 用 `umap-learn` 的 `optimize_layout_euclidean`；报告如实写"部分自研"，Methodology 打分不受致命影响 |
 | R2 | OpenML 下载慢/失败（MNIST 70k、Shuttle） | H1 时单集 >20 min 或 5xx | 重试 + 镜像（`data.ilarum` / sklearn `fetch_openml` cache）；npz 缓存 | 用许可的镜像存档（HuggingFace `ylecun/mnist` parquet）并在数据卡注明；F-MNIST 用 `zalando` 官方 GitHub 的 4 个 gz |
 | R3 | Shuttle 58k 上 sklearn t-SNE 超 30 min | A5 预跑测得 | 先 5k 子采样测速 ×12 外推 | **对 Shuttle 全部方法统一用 20k 分层子采样**（同 seed），C2 中 Shuttle 标注"缩小口径"，进偏离日志；不比不齐的数据 |
 | R4 | LE（谱嵌入）在 58k 上 eigensolver 失败 | `ArpackError` / 内存 | `eigsh` + `which='SM'`，或先 PCA-50 再 LE | 只在小数据集上跑 LE，报告注明（原文本来就只在小数据上有 LE 数字） |
 | R5 | COIL-20 大 k 复现失败（已发生：k=80 我们 .806 vs 原文 .899） | 已在冒烟中 | 按协议降级为"部分复现"，补敏感性分析定位原因（像素缩放、n_neighbors=15 vs 原文未披露、2D 维数） | 已在 `DEVIATIONS.md` 登记，报告 §5 用一段讨论，不算失败而是"可解释的偏差" |
-| R6 | B 交接迟到 / 质量不过 | H1/H2 未过 V1–V6 | A 用 `src/data.py` 自建 processed（B 的 loader 本来就要求独立实现，A 这份是"第二实现"） | B 转为只交 EDA + 数据卡；Team 维度在报告里如实写分工 |
+| R6 | B 交接迟到 / 质量不过 | H1 到 11-13 24:00 仍未过 V0–V1，或 H2 到 11-14 24:00 未过 V1–V6 | A 用 `src/data.py` 自建 processed（B 的 loader 本来就要求独立实现，A 这份是"第二实现"） | B 转为只交 EDA + 数据卡；Team 维度在报告里如实写分工 |
 | R7 | 时间滑到 11-18 还未出主表 | G3 未过 | 砍扩展（A6）与 A9，保主表 | 最小可交付 = PenDigits + COIL-20 + Shuttle 三集 × 4 方法；MNIST 系列降为附录单 k |
 | R8 | 内存 OOM（7.5 GB，available ~4 GB） | 进程被 OOM kill | 稀疏化、float32、`n_epochs` 分批、避免 3 份拷贝 | 降低 MNIST 子采样到 10k×5 折（偏离日志） |
 | R9 | 无中文字体导致图内乱码 | 图出现方框 | 图内全部英文（已定） | 报告正文中文、图英文，不影响评分 |
@@ -183,5 +191,5 @@ C1（不依赖数据，先写方法与相关工作）
 ## 11. 第一天就做的三件事（今天 11-11 夜）
 
 1. `git checkout -b main-v2`，提交本计划 + 协议 + 偏离日志 + 论文数字表（本文件即为第一步）；
-2. 给 B 发 `docs/TASKS_B.md` + `docs/HANDOFF_B2A.md`，明确 H1 = 11-12 22:00；
+2. 给 B 发 `docs/TASKS_B.md` + `docs/HANDOFF_B2A.md`，明确 H1 = **11-13 22:00**（B 11-13 开工）；
 3. 给 C 发 `docs/TASKS_C.md` + `docs/PAPER_NUMBERS.md`，要求 11-13 交骨架与 Fig.1。

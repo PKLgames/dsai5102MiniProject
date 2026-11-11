@@ -8,15 +8,15 @@
 | 时点 | tag | 交接人 | 核验人 | 核验项 | 结论 | 未解决项 | 日期 |
 |---|---|---|---|---|---|---|---|
 | H0 环境 | — | A | A | 依赖安装、冒烟 | PASS | 冒烟见 `results/smoke_umap/` | 2026-11-10 |
-| H1 数据可达 | `handoff-h1` | B | A | V0/V1 | 待执行 | — | 计划 11-12 22:00 |
-| H2 数据包 | `handoff-h2` | B | A | V1–V6 | 待执行 | — | 计划 11-13 22:00 |
-| H3 数据卡+EDA | `handoff-h3` | B | A | V7–V8 | 待执行 | — | 计划 11-17 22:00 |
+| H1 数据可达 | `handoff-h1` | B | A | V0/V1 | 待执行 | — | 计划 11-13 22:00（B 11-13 开工） |
+| H2 数据包 | `handoff-h2` | B | A | V1–V6 | 待执行 | — | 计划 11-14 22:00 |
+| H3 数据卡+EDA | `handoff-h3` | B | A | V7–V8 | 待执行 | — | 计划 11-18 22:00 |
 | H2b（如需） | `handoff-h2b` | B | A | V1–V6 | 待执行 | — | 视退回情况 |
 
 ## 记录模板（复制下面的块）
 
 ```
-### H2 · 2026-11-13T22:xxZ · tag `handoff-h2`
+### H2 · 2026-11-14T22:xxZ · tag `handoff-h2`
 
 - 交接内容：data/processed/*.npz ×5、manifests ×5、splits.json、src/data_prep.py、scripts/fetch_data.py
 - B 自证：

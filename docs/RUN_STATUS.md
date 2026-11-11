@@ -7,26 +7,28 @@
 
 | 项 | 状态 |
 |---|---|
-| 阶段 | 协议冻结（G0 进行中） |
+| 阶段 | G0 已完成（2026-11-11 22:00）；等 B 的 H1（11-13 22:00），A 期间推自研实现 |
+| 排期变更 | 2026-11-11：用户决定「允许一定空转」；H1 定为 **11-13 22:00**（B 11-13 才开工），其后各门顺延 1 天（详见 `PLAN.md` §4），报告截止日不变 |
 | 已完成 | 论文筛选、候选核验、冒烟实验（PenDigits/COIL-20 × PCA/t-SNE/UMAP）、环境安装、数据源试探、书目信息核对（用户提供 2024 Nature Reviews Methods Primers 版，已归档为配套综述：非复现对象，仅核默认超参） |
-| 进行中 | 写 PLAN / PROTOCOL / DEVIATIONS / PAPER_NUMBERS / TASKS_B / HANDOFF_B2A |
+| 进行中 | G1 A 侧：`src/data.py` + `tests/test_data_contract.py`（只读 `data/raw`，不等 B） |
 | 阻塞 | 无 |
-| 明日首要 | 发 B/C 任务书；A 开始 `src/data.py` + 契约测试；B 跑 H1 |
+| 明日首要（11-12） | 发 B/C 任务书；A 写 `src/data.py` + 契约测试；B 11-13 开工跑 H1 |
 
 ### 质量门追踪
 
 | 门 | 到期 | 状态 | 证据 | 备注 |
 |---|---|---|---|---|
-| G0 协议冻结 | 11-12 12:00 | 🟡 进行中 | `docs/PROTOCOL.md` v1 已成文 | 待 A 自检 §5 每条主张都有判据 |
-| H1 数据可达 | 11-12 22:00 | ⚪ 未开始 | — | B 负责 |
-| G1 环境与契约 | 11-13 12:00 | ⚪ 未开始 | `src/data.py`、`tests/test_data_contract.py` | 依赖 H1 的 `(n,d)` |
-| H2 数据包 | 11-13 22:00 | ⚪ 未开始 | npz + manifest + splits | B 负责 |
-| G2 自研可用 | 11-14 22:00 | ⚪ 未开始 | `src/umap_impl/` 在 PenDigits ≈ umap-learn | **最关键的门**，不过则触发 R1 降级 |
-| G3 主表 | 11-16 22:00 | ⚪ 未开始 | `results/grid_knn*.csv` | |
-| H3 数据卡 | 11-17 22:00 | ⚪ 未开始 | `docs/DATA_CARD.md` + EDA | B 负责 |
-| G4 扩展 | 11-18 22:00 | ⚪ 未开始 | 热力图 | 可砍项（R7） |
-| G5 交付 C | 11-19 22:00 | ⚪ 未开始 | `results/README_numbers.md` | |
-| 报告 v1 / final | 11-19 / 11-21 | ⚪ 未开始 | `report/` | C 负责 |
+| G0 协议冻结 | 11-11 22:00 | 🟢 完成 | `docs/PROTOCOL.md` v1 + `DEVIATIONS.md` D1–D17 | 协议/偏离已冻结，改动只能新增条目 |
+| H1 数据可达 | **11-13 22:00** | ⚪ 未开始 | — | B 负责；11-13 24:00 未过触发 R6 兜底 |
+| G1 A 侧契约 | **11-13 22:00** | ⚪ 未开始 | `src/data.py`、`tests/test_data_contract.py` | 只依赖 `data/raw`，不等 B |
+| H2 数据包 | **11-14 22:00** | ⚪ 未开始 | npz + manifest + splits | B 负责；含与 A 的 V4 对拍 |
+| G2 自研可用 | **11-15 22:00** | ⚪ 未开始 | `src/umap_impl/` 在 PenDigits ≈ umap-learn | **最关键的门**，不过则触发 R1 降级 |
+| G3 主表 | **11-17 22:00** | ⚪ 未开始 | `results/grid_knn*.csv` | |
+| G5a 数字 v1 | **11-18 22:00** | ⚪ 未开始 | `README_numbers.md` v1 | 让 C 先写 §4 主体 |
+| H3 数据卡 | **11-18 22:00** | ⚪ 未开始 | `docs/DATA_CARD.md` + EDA | B 负责 |
+| G4 扩展 | **11-19 22:00** | ⚪ 未开始 | 热力图 | 可砍项（R7） |
+| G5 交付 C | **11-19 24:00** | ⚪ 未开始 | `results/README_numbers.md` 终版 | |
+| 报告 v1 / final | **11-20 12:00** / 11-21 23:59 | ⚪ 未开始 | `report/` | C 负责 |
 | Slides / 彩排 | 11-24 12:00 | ⚪ 未开始 | `slides/` | C 负责 |
 
 图例：⚪ 未开始 · 🟡 进行中 · 🟢 完成 · 🔴 阻塞/失败 · ⚫ 已降级（写了偏离）

@@ -16,9 +16,9 @@
 
 | 时点 | 内容 | 形式 | 核验预算 |
 |---|---|---|---|
-| **H1 · 2026-11-12 22:00** | 5 个数据源可达性 + 每个 `(n, d)` 实测 + 下载耗时 | `data-prep` 分支 push + tag `handoff-h1` + `HANDOFF_LOG.md` 一行 | 20 min（只跑 V0/V1） |
-| **H2 · 2026-11-13 22:00** | `npz` + `manifest` + `splits.json` 全量 | push + tag `handoff-h2` | 60 min（V1–V6） |
-| **H3 · 2026-11-17 22:00** | 数据卡终版 + 6 张 EDA 图 + 哈希复核 | push + tag `handoff-h3` | 30 min（V7–V8） |
+| **H1 · 2026-11-13 22:00** | 5 个数据源可达性 + 每个 `(n, d)` 实测 + 下载耗时 | `data-prep` 分支 push + tag `handoff-h1` + `HANDOFF_LOG.md` 一行 | 20 min（只跑 V0/V1） |
+| **H2 · 2026-11-14 22:00** | `npz` + `manifest` + `splits.json` 全量 | push + tag `handoff-h2` | 60 min（V1–V6） |
+| **H3 · 2026-11-18 22:00** | 数据卡终版 + 6 张 EDA 图 + 哈希复核 | push + tag `handoff-h3` | 30 min（V7–V8） |
 
 - **同机交接**（B 也在这台机器上）：文件直接在工作区，仍必须走同一个分支 + tag 流程，保证 A 看到的是"B 提交过的版本"而不是 B 工作区里的半成品。
 - **远程交接**：`git push origin data-prep --tags`；A 先 `git fetch --tags` 再核验。**不允许**用聊天窗口发文件。
@@ -238,7 +238,7 @@ EOF
 
 | 时点 | tag | 核验人 | 命令 | 结论 | 未解决项 | 日期 |
 |---|---|---|---|---|---|---|
-| H1 | `handoff-h1` | A | V0/V1 | PASS | shuttle 下载 6 min，可接受 | 2026-11-12 |
+| H1 | `handoff-h1` | A | V0/V1 | PASS | shuttle 下载 6 min，可接受 | 2026-11-13 |
 | H2 | `handoff-h2` | A | V1–V6 | 见下 | | |
 
 每条记录必须能回答："如果两周后被问'数据到底对不对'，我拿什么证明？"——答案就是这条记录 + 命令输出的粘贴。
