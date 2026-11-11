@@ -11,6 +11,15 @@
 - ❌ 不改：`src/data.py`、`src/umap_impl/`、`src/*_eval.py`、`docs/PROTOCOL.md`、`docs/DEVIATIONS.md`、`results/`、`configs/`
 - 为什么必须独立实现：A 的 `src/data.py` 是建模侧 loader，你这份是**审阅侧**。两边独立写、逐个数组对拍，才能抓出"A 的 loader 有 bug 但实验照样出数"这类最贵的错误。**禁止 `import` A 的 loader 来省事**。
 
+## 0.1 你的位置：审计，不是上游（重要）
+
+`PLAN.md` §2 把依赖改成三条独立轨道。对你的三条后果：
+
+1. **A 不等你的 npz**：A 直接从 `data/raw` 算 canonical 数组并跑主表；你的 `data/processed/*.npz` 是**对拍用的审计产物**，不进入主表计算路径。
+2. 所以你的价值在**独立实现 + 对拍**：两边都按 `PROTOCOL.md` P1–P9 写，`max|dX|` 必须是 0；不为 0 就说明其中一方错了 → 开 D 条目、写清差在哪一步（这一步的诊断比数据本身更值钱）。
+3. 你**不需要**等人：唯一前置是 S1（A 在 Day 1 10:00 发的 `src/data.py` 签名 + `tests/`）。S1 晚了就照本文件 §1 的字段表自己定签名，A 事后对齐——不要空等。
+4. P1 交付后立刻做 **P7b 自审**：把自己的 npz 与 A 的 canonical 数组对拍（命令见 `HANDOFF_B2A.md` V4），把 `max|dX|` 与结论写进 `HANDOFF_LOG.md`。**不用等 A 来叫你做**。
+
 ## 1. 交付物
 
 ### B1 `scripts/fetch_data.py` —— 可重复、可续传的下载器
@@ -119,6 +128,8 @@ def build(name: str) -> tuple[np.ndarray, np.ndarray]:
 | **H1 · 11-12 12:00** | B1 完成 + 每个数据集的 `(n, d)` 实测值 + 下载耗时 | 到 11-12 18:00 仍未过 → A 用自建 loader 顶上并标注「B 未交付」，B 改为只交 EDA |
 | **H2 · 11-12 22:00** | B2/B3/B4 全量 + 自查通过（= P1） | 到 11-13 02:00 仍未过 → A 用自建 processed 继续；数据卡由 A 代笔，Team 维度在报告里如实写分工 |
 | **H3 · 11-13 22:00** | B5/B6 终版 + 哈希复核（= P7） | 报告的 Data 一节降级为 A 的简版，EDA 图从报告里删掉 |
+
+**S2 迟到不传染**：A 的 P5/P6 用自己的 canonical 数组继续跑，报告也照常写；你晚一天只让 P1/P7/P7b 三格变红，不影响别人。反过来说——**你没有「等 A 先跑通」这个借口了**：开工只等 S1 的签名。
 
 **提前交付**优先于完美：H2 时 manifest 里 `notes` 可以粗糙，但 `array_sha256` 必须对。
 
