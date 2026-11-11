@@ -1,0 +1,134 @@
+# 主实验配置 —— 机器可读版，与 docs/PROTOCOL.md §6 严格对应
+# 改这里之前先改 PROTOCOL；两边不一致时以 PROTOCOL 为准，并在 DEVIATIONS 登记。
+# 读取方：scripts/run_grid.py / run_stability.py / run_runtime.py / make_splits.py
+
+seed: 42
+n_jobs: 1                     # joblib 在本机串行，写 1 避免误导
+num_threads_env: "NUMBA_NUM_THREADS=1"
+
+paths:
+  raw: data/raw
+  processed: data/processed
+  manifests: data/manifests
+  results: results
+  figures: figures/results
+  embeddings_cache: results/raw   # 嵌入矩阵缓存，已 gitignore
+
+datasets:
+  pendigits:
+    source: sklearn            # sklearn.datasets.load_digits
+    n_expected: 1797
+    d_expected: 64
+    folds: 10
+    subsample_per_class: null
+    k: [10, 20, 40, 80, 160]
+    claims: [C2, C4]
+  coil20:
+    source: zip
+    url: "https://www.cs.columbia.edu/CAVE/databases/SLAM_coil-20_coil-100/coil-20/coil-20-proc.zip"
+    n_expected: 1440
+    d_expected: 16384
+    folds: 10
+    subsample_per_class: null
+    k: [10, 20, 40, 80, 160]
+    claims: [C1, C2, C3, C4]
+  shuttle:
+    source: openml
+    data_id: 40685
+    n_expected: 58000
+    d_expected: 9
+    folds: 10
+    subsample_per_class: null
+    k: [100, 200, 400, 800, 1600, 3200]
+    claims: [C2, C3, C4]
+    fallback:                  # 见 PROTOCOL D13 / PLAN R3；仅在 t-SNE 外推超时后触发
+      trigger: "t-SNE 外推 > 30 min"
+      strategy: proportional_stratified   # 按类频等比抽取，不是每类等量（Shuttle 极不平衡）
+      n_target: 20000
+  mnist:
+    source: openml
+    data_id: 554
+    n_expected: 70000
+    d_expected: 784
+    folds: 5                   # 20k 子采样下 k=3200 要求 test ≥ 3200 → 折数 ≤ 6
+    subsample_per_class: 2000
+    k: [100, 200, 400, 800, 1600, 3200]
+    claims: [C1, C2, C4]
+  fmnist:
+    source: openml
+    data_id: 40996
+    n_expected: 70000
+    d_expected: 784
+    folds: 5
+    subsample_per_class: 2000
+    k: [100, 200, 400, 800, 1600, 3200]
+    claims: [C1, C2, C4]
+
+methods:
+  pca:
+    impl: sklearn
+    n_components: 2
+  le:
+    impl: sklearn              # SpectralEmbedding，其余用 sklearn 默认
+    n_components: 2
+  tsne:
+    impl: sklearn
+    n_components: 2
+    perplexity: 30
+    init: pca
+    learning_rate: auto
+    max_iter: 1000
+    random_state: 42
+  umap_ref:
+    impl: umap-learn
+    n_neighbors: 15
+    min_dist: 0.1
+    n_components: 2
+    n_epochs: 500
+    init: spectral
+    random_state: 42
+  umap_ours:
+    impl: ours
+    n_neighbors: 15
+    min_dist: 0.1
+    n_components: 2
+    n_epochs: 500
+    init: spectral
+    random_state: 42
+    negative_sample_rate: 5
+    repulsion_strength: 1.0
+    learning_rate: 1.0
+    metric: euclidean
+
+knn:                            # 对应 PROTOCOL E2
+  classifier: KNeighborsClassifier
+  algorithm: brute
+  metric: euclidean
+  weights: uniform
+  transductive: true            # 嵌入用全体点（无标签），仅分类器用 train 折
+
+runtime:                        # 对应 PROTOCOL E4
+  repeats: 3
+  timeout_s: 1800              # 单配置 30 min 上限，超时记 "timeout"
+  timer: perf_counter
+
+stability:                      # 对应 PROTOCOL E3
+  datasets: [shuttle, coil20]
+  sizes: [0.05, 0.10, 0.25, 0.50]
+  seeds: [0, 1, 2]
+  tsne_max_iter: 1500           # 原文为 Flow 提到 1000→1500
+  normalize_by: ref_mean_norm
+
+tolerance:                      # 对应 PROTOCOL §5.2（冻结，勿改）
+  pendigits: 0.03
+  coil20: 0.10
+  shuttle: 0.01
+  mnist: null                   # 只判方向
+  fmnist: null
+
+outputs:
+  grid_knn: results/grid_knn.csv
+  grid_knn_summary: results/grid_knn_summary.csv
+  stability: results/stability_procrustes.csv
+  runtime: results/runtime.csv
+  paper_vs_ours: results/paper_vs_ours.csv

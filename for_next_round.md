@@ -1,5 +1,9 @@
 # 下一轮交接（换论文后从零开始复现）
 
+> ⚠️ **本文档是 2026-11-11 日间"换论文"时的交接说明，已进入执行阶段。**
+> 现在要开工请读：`PLAN.md`（计划与质量门）→ `docs/PROTOCOL.md`（冻结的协议）→ `docs/RUN_STATUS.md`（今天该干什么）。
+> 下文 §1–§6 仍是环境与经验的可靠参考；§7 的候选池结论已定稿为 UMAP。
+
 > 读这一页 + `selecting_exp.md` 就可以开始，不需要读上一轮的对话或代码。
 > 上一轮（SMOTE 复现）的工作区内容已全部删除，仅保留在 git tag `smote-repro-v1` 里（见 §8）。
 
@@ -15,6 +19,11 @@
 今天是 2026-11-11，距报告截止 10 天：**选题必须在 11-12 内定下**，否则报告时间不够。
 
 ## 2. 工作区当前状态
+
+> **2026-11-11 22:00 更新**：下表是"换论文时"的快照。此后已补齐执行期文件，以下条目**已被取代**，不要照旧读：
+> `docs/PROTOCOL.md`（已写，v1 冻结）、`PLAN.md`（已写）、`docs/TASKS_B.md`（已按 UMAP 重写）、`docs/DATA_CARD.md`（A 已预填骨架）、
+> `docs/DEVIATIONS.md`、`docs/PAPER_NUMBERS.md`、`docs/HANDOFF_B2A.md`、`docs/RUN_STATUS.md`、`configs/main.yaml`、`configs/extension.yaml`
+> 均已新建；`docs/` 下两个 TEMPLATE_* 仅作历史模板保留，**新工作不再按它们写**。
 
 已保留（可直接用）：
 
