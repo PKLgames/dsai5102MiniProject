@@ -18,7 +18,7 @@ Format 2.2「学术论文复现」的工作区。上一轮复现的 SMOTE（Chaw
 | 知道哪些地方和原文不一样、影响哪条结论 | `docs/DEVIATIONS.md`（D1–D18） |
 | 要原文数字做图/做表 | `docs/PAPER_NUMBERS.md`（Table 1/2/3 全量） |
 | 做数据准备（B） | `docs/TASKS_B.md` |
-| 验收数据（A） | **`docs/HANDOFF_B2A.md`**（V0–V8 命令级核验 + 拒收条件） |
+| 验收数据（A） | **`docs/HANDOFF_B2A.md`**（V0–V9 命令级核验 + 拒收条件） |
 | 写报告/slides（C） | `docs/TASKS_C.md`（含 C1b 占位符写作法）+ `docs/REPORT_OUTLINE.md` |
 | 报告里要填的数字（唯一来源） | **`results/README_numbers.md`**（模板 v0，`{{...}}` 占位符） |
 | 每天进度 | `docs/RUN_STATUS.md`；交接记录 `docs/HANDOFF_LOG.md` |

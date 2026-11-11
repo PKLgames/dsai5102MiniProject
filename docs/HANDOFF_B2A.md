@@ -33,14 +33,15 @@
 |---|---|---|---|
 | 1 | `scripts/fetch_data.py` | `--datasets` 参数、幂等、`_fetch_log.json`（源 URL + sha256 + 字节数 + UTC 时间） | V0 |
 | 2 | `src/data_prep.py` | `DATASETS`、`PAPER_COUNTS`、`load_raw()`、`build()`、CLI（`--out`、`--force`、`--emit-card-table`） | V3 |
-| 3 | `data/processed/{name}.npz` ×5 | 键 `X`(float32)、`y`(int64)；**不入 git**，由脚本重放生成 | V2 |
-| 4 | `data/manifests/{name}.json` ×5 | §B3 的 **全部**键（n/n_features/n_classes/class_counts/label_map/nan/inf/duplicate_rows/min/max/array_sha256/source/source_sha256/retrieved_utc/prep_seconds/notes） | V2/V5 |
-| 5 | `data/manifests/splits.json` | `seed`、每数据集 `n/n_folds/folds[train,test]`、`config_sha256` | V3 |
+| 3 | `data/processed/{name}.npz` ×2（pendigits、coil20） | 键 `X`(float32)、`y`(int64)；**不入 git**，由脚本重放生成 | V2 |
+| 4 | `data/manifests/{name}.json` ×2 | §B3 的 **全部**键（n/n_features/n_classes/class_counts/label_map/nan/inf/duplicate_rows/min/max/array_sha256/source/source_sha256/retrieved_utc/prep_seconds/notes） | V2/V5 |
+| 5 | `data/manifests/splits.json` + `scripts/make_splits.py` | `seed`、每数据集 `n/n_folds/folds[train,test]`、`config_sha256`；脚本可一键重跑（**B 负责写（P2b），A 只验**） | V3 |
 | 6 | `docs/DATA_CARD.md` | 六节齐全（§B5），每个数字来自 manifest，处理步骤带 `data_prep.py:行号` | V7 |
 | 7 | `figures/eda/eda_0{1..3}_*.png` | **3 张**，英文标注，dpi ≥ 160 | V8 |
 | 8 | `docs/HANDOFF_LOG.md` 一行 | 时间、tag、B 的自证清单勾选、未解决项 | 人工 |
+| 9 | `figures/results/fig2_*.png`、`fig3_*.png`（**P7c，S3 后 3 h**） | 2 张，300 dpi，英文标注；数值与 `results/*.csv` 一致 | V9 |
 
-## 3. A 的核验流程（V0–V8）
+## 3. A 的核验流程（V0–V9）
 
 所有命令在 `/home/pklgames/coding/dsai5102MiniProject` 下、`.venv` 激活状态下执行。**每条都要记录实际输出**到 `HANDOFF_LOG.md`。
 
@@ -206,13 +207,31 @@ EOF
 - 人工项（A 自己看）：**图内无中文方框**（本机无中文字体）、坐标轴有单位/类别名、每张图注首句给结论。
 - 判定：缺图 → 退（H3）；出现方框 → 退（说明用了中文标签）。
 
+### V9 · 结果图（P7c，S3 之后）
+
+```bash
+python - <<'EOF'
+from PIL import Image; import pathlib, csv
+for p in sorted(pathlib.Path("figures/results").glob("fig[23]_*.png")):
+    im = Image.open(p)
+    print(f"{p.name:36s} {im.size} dpi={im.info.get('dpi',(0,0))[0]:.0f} {p.stat().st_size/1024:.0f}KB")
+# 抽查：Fig.3 的点数 = paper_vs_ours.csv 里 verdict 非空的组合数
+rows = [r for r in csv.DictReader(open("results/paper_vs_ours.csv")) if r["paper_value"]]
+print("expected_points:", len(rows))
+EOF
+```
+
+- 期望：2 张图、`dpi ≥ 300`、单张 ≥ 80 KB；`expected_points` 与实际点数一致（人工数一眼或读脚本返回值）。
+- 人工项：y=x 参考线在；COIL-20 k=80/160 标了「未复现（D9）」；无中文方框。
+- 判定：图中数值与 csv 不一致 → **退**（这是唯一会让「图与数字」互相矛盾的核验）。
+
 ## 4. 硬性阈值总表（A 直接对照）
 
 | 项 | 阈值 | 来源 |
 |---|---|---|
 | `n`（原始） | **pendigits 1797 / coil20 1440**，精确相等（D18：其余 3 个本轮不交付） | 原文 §5 |
 | `n`（processed） | 与原始相同：1797 / 1440（本轮无子采样） | 协议 P9 |
-| `d` | 64 / 16384 / 9 / 784 / 784，**精确相等** | 原文 §5 |
+| `d` | 64 / 16384，**精确相等**（D18：其余 3 个本轮不交付） | 原文 §5 |
 | `X.dtype` / `y.dtype` | `float32` / `int64` | 协议 P1 |
 | `array_sha256` | 重放后**完全一致** | V2 |
 | `splits.json` md5 | 重跑后一致；train∩test=∅；覆盖全部行 | V3 |

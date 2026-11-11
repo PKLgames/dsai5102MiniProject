@@ -129,9 +129,9 @@ McInnes, L., Healy, J., & Melville, J. (2018). *UMAP: Uniform Manifold Approxima
 
 ### E1 定性嵌入（对应 C1）
 
-- 5 数据集 × 4 方法（PCA、t-SNE、UMAP-ours、UMAP-ref），固定 2 维；COIL-20/MNIST/FMNIST 用 §3.4 的 20k 子采样（MNIST/FMNIST）或全量（COIL-20）。
+- **v2 范围（§0）**：只有 COIL-20 × 4 方法（PCA、t-SNE、UMAP-ours、UMAP-ref），固定 2 维、全量 1440 点。（原 5 数据集 × 4 方法已随 D18 移出。）
 - 超参（全部固定，不逐数据集调）：UMAP `n_neighbors=15, min_dist=0.1, n_epochs=500, init="spectral", random_state=42`；t-SNE `perplexity=30, init="pca", learning_rate="auto", max_iter=1000, random_state=42`。
-- 出图：`figures/results/fig2_qualitative.png`，每行一个数据集、每列一个方法，点按类别着色，**图内文字英文**（本机无中文字体），300 dpi，不画标题以外的装饰。
+- 分工：A 只导出坐标 → `results/embeddings/coil20_{umapours,tsne,pca}.npz`（键 `E` float32、`y` int64）；**图由 B（P7c）渲染** → `figures/results/fig2_qualitative_coil20.png`（1×2 两联，点按类别着色，图内文字英文，300 dpi，不画标题以外的装饰）。
 - 判定：见 §5.2 C1 的 rubric。
 
 ### E2 kNN 精度（对应 C2）
@@ -222,7 +222,7 @@ McInnes, L., Healy, J., & Melville, J. (2018). *UMAP: Uniform Manifold Approxima
 
 | 编号 | 实验 | 数据集 × 方法 × 参数 | 产物 | 预估 |
 |---|---|---|---|---|
-| E1 | 定性网格 | 5 × 4 | `fig2_qualitative.png` | 5 min |
+| E1 | 定性嵌入（v2） | 1 × 4（COIL-20） | `embeddings/coil20_*.npz` → B 出 `fig2_qualitative_coil20.png` | 3 min |
 | E2 | 主表 kNN | 5 × 5 × (5 或 6) 个 k × (10 或 5) 折 | `grid_knn.csv`、`grid_knn_summary.csv` | 60–90 min |
 | E3 | 稳定性 | 2 × 3 × 4 采样率 × 3 seed | `stability_procrustes.csv`、`fig4` | 2–3 h |
 | E4 | 计时 | 5 × 5 × 3 次 | `runtime.csv`、`fig`（bar） | 1–2 h |

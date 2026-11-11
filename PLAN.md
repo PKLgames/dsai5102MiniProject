@@ -18,7 +18,7 @@
 
 **报告随之瘦身（同时降重）**：§3 只写"我们的实现"（≤2 页，理论 3 句话 + 自绘示意图），§4 写我们的数字，§5 写诊断与偏离；不照抄原文 §5.1→§5.4 的顺序。查重目标：与原文 8-gram 重合 **<5%**。
 
-## 2. 三条独立轨道 + 3 个同步点（P1–P9）
+## 2. 三条独立轨道 + 3 个同步点（P1–P9 及 P2b/P7b/P7c/P9b）
 
 **为什么改**：上一版的依赖是一条链 **B 数据 → A 契约/主表 → C 数字**，任何一环慢 4 小时，另外两个人就只能空转。下面把「人等人的依赖」换成「人等文件」：每条轨道都有一个**不借助他人交付物就能开工**的起点，而真正的跨人交接缩到 3 次「发文件」，且**发晚了只影响自己的证据质量，不阻塞别人**。
 
@@ -35,7 +35,7 @@
    ┌─────────┼──────────────────────────┐
    ▼         ▼                          ▼
  轨道 A     轨道 B                     轨道 C
- raw→canonical   独立实现 npz/数据卡/EDA     §1/§2/§3 + §4 占位符
+ raw→canonical   npz/splits/数据卡/EDA/出图   §1/§2/§3 + §4 占位符
    │              │                          │
    │              └── S2（22:00）──► A 后台跑 V1–V5 + 对拍（**不挡路**）
    │                                         │
@@ -49,7 +49,7 @@
 | **P2** 数据契约 | `src/data.py`（raw→canonical float32 数组）、`tests/test_data_contract.py` | `pytest -q` 全绿（≥6 用例）：形状/ dtype / 取值域 / 两次运行 `array_sha256` 相同；**不依赖任何他人交付物** | 无人 |
 | **P3** 自研前两件 | `umap_impl/fuzzy.py`、`spectral.py` | 同一 kNN 图上 ρ/σ 与 umap-learn 相对误差 <1e-6；谱初始化符号对齐后余弦 >0.99 | 无人 |
 | **P5** 自研闭环 | `umap_impl/optimize.py`、`umap.py` + 测试 | PenDigits 上自研 vs 参考实现 kNN@10 差 **≤0.02**、无 NaN、silhouette >0.1 | 无人 |
-| **P6** 主表 | `results/grid_knn.csv`（逐折）+ `paper_vs_ours.csv` + Fig.2/3 | 2 数据集 × 10 折 × 4 方法 × 5 k = 400 行；**重跑逐折差 = 0**；4 行时间表有实测值 | 无人 |
+| **P6** 主表 | `results/grid_knn.csv`（逐折）+ `paper_vs_ours.csv` + `results/embeddings/coil20_{umapours,tsne}.npz` | 2 数据集 × 10 折 × 4 方法 × 5 k = 400 行；**重跑逐折差 = 0**；4 行时间表有实测值；**出图交给 B（P7c），A 只导出数据** | 无人（B 用 csv/npz 出图，不读 A 的脚本） |
 | **P8** 数字交底（S3 发布） | `results/README_numbers.md` | 每个数字能指到 csv 行 + 判定词；与 S1 模板的结构**逐键一致**（C 才能机械替换） | 无人（C 只在最后 30 min 用它） |
 
 ### 轨道 B · 数据侧（唯一前置：S1 的契约签名）
@@ -59,8 +59,21 @@
 | **P1** 独立数据包（S2 发布） | `data/processed/{pendigits,coil20}.npz`、`data/manifests/*.json`、`splits.json` | 1797×64 / 1440×16384；`array_sha256` 与 manifest 一致；10 折 `train∩test=∅`；A 的 V1–V5 全过 | 无人 |
 | **P7** 数据卡 + 3 张 EDA | `docs/DATA_CARD.md` 终版、`eda_01..03` | dpi≥160、无中文方框；每条流程带 `data_prep.py:行号`；V7–V8 过 | 无人 |
 | **P7b** 审计（P1 之后立刻做） | `docs/HANDOFF_LOG.md` 记录 + V4 对拍结果 | 自己 npz 与 A 的 canonical 数组 `max|dX| = 0`；不等 → 开 D 条目并说清是哪一步 | 无人 |
+| **P2b** 折划分脚本 | `scripts/make_splits.py` + `splits.json` | 从 `docs/templates/make_splits.py.template`（75 行）落地；10 折、`train∩test=∅`、折大小差 ≤1；重跑字节相同（A 只跑 pytest 验，不写脚本） | 无人 |
+| **P7c** 结果出图（S3 后 3 h） | `figures/results/fig2_qualitative_coil20.png`、`fig3_paper_vs_ours.png` | 只读 `results/grid_knn.csv`、`paper_vs_ours.csv`、`embeddings/*.npz`；300 dpi、英文标注、图注首句给结论；数值与 csv 一致（抽查 3 点） | 无人（A 的 P8 不依赖图） |
 
-> B 的 npz **不是** A 的输入，所以 B 晚交不会让主表停摆——这正是"不互相依赖"的代价：多写一份实现，换整组不停工。
+> B 的 npz **不是** A 的输入，所以 B 晚交不会让主表停摆——这正是「不互相依赖」的代价：多写一份实现，换整组不停工。
+> 同理，**P2b 折划分与 P7c 出图都归 B**：这两件是机械活，A 写算法更划算；万一 B 掉线，A 用同一模板 30 min 补（脚本已在 `docs/templates/`、数据已在 `results/`），绝不成为阻塞点。
+
+### 文件归属（谁改谁负责，越界即回退）
+
+| 路径 | 归属 | 说明 |
+|---|---|---|
+| `src/umap_impl/**`、`src/data.py`、`tests/**`、`configs/**`、`src/*_eval.py` | **A** | 算法与契约测试 |
+| `src/data_prep.py`、`scripts/fetch_data.py`、`scripts/make_splits.py`、`scripts/make_figures.py`、`data/**`、`figures/**`（eda + results）、`docs/DATA_CARD.md` | **B** | 数据、划分、EDA 图、结果图 |
+| `results/*.csv`、`results/embeddings/**`、`results/README_numbers.md` | **A** | 只有 A 写；B 只读（P7c） |
+| `report/**`、`slides/**` | **C** | 正文与答辩材料 |
+| `PLAN.md`、`docs/PROTOCOL.md`、`docs/DEVIATIONS.md`、`docs/PAPER_NUMBERS.md`、`docs/HANDOFF_B2A.md` | **A** | 协议类文档只有 A 能改，B/C 用 issue 或 `HANDOFF_LOG.md` 提 |
 
 ### 轨道 C · 写作侧（唯一前置：S1 的占位模板）
 
@@ -104,6 +117,8 @@
 |---|---|---|
 | B 的 P1 晚 | A 用自己的 canonical 数组把 P5/P6 跑完；C 照常写 §1/§2/§3 | 报告 §3 数据来源用 A 的 data card 简版，标注「B 侧独立实现未完成」 |
 | B 的 P7 晚 | A/C 不等待 | EDA 图从报告删除，§3 只保留数据卡文字表 |
+| B 的 P7c 晚 | C 先用 11-12 的临时版式占位；A 的 P8/P6 不受影响 | A 用同一脚本 30 min 出简版（只 Fig.2，字号/图例从简） |
+| B 的 P2b 晚 | A 不等待：P2 的 pytest 自带 `make_splits` 兜底路径 | A 现跑模板 1 min 生成 splits，标注「B 侧未完成」 |
 | A 的 P5 失败 | B 的 P1/P7 不受影响；C 用 `umap_ref` 的数字先填 §4 | 按第 1 条降级为「部分自研」，报告如实写 |
 | A 的 P8 晚 | C 保留占位数字，先把 §1/§5/§6 写完 | 11-18 报告 v1 前补上即可（S3 之后 4 天） |
 | C 的 P4 晚 | A/B 不受任何影响 | 报告骨架由 A 在 11-14 顶替，slides 时间不变 |

@@ -7,7 +7,7 @@
 
 ## 0. 边界
 
-- ✅ 可改：`scripts/fetch_data.py`、`src/data_prep.py`、`data/`、`figures/eda/`、`docs/DATA_CARD.md`、`notebooks/`（仅 EDA）
+- ✅ 可改：`scripts/fetch_data.py`、`src/data_prep.py`、`scripts/make_splits.py`（P2b）、`scripts/make_figures.py`（P7c）、`data/`、`figures/eda/`、`figures/results/`、`docs/DATA_CARD.md`、`notebooks/`（仅 EDA）
 - ❌ 不改：`src/data.py`、`src/umap_impl/`、`src/*_eval.py`、`docs/PROTOCOL.md`、`docs/DEVIATIONS.md`、`results/`、`configs/`
 - 为什么必须独立实现：A 的 `src/data.py` 是建模侧 loader，你这份是**审阅侧**。两边独立写、逐个数组对拍，才能抓出"A 的 loader 有 bug 但实验照样出数"这类最贵的错误。**禁止 `import` A 的 loader 来省事**。
 
@@ -84,7 +84,7 @@ def build(name: str) -> tuple[np.ndarray, np.ndarray]:
 
 ### B4 `data/manifests/splits.json` —— 折划分
 
-- 用 A 提供的 `scripts/make_splits.py`（参数化到你的 `build()`），**不许手写、不许改脚本逻辑**。
+- **这个脚本归你（P2b）**：从 `docs/templates/make_splits.py.template`（75 行，已含 StratifiedKFold + 折大小检查 + 字节稳定落盘）落地，参数化到你的 `build()`。A 只跑 pytest 验不变量，**不写这个脚本、也不改你的逻辑**。
 - 折数按 `configs/main.yaml`：**pendigits 10、coil20 10**（本轮只这两个；shuttle/mnist/fmnist 的 10/5/5 折已随 D18 移出）。
 - 内容：`{"seed": 42, "datasets": {name: {"n": int, "n_folds": int, "folds": [{"train": [...], "test": [...]}]}}, "config_sha256": "..."}`，行号指 `data/processed/{name}.npz` 里的行序。
 - 落盘 `json.dumps(..., sort_keys=True, indent=1)`；重跑必须**字节相同**（A 会比对 md5）。
@@ -115,11 +115,36 @@ def build(name: str) -> tuple[np.ndarray, np.ndarray]:
 | ~~`eda_05_pca_scatter.png`~~ | 每集 PCA 前两维散点 | 本轮不做（D18，PCA 结果由 P6 主表覆盖） |
 | ~~`eda_06_data_quality.png`~~ | 重复行/NaN/近零方差计数 | 本轮不做（V5 的数值自检已覆盖） |
 
-### B7 交接（不写代码，但必须做）
+### B7 结果图（P7c）—— 报告的 Fig.2 / Fig.3，由你出
+
+> 为什么是你：这两张图是「读 csv → 画图」的机械活，A 的时间要留给算法；而且图要反复调字号/边距，交互式工作不适合塞进 A 的收尾。
+
+**输入（A 在 S3 交付，你只读不改）**
+
+| 文件 | 内容 |
+|---|---|
+| `results/embeddings/coil20_umapours.npz` | 键 `E`（1440×2 float32）、`y`（1440 int64） |
+| `results/embeddings/coil20_tsne.npz` | 同上，t-SNE 的 2 维坐标 |
+| `results/paper_vs_ours.csv` | 列：`dataset,k,method,ours_mean,paper_value,verdict` |
+| `results/grid_knn.csv` | 逐折明细（要点核对时用） |
+
+**Fig.2 定性嵌入**（`figures/results/fig2_qualitative_coil20.png`）
+- 1×2 两联：左 UMAP（自研）、右 t-SNE；点按类别着色（`plt.cm.tab20`，20 类足够区分）；**不画标题以外的装饰**；
+- 同一数据、同一坐标尺度（两图各自等比例，不要强行同 scale）；图例放在图下方一行（20 项，2 列）；
+- 图注首句必须是结论，例如「COIL-20 上自研 UMAP 与 t-SNE 呈现同类的簇结构」（终稿措辞由 C 定）。
+
+**Fig.3 原文 vs 我们**（`figures/results/fig3_paper_vs_ours.png`）
+- 散点：x = 原文值、y = 我们值，画 y=x 参考虚线；只画 C2 的 2 个数据集 × 5 个 k × 4 种方法中**有原文数值的方法**（t-SNE / UMAP / PCA）；
+- COIL-20 的 k=80/160 用空心标记 + 标注「未复现（D9）」；PenDigits 用实心；
+- 轴标注英文 `Paper kNN accuracy` / `Our kNN accuracy`，范围锁 0.4–1.0 便于跨图比较。
+
+**硬要求**：300 dpi、图内无中文（本机无中文字体）、脚本 `scripts/make_figures.py` 可一键重跑、图内数字与 csv 一致（A 抽查 3 点）。**不阻塞任何人**——A 的 P8 与 C 的 §4 文字都不依赖这两张图，最坏情况 A 用同一脚本 30 min 出简版。
+
+### B8 交接（不写代码，但必须做）
 
 - 按 `docs/HANDOFF_B2A.md` 的自查表逐条跑命令、留输出；
 - 在 `docs/HANDOFF_LOG.md` 填一行（时间、分支、tag、自查结论、未解决项）；
-- 打 tag：`git tag handoff-h1`（11-12 12:00）/ `handoff-h2`（11-12 22:00）/ `handoff-h3`（11-13 22:00，数据卡终版）。
+- 打 tag：`git tag handoff-h1`（11-12 12:00）/ `handoff-h2`（11-12 22:00）/ `handoff-h3`（11-13 22:00，数据卡终版）/ `handoff-h3b`（S3 后 3 h，结果图）。
 
 ## 2. 三个时点（迟到的后果写在这里）
 
@@ -128,6 +153,7 @@ def build(name: str) -> tuple[np.ndarray, np.ndarray]:
 | **H1 · 11-12 12:00** | B1 完成 + 每个数据集的 `(n, d)` 实测值 + 下载耗时 | 到 11-12 18:00 仍未过 → A 用自建 loader 顶上并标注「B 未交付」，B 改为只交 EDA |
 | **H2 · 11-12 22:00** | B2/B3/B4 全量 + 自查通过（= P1） | 到 11-13 02:00 仍未过 → A 用自建 processed 继续；数据卡由 A 代笔，Team 维度在报告里如实写分工 |
 | **H3 · 11-13 22:00** | B5/B6 终版 + 哈希复核（= P7） | 报告的 Data 一节降级为 A 的简版，EDA 图从报告里删掉 |
+| **S3+3h · 11-14 01:00** | B7 两张结果图（= P7c） | C 先用临时版式，A 用同一脚本出简版；报告 v1 在 11-18，有 4 天余量 |
 
 **S2 迟到不传染**：A 的 P5/P6 用自己的 canonical 数组继续跑，报告也照常写；你晚一天只让 P1/P7/P7b 三格变红，不影响别人。反过来说——**你没有「等 A 先跑通」这个借口了**：开工只等 S1 的签名。
 
@@ -141,7 +167,7 @@ source .venv/bin/activate
 
 python scripts/fetch_data.py --datasets all           # 幂等，第二次应 0 下载
 python src/data_prep.py --datasets all --force
-python scripts/make_splits.py
+python scripts/make_splits.py                         # 你维护（P2b）
 python -m pytest -q tests/test_data_contract.py       # 由 A 提供，你只跑
 python scripts/check_manifest.py                      # A 提供，逐键核对 manifest 与数组
 git status --short                                    # 只应有 §0 允许的路径

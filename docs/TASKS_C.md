@@ -25,12 +25,13 @@
 | 表 3 原文 vs 我们 + 判定（复现/部分复现/未复现/unverifiable） | `results/paper_vs_ours.csv` + `docs/PAPER_NUMBERS.md` |
 | 表 4 运行时间（同机，标注硬件） | `results/runtime.csv` |
 | Fig.1 方法示意（自绘，不截图） | 自己画（用 matplotlib/tikz 都行） |
-| Fig.2 定性嵌入（**只 COIL-20**，UMAP-ours vs t-SNE 两联图） | `figures/results/fig2_qualitative_coil20.png` |
-| Fig.3 原文 vs 我们 散点（y=x 参考线） | `results/paper_vs_ours.csv` |
+| Fig.2 定性嵌入（**只 COIL-20**，UMAP-ours vs t-SNE 两联图） | `figures/results/fig2_qualitative_coil20.png`（**B 的 P7c 渲染**，你只插图） |
+| Fig.3 原文 vs 我们 散点（y=x 参考线） | `figures/results/fig3_paper_vs_ours.png`（**B 渲染**；底层数据 `results/paper_vs_ours.csv`） |
 | 附录 A 偏离清单表 | `docs/DEVIATIONS.md` 转表（**D1–D18**，含影响方向；D18 必须出现） |
 | 附录 B 复现指南（环境 + 命令 + 实测时长） | `scripts/repro.sh` + `PLAN.md` §7 |
 | Statement of Individual Contribution | 每人一段：负责范围 + 工作量占比 + 对应 commit/文件 |
 
+- **图不由你改版式**：Fig.2/Fig.3 由 B（P7c）出图，你只负责插入 + 写图注；需要改字号/图例时找 B，别自己动 `figures/results/`（会让「图与 csv 一致」的核验失效）。B 掉线时用 A 的简版，并在 contributor 声明里写明。
 - **降重要求（硬性）**：与原文的 8-gram 重合率 **<5%**（`scripts/similarity_check.py` 自查，11-19 与 11-20 各跑一次）。做法：§3 不复述原文公式推导（理论三句话 + 一张自绘示意图即可），主体写「我们的过程 / 我们的数字 / 我们的诊断」，结构用「主张→判据→结果→诊断」而不是照抄原文 §5.1→§5.4。
 - 写作规范：
   - 每个数字后标注 `n_folds`；表格下注写清"transductive 嵌入"（见 PROTOCOL §4 E2），避免被读成数据泄漏；
