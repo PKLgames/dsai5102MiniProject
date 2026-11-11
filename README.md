@@ -14,8 +14,8 @@ Format 2.2「学术论文复现」的工作区。上一轮复现的 SMOTE（Chaw
 - 报告结构（按评分表映射）：`docs/REPORT_OUTLINE.md`
 - 复现协议模板 / 数据卡模板：`docs/TEMPLATE_PROTOCOL.md`、`docs/TEMPLATE_DATA_CARD.md`
 - 分工任务书：`docs/TASKS_B.md`（数据准备 + EDA）、`docs/TASKS_C.md`（报告 + slides）
-- 候选池评估（2026-11-11）：`docs/CANDIDATE_ASSESSMENT.md`
-- 论文 PDF 与抽取文本：`paper/`（umap / shap / ncf / lightgbm / tabpfn / gsmote）
+- 选题评估（2026-11-11）：`docs/CANDIDATE_ASSESSMENT.md`（筛选理由 + UMAP 核验与冒烟）
+- 论文 PDF 与抽取文本：`paper/umap_arxiv2018.pdf`、`paper/umap_arxiv2018.txt`（其余候选已删，否决理由见评估文档 §2）
 
 ## 目录
 

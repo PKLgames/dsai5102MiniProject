@@ -27,8 +27,8 @@
 | `docs/REPORT_OUTLINE.md` | 报告章节 → 评分维度映射、图表清单、8 页答辩结构、时间锚点 |
 | `docs/TASKS_B.md` / `docs/TASKS_C.md` | 通用版分工任务书（含验收清单） |
 | `docs/templates/` | `make_splits.py.template`、`cv_grid.py.template`、`test_data_contract.py.template`（可直接落地为新论文骨架） |
-| `docs/CANDIDATE_ASSESSMENT.md` | 2026-11-11 候选池可行性评估（9 项核验表 + 评分卡 + 冒烟结果 + 选定后框架 + 预登记偏离） |
-| `paper/` | 6 篇候选 PDF + 抽取文本（umap/shap/ncf/lightgbm/tabpfn/gsmote）；HDBSCAN 正文不可得，未存 |
+| `docs/CANDIDATE_ASSESSMENT.md` | 2026-11-11 选题评估：筛选口径 + 其他候选各一句话否决理由 + UMAP 9 项核验 + 冒烟结果 + 复现框架 |
+| `paper/umap_arxiv2018.{pdf,txt}` | 选定论文原文与抽取文本（其余候选 PDF 已按用户要求删除，只留否决理由） |
 | `scripts/smoke_umap.py` + `results/smoke_umap/{digits,coil20}.json` | UMAP 冒烟脚本与结果（PenDigits/COIL-20 的 kNN 表） |
 | `data/raw/coil20/coil-20-proc/` | COIL-20 解压后的 1440 张 128×128 PNG（不入库，可重下） |
 | `configs/ data/ results/ figures/ notebooks/ report/ slides/ src/ scripts/ tests/` | 空目录结构 + `.gitkeep` |
@@ -39,8 +39,8 @@
 
 ## 3. 第一步做什么（建议顺序，别跳）
 
-1. ✅ **列候选池**（2026-11-11 完成）：7 篇，见 §7 与 `docs/CANDIDATE_ASSESSMENT.md`。
-2. ✅ **核验**（2026-11-11 完成）：7 篇全部过检查表，PDF 已入 `paper/`（HDBSCAN 正文不可得，一票否决）。
+1. ✅ **列候选池**（2026-11-11 完成）：9 篇，筛选理由见 §7 与 `docs/CANDIDATE_ASSESSMENT.md`。
+2. ✅ **核验**（2026-11-11 完成）：9 篇按 9 项检查表核验，仅 UMAP 全过；PDF 只保留 UMAP，其余否决理由见 §7。
 3. ✅ **1 小时冒烟**（2026-11-11 完成，UMAP）：`scripts/smoke_umap.py`，PenDigits 方向与绝对值均复现（|Δ|≤0.03），
    COIL-20 仅 k=80 复现、k=160 未复现（0.606 vs 0.803）→ 见 `docs/CANDIDATE_ASSESSMENT.md` §3。
 4. **写协议**（下一步）：`cp docs/TEMPLATE_PROTOCOL.md docs/PROTOCOL.md` 并填写（主张、等价判据、实验矩阵、偏离日志）。
@@ -82,36 +82,22 @@ docs/TASKS_C.md              成员 C 任务书
 docs/templates/              三个代码骨架（划分 / CV 网格 / 数据契约测试）
 ```
 
-## 7. 候选池与核验结论（2026-11-11 已核验 → **选定 UMAP**，详见 `docs/CANDIDATE_ASSESSMENT.md`）
+## 7. 候选池与核验结论（2026-11-11 已核验 → **选定 UMAP**）
 
-| 候选 | 年份 | 一句话 | 预期成本 | 报告可写性 | 核验结果 |
-|---|---|---|---|---|---|
-| **UMAP**（McInnes et al., arXiv:1802.03426） | 2018 | 拓扑启发的降维 | 低（`umap-learn`，CPU 分钟级） | 中（可视化为主，定量指标弱，需自己加下游分类实验） | ✅ **通过，加权 93，选定**：5 个有标签数据集全部可核；kNN 口径可三行复算；单次嵌入秒级；仅 LargeVis 无 pip 实现（写偏离） |
-| HDBSCAN（Campello et al., PAKDD 2013 / 扩展版 **ACM TKDD 10(1) 2015**, DOI 10.1145/2733381） | 2013/2015 | 层次密度聚类，参数少、自动选簇数 | 低（`hdbscan` 包，CPU 分钟级） | 中（聚类评估需自选指标与数据集，原表可复现部分） | ❌ **一票否决**：正文 PDF 全渠道不可得（Semantic Scholar CLOSED、OpenAlex is_oa=false、JCU 401、ACM/Springer 拦截）→ 无法核对实验表 |
-| SHAP（Lundberg & Lee, NeurIPS 2017） | 2017 | 加性特征归因的统一框架 | 低–中（`shap` 包，小表格数据集秒级） | 中–高（可做"一致性/局部准确性"实验 + 案例） | ⚠️ 备选，加权 78：§5.2 人因研究（MTurk 30/52 人）不可复现、§5.3 依赖 TF1 的 DeepLIFT 预训练；Fig.3 训练数据正文未给 |
-| Neural Collaborative Filtering（He et al., WWW 2017） | 2017 | 用 MLP 替代内积的协同过滤 | 中（MovieLens 1M，CPU 数小时，需 torch） | 高（协议争议本身可写一节，但复现难度上升） | ❌ 加权 68：核心 baseline **eALS 无标准库**（必须自实现）+ leave-one-out/4 负样本协议争议 |
-| LightGBM（Ke et al., NeurIPS 2017） | 2017 | GBDT + 直方图/GOSS/EFB | 中–高（原文含 Higgs 等大集，7.5 GB 内存吃紧） | 高（加速比表格直观） | ❌ 加权 53：原文实验为 LETOR/Allstate/KDD10 19M×29M/KDD12 119M×54M，多需 Kaggle，7.5 GB 内存不可行 |
-| Geometric SMOTE（Douzas & Bacao, *Information Sciences* 501:118–135） | 2019 | 在少数类超球体内按截断因子生成样本，"drop-in 替换 SMOTE" | 低（算法本体 <400 行，CPU 分钟级） | 中–高（几何直觉好讲；但原表是 30+ 数据集的 AUC 大表，需挑 6–8 个复现） | ❌ 加权 71：**无官方代码**（作者 GitHub 404、PyPI 404、imbalanced-learn 0.14.2 无此类）；13 数据集 × 2 分类器 × 网格取最高 CV 分的口径重且易膨胀；与上轮 SMOTE 同族 |
-| TabPFN / 表格基础模型（Hollmann et al., *Nature* 637:319–326；源头 ICLR 2023） | 2025 | 先验数据拟合网络（PFN），一次前向完成小表格分类 | 中–高（需 torch + 预训练权重；`tabpfn` 9.2.0 要求 Python ≥3.10，本机 3.14 兼容性未知；CPU 可推理但"打败调参树模型"的基准本身很重） | 高（"基础模型 vs 调参树模型"话题性强，答辩好讲） | ❌ 加权 80 但**只能"使用"权重**：核心方法 8 GPU×20 h 预训练，本体无 GPU；flagship 对比需每数据集 1 h AutoML（AutoGluon），18 数据集不可行 |
-| 少数类过采样基准比较（Kovács, *Applied Soft Computing* 83:105662） | 2019 | 85 种过采样 × 104 个不平衡数据集的实证比较 | 中–高（`smote_variants` 实现全部方法，单 (数据集×方法) 约 1–2 min；全量 104×85 实测外推 ≈258 h 单核） | 中（排名 + 临界差异图，需 Friedman/Nemenyi） | ⚠️ **重评后备选 #2，加权 87**：正文由用户提供（`paper/An_empirical_comparison_and_evaluation_of_minority.pdf`），协议已逐条读出（5 折×3 重复、4 分类器各 6 组、指标 G-mean/AUC/F1/P20、网格取最高分、平均秩排名、76M 作业量）；`smote_variants` 1.0.1 实测可 import（91 个过采样器）；**但全量 104×85 实测外推 ≈258 h≈11 天单核**（沙箱禁多进程，无法压缩）→ 算力闸门不过，需降重复数或缩子集 |
-| Class-Balanced Loss（Cui et al., CVPR 2019） | 2019 | 用有效样本数 (1−β^n)/(1−β) 对长尾损失重加权 | 高（ResNet-32、batch 128、200 epochs；**本机 CPU 实测 8.0 h/配置**；Table 3 的 ResNet-50/101/152 + iNat/ImageNet 原文用 TPU） | 高（有效样本数曲线 + 长尾分布图，6 分钟讲得清） | ❌ 闸门否决：单配置超 30 min 预算 16 倍、主表约 20 天、无 GPU；数据（CIFAR 长尾）与代码（richardaecn/class-balanced-loss）本身可得 |
-| （备选）CatBoost / TabNet / AutoInt | 2018–2019 | 梯度提升类别特征 / 表格深度模型 | 高（训练成本大） | 高 | 未核验（按需再议，不推荐） |
+**选定：UMAP**（McInnes, Healy & Melville, arXiv:1802.03426, 2018），加权 93——唯一同时通过 9 项核验、1 小时冒烟与算力闸门的对象。
+核验表、冒烟数据、评分与复现框架见 `docs/CANDIDATE_ASSESSMENT.md`；原文 `paper/umap_arxiv2018.{pdf,txt}`。
 
-核验后的选择（取代旧建议）：**UMAP 为主复现对象**；SHAP 作备选（若 11-12 前 UMAP 自研实现遇阻）。
+其余候选（各一句话，完整理由见评估文档 §2）：
 
-2026-11-11 追加核验（用户 m00404）：Class-Balanced Loss **未通过**（实测单配置 8.0 h，CPU 无 GPU）。
-Kovács 基准比较先因正文不可得被否；**同日用户 m00488 提供原文后重评**：检查表前 5 项全部通过、协议完整可读，
-但实测外推全量矩阵 ≈258 h（11 天单核，多进程被沙箱拒绝）→ 算力闸门不过，加权 87，列**备选 #2**。
-两篇的完整核验表、实测数据与“可重议条件”见 `docs/CANDIDATE_ASSESSMENT.md` §2.8–§2.9 与 §4。
-选择不变：UMAP 93 > Kovács 87（若接受 1 次重复的偏离版本可到 90）> SHAP 78。
-历史建议（保留备查）：原计划先核验 HDBSCAN 与 SHAP、都过则优先 HDBSCAN——实际 HDBSCAN 因正文 PDF 不可得被否。
+| 候选 | 年份 | 否决理由 |
+|---|---|---|
+| HDBSCAN | 2013/2015 | 正文 PDF 全渠道不可得（ACM TKDD / Springer / JCU 仓库 401，无 arXiv）→ 协议不可核验 |
+| LightGBM | 2017 | 原文实验为 LETOR/Allstate/KDD10 19M×29M 等，多需 Kaggle，7.5 GB 内存不可行 |
+| NCF | 2017 | 核心 baseline eALS 无标准库实现 + 负采样/切分协议争议 |
+| Geometric SMOTE | 2019 | 无官方代码 + 网格取最高分口径膨胀 + 与上轮 SMOTE 同族 |
+| SHAP | 2017 | 核心主张依赖人因研究（不可复现）+ 需 TF1 时代 DeepLIFT 预训练 |
+| TabPFN | 2023/2025 | 本体 8 GPU×20 h 预训练，只能「使用权重」而非复现 |
+| Class-Balanced Loss | 2019 | 算力闸门：ResNet-32 CPU 实测 8.0 h/配置，主表约 20 天，无 GPU |
+| Kovács 过采样基准比较 | 2019 | 算力闸门：全量 104×85 外推 ≈258 h 单核；列为备选 #2 |
 
-增补说明（用户 m00654 点名加入；m00715 把年份窗口放宽到「2010 至今」）：
-
-- **Geometric SMOTE**：年份 2019 合规，但它是"又一个采样器变体"，与刚放弃的 SMOTE 同族，题面差异化弱；
-  且作者未公开代码，等于要连算法带基准一起重写，报告里"复现"的分量反而下降。
-- **TabPFN**：年份窗口已不再是障碍（m00715 裁决：窗口放到 2010 至今）。剩下两个真实风险：
-  ① 工程：torch + 预训练权重 + Python 3.14 兼容性，需要一次安装冒烟；
-  ② 方法学：只跑官方模型是"使用"不是"复现"，要复现其"打败调参树集成"的主张，得自己搭多数据集 + 固定调参预算的基准，
-     这部分工作量大于 HDBSCAN/SHAP，但报告 Novelty 与答辩效果也最好。
-  可折中：主体复现一篇 2010 之后的表格方法（如 HDBSCAN/SHAP），把 TabPFN 作为扩展对照基线。
+出处更正：HDBSCAN 扩展版是 **ACM TKDD 10(1), 2015, DOI 10.1145/2733381**，不是 JMLR 2015。

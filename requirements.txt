@@ -15,7 +15,11 @@ tabulate==0.10.0
 pytest==9.2.0
 pypdf==7.0.1
 
-# --- 按论文需要再装（装前确认与 Python 3.14 兼容）---
+# --- 选定论文（UMAP）需要 ---
+umap-learn==0.6.0             # 参考实现；自研实现落地后仅作对照
+numba==0.68.1                 # umap-learn 依赖；沙箱内需 NUMBA_NUM_THREADS=1
+
+# --- 其他按需再装（装前确认与 Python 3.14 兼容）---
 # imbalanced-learn==0.14.2      # 不平衡学习（SMOTE/欠采样/组合采样）
 # umap-learn / hdbscan          # 降维 / 密度聚类
 # xgboost / lightgbm            # 树集成；本机无 GPU，先估运行时间
