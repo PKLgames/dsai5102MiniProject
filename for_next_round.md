@@ -55,7 +55,7 @@
 4. **写协议**（下一步）：`cp docs/TEMPLATE_PROTOCOL.md docs/PROTOCOL.md` 并填写（主张、等价判据、实验矩阵、偏离日志）。
 5. **铺开代码**：从 `docs/templates/` 复制三个骨架到 `src/`、`scripts/`、`tests/`，改数据入口 `load(name)`。
 6. **交 B/C**：`docs/TASKS_B.md`、`docs/TASKS_C.md` 已是通用版，只补数据集清单与截止节点。
-7. **git**：`git checkout -b main-v2` 后开始提交；B 用 `data-prep` 分支，C 用 `report`/`slides` 分支。
+7. **git**：直接在 `main` 上提交（2026-11-11 决定：仓库只保留 `main` 一个分支）；B/C 的短命分支（`data-prep`、`report`、`slides`）用完即删，不留在远端。
 
 ## 4. 环境事实（省得重测）
 

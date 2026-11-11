@@ -110,7 +110,7 @@ COIL-20 k=160 不复现原文优势；超参取参考实现默认值（原文正
 
 ## 7. 下一步
 
-1. `git checkout -b main-v2`。
+1. ~~`git checkout -b main-v2`~~（已过时：2026-11-11 起只在 `main` / `main` + 短命分支上工作）。
 2. `cp docs/TEMPLATE_PROTOCOL.md docs/PROTOCOL.md`，填 C1–C4、等价判据、矩阵、偏离日志。
 3. 铺代码：`src/data.py`（load_digits / coil20 / openml shuttle,mnist,fmnist）、`src/umap_impl.py`、`scripts/run_table.py`。
 4. 交 B：5 个数据集的数据卡 + EDA；交 C：报告骨架与 Fig.2/Fig.3 占位。

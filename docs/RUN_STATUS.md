@@ -49,7 +49,7 @@
 ### 2026-11-11（周三）
 
 - 计划：G0（协议冻结）
-- 实际：PLAN/PROTOCOL/DEVIATIONS/PAPER_NUMBERS/TASKS_B/HANDOFF_B2A/DATA_CARD/RUN_STATUS 成文；git 分支 `main-v2`
+- 实际：PLAN/PROTOCOL/DEVIATIONS/PAPER_NUMBERS/TASKS_B/HANDOFF_B2A/DATA_CARD/RUN_STATUS 成文；提交先落在 `main-v2`，2026-11-11 夜已合并回 `main` 并删除该分支（远端只留 `origin/main`）
 - 偏差：**范围缩减**（用户决定两天交付）→ 落为 `PROTOCOL` v2 §0 + `DEVIATIONS` D18；`configs/*.yaml` 裁到 2 数据集
 - 明日：发 B/C 任务书（按 2 数据集版）；`src/data.py` + 契约测试；B 跑 P1
 
