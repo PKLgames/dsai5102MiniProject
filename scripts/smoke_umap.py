@@ -1,6 +1,6 @@
 """1-hour smoke test for the UMAP reproduction (UMAP paper, arXiv:1802.03426).
 
-Purpose (see for_next_round.md step 3): on ONE small dataset, check that the
+Purpose (historical, 2026-11-10): on ONE small dataset, check that the
 published protocol (embed -> kNN classifier in embedding space, stratified
 10-fold CV) reproduces the published direction (UMAP ~ t-SNE > PCA), and
 measure the wall-clock cost of one configuration.

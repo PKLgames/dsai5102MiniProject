@@ -1,6 +1,6 @@
 # 主实验配置 v2（两日计划）—— 机器可读版协议 §6
-# 范围冻结 2026-11-12：只复现 C2，只跑 PenDigits + COIL-20；缩减理由见 docs/DEVIATIONS.md D18。
-# 读取方：scripts/run_grid.py / run_runtime.py；改这里先改 PROTOCOL 并登记偏离。
+# 范围冻结 2026-11-12：只复现 C2，只跑 PenDigits + COIL-20；缩减理由见 docs/log/DEVIATIONS.md D18。
+# 读取方：scripts/run_grid.py / run_runtime.py；改这里先改 docs/goal/SPEC.md 并登记偏离。
 
 seed: 42
 n_jobs: 1                     # joblib 在本机串行，写 1 避免误导
@@ -67,19 +67,19 @@ methods:
     metric: euclidean
   # le 不在本轮范围（D18）；仅当两日计划有余量时手动加回，不进入主表
 
-knn:                           # PROTOCOL E2
+knn:                           # SPEC §4 E2
   classifier: KNeighborsClassifier
   algorithm: brute
   metric: euclidean
   weights: uniform
   transductive: true           # 嵌入用全体点（无标签），分类器只用 train 折
 
-runtime:                       # PROTOCOL E4（本轮只留 4 行小表）
+runtime:                       # SPEC §4 E4（本轮只留 4 行小表）
   repeats: 3
   timeout_s: 1800
   timer: perf_counter
 
-tolerance:                     # PROTOCOL §5.2，冻结，勿改
+tolerance:                     # SPEC §5，冻结，勿改
   pendigits: 0.03
   coil20: 0.10
 

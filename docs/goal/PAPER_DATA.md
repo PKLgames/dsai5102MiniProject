@@ -1,9 +1,9 @@
-# 原文数字表（Paper Numbers）
+# 原文数字（文章数据）
 
 > 来源：`paper/umap_arxiv2018.txt`（arXiv:1802.03426v3 文本抽取），McInnes, Healy & Melville (2018)。
 > 补充：2024 年 Primer（`paper/s43586-024-00363-x.pdf`，Nat. Rev. Methods Primers 4:82，DOI 10.1038/s43586-024-00363-x）只有定性与方法性内容、无新实验数字，**不作为本表来源**。
-> 用途：① 报告 Fig.3 / 主表对照；② `src/knn_eval.py` 的期望值；③ C 写作用，避免翻 PDF 手抄。
-> 校对：逐格与 PDF 表格核对过（2026-11-11）；若与 `results/paper_vs_ours.csv` 冲突，以本文件为准并回查 PDF。
+> 用途：① 主表对照（`results/paper_vs_ours.csv`）；② 报告 Fig.3 散点；③ C 写用时免翻 PDF。
+> 校对：逐格与 PDF 核对过（2026-11-11）；若与 `results/paper_vs_ours.csv` 冲突，以本文件为准并回查 PDF。
 
 ## §1 主张→数字速查
 
@@ -90,7 +90,7 @@
 
 ## 对照纪律
 
-1. **只有 C2 与 C4 有原文数值**；C1（视觉）与 C3（Procrustes）原文给的是图，没有表格数字 → 我们只判方向/曲线形状，不比绝对值（`docs/PROTOCOL.md` §5.2）。
+1. **只有 C2 与 C4 有表格数字**；C1（视觉）与 C3（Procrustes）原文只给图 → 只判方向，不比绝对值（`docs/goal/SPEC.md` §5）。
 2. Table 3 的秒数**不能**直接与我们的时间比（原文 MacBook i7 + C++ 实现，我们共享机 + 纯 Python + sklearn t-SNE）。报告里只呈现"同机相对排序 + 相对比值"，并在图注写"absolute times not comparable across machines"。
-3. 与原文口径不同的数据集（MNIST/FMNIST 用 20k 子采样、Shuttle 可能 20k）在表中用 † 标注，并且**只判方向**。
-4. 我们的 COIL-20 冒烟已显示 k=10 偏低（.860 vs .934）、k=160 大幅偏低（.606 vs .803）→ `results/paper_vs_ours.csv` 的 `verifiable` 列对 COIL-20 大 k 置 `false`，避免在 Fig.3 上误导（详见 `docs/DEVIATIONS.md` D9）。
+3. 本轮只用 COIL-20 与 PenDigits 两列（其余 3 个数据集已随 D18 移出）；如引用它们，要标注「原文口径，未复现」。
+4. COIL-20 冒烟已偏低（k=10 .860 vs .934；k=160 .606 vs .803）→ `paper_vs_ours.csv` 的 `verifiable` 对 COIL-20 大 k 置 `false`，Fig.3 用空心点标「未复现」（D9）。

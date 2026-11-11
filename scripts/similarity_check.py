@@ -5,7 +5,7 @@
     .venv/bin/python scripts/similarity_check.py                # 默认扫 report/ 下 *.md/*.tex
     .venv/bin/python scripts/similarity_check.py report/main.md  # 指定文件
 
-判定：整体 8-gram 重合率 < 5% 视为达标（`docs/TASKS_C.md` 的硬性要求）。
+判定：整体 8-gram 重合率 < 5% 视为达标（`docs/tasks/C_TASKS.md` 的硬性要求）。
 原理很笨但够用：原文按空白切词、小写、去标点，取连续 8 词为一个 n-gram；
 我们的文本同样处理，统计每个 8-gram 是否在原文的集合里出现过。
 输出里会列出最长的"连续命中"片段，方便直接改句子（改结构而不是换同义词）。

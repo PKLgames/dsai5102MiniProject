@@ -1,4 +1,4 @@
-# 扩展实验配置 —— 本轮**未执行**（范围缩减，见 docs/DEVIATIONS.md D18）
+# 扩展实验配置 —— 本轮**未执行**（范围缩减，见 docs/log/DEVIATIONS.md D18）
 # 两日计划里没有超参热力图的位置；若 11-18 之后有余量，用本文件直接跑：
 #   .venv/bin/python scripts/run_extension.py --config configs/extension.yaml
 # 48 组嵌入在 PenDigits 上约 10 min，COIL-20 上约 14 min。
