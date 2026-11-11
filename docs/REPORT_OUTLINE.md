@@ -20,6 +20,8 @@
 | Appendix B 复现指南 | 0.3 页 | 环境、命令、运行时长 | Completeness |
 | Statement of Individual Contribution | 0.3 页 | 每人负责什么、工作量占比（课程强制） | Team |
 
+**参考文献（必须）**：按 `docs/PROTOCOL.md` §1.1，[1] McInnes et al. (2018) arXiv:1802.03426（预印本，被复现对象、数字来源）与 [2] Healy & McInnes (2024) Nat. Rev. Methods Primers 4:82（正式发表综述，补默认超参与方法学）**并列列出并在正文说明关系**；禁止把二者写成"同一篇的预印本/正式版"。
+
 ## 2. 图表清单（先定图，再补文字）
 
 | 图 | 内容 | 结论一句话 |

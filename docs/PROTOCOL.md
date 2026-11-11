@@ -1,6 +1,6 @@
 # 复现协议 · UMAP（arXiv:1802.03426）
 
-> 状态：**v1 冻结于 2026-11-11**，冻结后任何改动必须写进 `docs/DEVIATIONS.md` 并注明"事后修改"。
+> 状态：**v1 冻结于 2026-11-11**（同日新增 §1.1 引用规范，已按规则登记为偏离 D17）；冻结后任何改动必须写进 `docs/DEVIATIONS.md` 并注明"事后修改"。
 > 作者：A 起草，B/C 已知会。
 > 目的：把"复现论文"变成可判定的问题——先说清做什么、怎么算、多接近算复现，再写代码。**先协议后代码**是 `selecting_exp.md` 里最贵的一条教训。
 
@@ -22,6 +22,26 @@ McInnes, L., Healy, J., & Melville, J. (2018). *UMAP: Uniform Manifold Approxima
 | **C4** | 运行时间**普遍快于**其他方法（除 PenDigits 上 LE/Isomap 略快） | §5.4、Table 3 | E4 计时：5 数据集 × {PCA, LE, t-SNE, UMAP-ours, UMAP-ref}，3 次取中位数 |
 
 **复现边界（重要）**：C2/C3/C4 的原始数字都来自作者机器（MacBook Pro i7 3.1 GHz / 8 GB；MulticoreTSNE 的 C++ 实现）。我们只能复现**方向与排序**，绝对数值按 §5.2 的容差判定。
+
+### 1.1 引用规范（报告、slides 与答辩通用）
+
+**两篇必须同时引用并说明关系**：只引其一不行，把二者当成"同一篇的预印本与正式版"也不行。
+
+| 编号 | 文献 | 性质 | 在报告中的角色 |
+|---|---|---|---|
+| [1] | McInnes, L., Healy, J., & Melville, J. (2018). *UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction*. arXiv:1802.03426 [stat.ML]. https://doi.org/10.48550/arXiv.1802.03426 | **预印本**（63 页；截至 2026-11-11 无会议/期刊正式出版记录） | 被复现对象；C1–C4 与全部定量结果（Table 1/2/3）的唯一来源 |
+| [2] | Healy, J., & McInnes, L. (2024). *Uniform manifold approximation and projection*. Nature Reviews Methods Primers, 4, 82. https://doi.org/10.1038/s43586-024-00363-x | **正式发表**（同作者邀请综述/Primer，15 页，无新实验数字） | 方法学补充；默认超参（Table 1）与结果解读注意事项的来源 |
+
+报告 §1（引言/被复现论文）与 slides 首页建议使用以下写法（可改措辞，不可改事实关系）：
+
+> 本报告复现的是 McInnes et al. (2018) 的 UMAP 预印本 [1]。该文至今以 arXiv 预印本形式发布；作者于 2024 年在 Nature Reviews Methods Primers 上发表了同主题的正式综述 [2]。**[2] 用于核对默认超参与方法学细节，所有被复现的定量结果（Table 1/2/3 与 C1–C4）均出自 [1]。**
+
+硬规则：
+
+- **数字只引 [1]**；默认超参、使用建议可引 [2]，引用时注明"见 [2] Table 1"这类定位；
+- **禁止**写成"2018 版是 2024 版的预印本""2024 版是该论文的正式发表版""两篇内容相同"——两篇标题、作者列表、体裁与内容均不同；
+- 参考文献表统一编号，[1] 在前、[2] 紧随其后，便于评委一眼看到"预印本 + 正式综述"的搭配；
+- 讨论"原文未披露超参"这一 reproducibility gap 时，必须同时说明 [2] 已给出默认值，否则会被认为没读全作者的公开材料。
 
 ## 2. 不做什么（Explicit non-goals）
 

@@ -35,7 +35,7 @@
 - 写作规范：
   - 每个数字后标注 `n_folds`；表格下注写清"transductive 嵌入"（见 PROTOCOL §4 E2），避免被读成数据泄漏；
   - 图注首句必须是**结论**，不是"图 X 展示…"；
-  - 引用：原文 + 每个被引方法一条正式引用（t-SNE/LE/PCA/LargeVis）；数据给 URL 或 OpenML did；
+  - 引用：**UMAP 必须两篇并列引用并说明关系**——[1] McInnes, Healy & Melville (2018) arXiv:1802.03426（预印本，被复现对象，全部数字来源）；[2] Healy & McInnes (2024) Nature Reviews Methods Primers 4:82, DOI 10.1038/s43586-024-00363-x（同作者正式发表综述，仅补默认超参与方法学）。模板与禁忌见 `docs/PROTOCOL.md` §1「引用规范」；其余每个被引方法一条正式引用（t-SNE/LE/PCA/LargeVis）；数据给 URL 或 OpenML did；
   - **图内文字英文**（本机无中文字体），正文语言全组统一（建议英文，便于引用原文术语）。
 
 ### C2 Slides（8 页，6 分钟）
