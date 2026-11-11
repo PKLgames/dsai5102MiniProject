@@ -1,14 +1,25 @@
-# 运行环境（Python 3.14.7）
-# 复现命令：
-#   uv venv --python 3.14 .venv && uv pip install --python .venv/bin/python -r requirements.txt
-# 或：python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+# 通用核心依赖（已在本机验证可安装，Python 3.14.7）
+#
+# 安装（沙箱内必须指定缓存目录，默认 ~/.cache 不可写）：
+#   UV_CACHE_DIR=/home/pklgames/coding/.uvcache \
+#   UV_PYTHON_INSTALL_DIR=/home/pklgames/coding/.uvpython \
+#   uv pip install --python .venv/bin/python -r requirements.txt
+
 numpy==2.5.4
 scipy==1.18.1
 scikit-learn==1.9.1
-imbalanced-learn==0.14.2
 pandas==3.1.1
 matplotlib==3.11.2
 pyyaml==6.0.3
-pytest==9.2.0
 tabulate==0.10.0
+pytest==9.2.0
 pypdf==7.0.1
+
+# --- 按论文需要再装（装前确认与 Python 3.14 兼容）---
+# imbalanced-learn==0.14.2      # 不平衡学习（SMOTE/欠采样/组合采样）
+# umap-learn / hdbscan          # 降维 / 密度聚类
+# xgboost / lightgbm            # 树集成；本机无 GPU，先估运行时间
+# torch                         # 深度模型；CPU 训练，务必先做 1/10 规模外推
+# statsmodels                   # 经典统计检验、GLM
+
+# 注意：pyarrow 在这台机器上会因网络超时安装失败（大 wheel），数据交换格式用 CSV。

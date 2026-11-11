@@ -35,3 +35,6 @@ slides/**/*.tmp
 .DS_Store
 .vscode/
 .idea/
+
+# --- 测试缓存 ---
+.pytest_cache/

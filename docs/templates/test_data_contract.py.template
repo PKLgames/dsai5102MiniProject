@@ -1,0 +1,68 @@
+"""模板：数据契约测试（复制到 tests/test_data_contract.py 后改 import）。
+
+三方对拍：
+1. manifests 必须与 data_prep.load 一致（防止数据或配置被悄悄改坏）；
+2. splits.json 必须能重放出同一个 StratifiedKFold（防止手改索引）；
+3. B 侧的 data/processed CSV 若存在，必须与 load() 逐行一致（第二实现验收）。
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import pytest
+from sklearn.model_selection import StratifiedKFold
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+from data_prep import load  # noqa: E402
+
+MANIFESTS = ROOT / "data/manifests"
+SPLITS = ROOT / "data/processed/splits.json"
+PROCESSED = ROOT / "data/processed"
+
+manifests = sorted(MANIFESTS.glob("*.json"))
+
+
+@pytest.mark.parametrize("path", manifests, ids=[p.stem for p in manifests])
+def test_manifest_matches_loader(path: Path) -> None:
+    m = json.loads(path.read_text())
+    X, y = load(m["dataset"])
+    assert X.shape == (m["n"], m["n_features"])
+    assert int(y.sum()) == m["n_positive"]
+    assert list(X.columns) == m["columns"]
+
+
+@pytest.mark.skipif(not SPLITS.exists(), reason="splits.json 未生成")
+def test_splits_replay() -> None:
+    payload = json.loads(SPLITS.read_text())
+    for name, entry in payload["datasets"].items():
+        X, y = load(name)
+        for rep in range(payload["repeats"]):
+            skf = StratifiedKFold(n_splits=payload["folds"], shuffle=True,
+                                 random_state=payload["seed"] + rep)
+            for k, (tr, te) in enumerate(skf.split(X, y), start=1):
+                got = entry["splits"][f"rep{rep}_fold{k}"]
+                assert got["train"] == tr.tolist()
+                assert got["test"] == te.tolist()
+                assert not set(got["train"]) & set(got["test"])
+
+
+@pytest.mark.parametrize("path", manifests, ids=[p.stem for p in manifests])
+def test_processed_parity_if_present(path: Path) -> None:
+    name = json.loads(path.read_text())["dataset"]
+    csv, ycsv = PROCESSED / f"{name}_X.csv", PROCESSED / f"{name}_y.csv"
+    if not (csv.exists() and ycsv.exists()):
+        pytest.skip(f"{name}: processed CSV 未交付")
+    Xa, ya = load(name)
+    Xb = pd.read_csv(csv)
+    yb = pd.read_csv(ycsv)["y"].to_numpy()
+    assert Xb.shape == Xa.shape
+    assert np.array_equal(yb, ya)
+    assert list(Xb.columns) == list(Xa.columns)
+    num = Xa.select_dtypes(include=[np.number]).columns
+    assert np.allclose(Xb[num].to_numpy(float), Xa[num].to_numpy(float), atol=1e-8)

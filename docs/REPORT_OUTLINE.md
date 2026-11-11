@@ -1,82 +1,63 @@
-# 报告大纲（C 用；按评分表逐条对应）
+# 报告与答辩结构（按评分表映射）
 
-> 评分表六个维度：Time / Team / Slides / Completeness / Methodology / Novelty。
-> 每一节后面标注它拿哪一分，缺哪一节就会丢哪一分。
+> 用途：C 组员写作提纲；A 在写代码时就按"每个数字能在哪一节用上"准备产物。
+> 课程硬性要求：报告必须含 引言 / 数据描述 / 方法 / 实验结果 / 讨论 / 结论，并写明数据来源与预处理。
 
-## 0. 封面与团队信息
+## 1. 报告章节与得分点
 
-- 课程、组号、成员（A/B/C）、提交日期。
-- **Statement of Individual Contribution**（评分表 Team 维度，必须在报告最后单列一节，写明每人做了什么、占比、以及哪些结果是本人跑的）。
+| 章节 | 篇幅建议 | 必须写清 | 对应评分维度 |
+|---|---|---|---|
+| Abstract | 150–200 词 | 复现了哪篇、验证了什么、主要偏差 | — |
+| 1 Introduction | 0.5 页 | 论文要解决的问题、为什么值得复现、我们的贡献（复现 + 扩展） | Methodology / Novelty |
+| 2 Related Work & Paper Summary | 0.5 页 | 原文方法的核心机制（配一张示意图）、它在文献中的位置 | Methodology |
+| 3 Data | 1 页 | 每个数据集来源 URL/did、样本数、预处理每一步及理由、替换说明 | Completeness |
+| 4 Reproduction Setup | 0.75 页 | 划分方式、种子、指标、对照方法、与原文的对应关系表 | Methodology |
+| 5 Results | 1.5 页 | 主表（方法 × 数据集）+ 与原文逐格对比 + 判定（复现/部分/失败） | Completeness / Methodology |
+| 6 Discussion | 1 页 | 偏差原因（用敏感性实验支撑）、哪些结论稳健、哪些不稳定 | Methodology / Novelty |
+| 7 Extension | 0.75 页 | 自己设计的 1 个额外实验（超参敏感性/替代数据/代价敏感/新场景） | Novelty |
+| 8 Conclusion | 0.3 页 | 3 条可验证的结论 + 局限 | — |
+| Appendix A 偏离清单 | 0.5 页 | 表格：每处偏离 + 原因 + 影响 | Methodology |
+| Appendix B 复现指南 | 0.3 页 | 环境、命令、运行时长 | Completeness |
+| Statement of Individual Contribution | 0.3 页 | 每人负责什么、工作量占比（课程强制） | Team |
 
-## 1. Introduction（~1 页）
+## 2. 图表清单（先定图，再补文字）
 
-- 不平衡分类为什么重要：真实场景（医疗筛查、欺诈检测、故障诊断）里少数类才是我们关心的类。
-- 论文出处：Chawla et al., *SMOTE: Synthetic Minority Over-sampling Technique*, JAIR 16 (2002) 321–357，引用量 2 万+。
-- 本文的复现问题（一句话）：**在 2026 年的开源工具链上，SMOTE 原文的三条主张还成立吗？成立到什么程度？**
-- 本文贡献 bullet（3 条）：①逐数据集复现 + 与原文数字对照；②替代数据集的偏差分析；③轻扩展（k 敏感性 / 变体 / 外部验证 / 阈值代价）。
-
-## 2. Related Work（~0.5 页，可并入 Introduction）
-
-- SMOTE 之前：随机过采样/降采样、代价敏感学习、one-sided selection。
-- SMOTE 之后：Borderline-SMOTE、ADASYN、SMOTE-ENN/Tomek（这四类正是我们的扩展对照）。
-- 一句话定位：本文不是提出新算法，而是**复现 + 受控对比**。
-
-## 3. Data Description（~1 页，评分表 Completeness 的“数据处理”）
-
-- 表格：数据集 / 来源 URL / 样本数（总/少/多）/ IR / 特征数 / 类型 / 缺失。
-- 数据来源与获取方式（OpenML did、缓存 CSV 的 md5）。
-- 预处理步骤逐条写清（缺失填充、one-hot、不使用测试集信息）。
-- 两个替代数据集（E-state → qsar-biodeg，Can → kddcup99）必须单独说明理由与影响。
-- 引用 `docs/DATA_CARD_TEMPLATE.md` 填好的版本。
-
-## 4. Methodology（~1.5 页，评分表 Methodology 的主战场）
-
-- 4.1 SMOTE 算法：伪代码 + 公式 x_new = x_i + (x̂_i − x_i)·δ，δ~U(0,1)；k 近邻、合成百分比、为什么能缓解过拟合。
-- 4.2 实验协议：5×2 分层 CV；重采样只在训练折；C4.5 代理（CART+熵+CCP 剪枝）及其理由（D1/D9）。
-- 4.3 判据：C1/C2/C3 的可操作定义（`docs/PROTOCOL.md`）。
-- 4.4 指标：AUC 为主，PR-AUC/G-mean/Brier 为辅；为什么单看准确率会骗人。
-- 4.5 **与原文的偏离表**（D1–D12 精简成表）：这是 Methodology 维度“严谨性”的加分项，不要藏。
-
-## 5. Experimental Results（~2 页，Completeness 的“模型训练+结果分析”）
-
-- 5.1 主表：8 个数据集 × {none, rus{25,50,100}, ros, smote{100,200,500}} 的 AUC（mean±std）。
-- 5.2 C1 判定表：每个数据集“最佳 SMOTE vs 最佳 Under”胜负 + 合计 x/8。
-- 5.3 与原文 Table 3 的并排对照（同数据集同列，标注 substitute 行）。
-- 5.4 显著性：数据集内配对 Wilcoxon，报告 p 值与效应量。
-- 5.5 图：AUC 随过采样率变化的折线图（每数据集一条）；箱线图（各方法分布）；PR 曲线（1–2 个代表数据集）。
-- 5.6 敏感性：剪枝强度三档（dt_raw / dt_msl5 / dt）对 C1 的影响（D10）——**这段是诚实性加分**。
-
-## 6. Discussion（~1 页，Novelty + Methodology）
-
-- 哪些主张成立、哪些不成立、为什么不成立（数据版本、学习器差异、CV 协议）。
-- k 敏感性：k=1 噪声大、k 大导致合成样本侵入多数类区域（用图说明）。
-- 变体对比：Borderline-SMOTE/ADASYN 在高 IR 数据集上是否更稳。
-- 外部验证：credit-card（IR 578）上 SMOTE 是否仍然有效——分布差异带来的新发现。
-- 阈值与代价：AUC 提升不等于业务收益，代价比 5:1/10:1 下的最优阈值变化。
-- 局限：无 GPU、单机、只做二分类、树模型为主。
-
-## 7. Conclusion（~0.3 页）
-
-- 三句话：复现了什么、发现了什么偏差、对实践者的建议。
-
-## 8. 参考文献 + 附录
-
-- 参考文献：原文、Borderline-SMOTE、ADASYN、SMOTE-ENN、imbalanced-learn 论文、scikit-learn。
-- 附录 A：完整结果表（全部 sampler × dataset）。
-- 附录 B：复现命令（`scripts/run_all.sh`）与环境版本。
-- 附录 C：Statement of Individual Contribution（若未放封面后）。
-
-## 图表清单（交付前核对）
-
-| 编号 | 内容 | 数据来源 |
+| 图 | 内容 | 结论一句话 |
 |---|---|---|
-| Fig.1 | 不平衡数据示意（两类散点 + SMOTE 合成点） | `figures/results/smote_illustration.png` |
-| Fig.2 | 各数据集 AUC vs 过采样率 | `results/grid*_summary.csv` |
-| Fig.3 | 方法箱线图 | 同上 |
-| Fig.4 | PR 曲线（pima + oil） | 逐折预测概率（需保存 `results/raw/*.npz`） |
-| Fig.5 | k 敏感性 | `results/k_sensitivity.csv` |
-| Fig.6 | 阈值–代价曲线 | `results/threshold_cost.csv` |
-| Tab.1 | 数据集描述 | `docs/DATA_CARD_TEMPLATE.md` |
-| Tab.2 | 主结果 | `results/grid*_summary.csv` |
-| Tab.3 | C1 判定 | `report/c1_table.md` |
-| Tab.4 | 与原文对照 | 手工整理（原文 Table 3 + 我们的数字） |
+| Fig.1 | 论文方法示意图（自绘，不截图） | 30 秒讲清直觉 |
+| Fig.2 | 主结果：各数据集上的方法对比（含误差棒） | 我们复现的方向 |
+| Fig.3 | 与原文数值的逐点对比（散点，y=x 参考线） | 绝对幅度偏差 |
+| Fig.4 | 敏感性：某一选择的强弱如何改变结论 | 为什么"不稳" |
+| Fig.5 | 扩展实验（如适用） | 我们的增量 |
+
+- 表 1：数据集与数据卡摘要；表 2：主结果（均值 ± 标准差）；表 3：原文 vs 我们的差异与判定。
+- 所有图英文标注（本机无中文字体），dpi ≥ 160，每图一个结论写在 caption 首句。
+
+## 3. 6 分钟答辩结构（约 8 张 slide，每张 40–60 秒）
+
+1. 标题 + 一句话结论
+2. 问题：这类数据的痛点（一个具体数字）
+3. 方法：一张示意图 + 一句话
+4. 复现设置：数据规模、对照、指标（一张小表）
+5. 主结果：一张表/图（唯一重点）
+6. 与原文的差异：一张对比表 + 判定
+7. 为什么有差异：敏感性实验（一张图）
+8. 结论 + 局限 + 1 个可继续的方向
+
+- 计时：彩排 2 次，第 1 次必须压到 5:00 以内（留缓冲）。
+- 不要放代码截图；不要超过 6 行字的 slide。
+
+## 4. 分工与交接（保持不变）
+
+| 角色 | 负责 | 交付节点 |
+|---|---|---|
+| A | 选题核验、协议、建模代码、实验、结果表与图 | 主网格结果 → 报告 §4–6 的数字与图 |
+| B | 数据准备（第二实现）、数据卡、EDA 图 | `data/processed` + splits 就绪（B 的 N1） |
+| C | 报告正文、slides、彩排 | 报告 v1（结果到位后 1 天内）、slides（报告后 2 天内） |
+
+## 5. 时间锚点（课程给定，不得延后）
+
+- 报告提交：2026-11-21 23:59
+- Slides 提交：2026-11-24 12:00（中午）
+- 答辩：2026-11-25 / 26，6 分钟
+- 内部缓冲：结果定稿 → C 起稿 ≥ 2 天；slide 定稿 → 彩排 ≥ 1 天；任何延期先砍扩展实验，再砍第三个对照，绝不砍主表。
