@@ -1,4 +1,7 @@
-# DSAI5102 Mini-Project · 论文复现（第二轮，待选题）
+# DSAI5102 Mini-Project · 论文复现（第二轮）
+
+**选题已定：UMAP**（McInnes, Healy & Melville, arXiv:1802.03426, 2018）。
+筛选过程与证据见 `docs/CANDIDATE_ASSESSMENT.md`；复现协议见 `docs/PROTOCOL.md`（待写）。
 
 Format 2.2「学术论文复现」的工作区。上一轮复现的 SMOTE（Chawla et al., JAIR 2002）已按用户要求移出工作区，
 其完整内容保留在 git tag `smote-repro-v1`（见 `FOR_NEXT_ROUND.md` §9）。
@@ -11,15 +14,18 @@ Format 2.2「学术论文复现」的工作区。上一轮复现的 SMOTE（Chaw
 - 报告结构（按评分表映射）：`docs/REPORT_OUTLINE.md`
 - 复现协议模板 / 数据卡模板：`docs/TEMPLATE_PROTOCOL.md`、`docs/TEMPLATE_DATA_CARD.md`
 - 分工任务书：`docs/TASKS_B.md`（数据准备 + EDA）、`docs/TASKS_C.md`（报告 + slides）
+- 候选池评估（2026-11-11）：`docs/CANDIDATE_ASSESSMENT.md`
+- 论文 PDF 与抽取文本：`paper/`（umap / shap / ncf / lightgbm / tabpfn / gsmote）
 
 ## 目录
 
 ```
-src/              建模与实验代码（待新论文确定后填充）
+src/              UMAP 自研实现与实验代码（data.py / umap_impl.py 待填）
 scripts/          一次性脚本（取数、划分、出图、检验）
 tests/            pytest 单测（数据契约、划分重放、指标）
 configs/          实验矩阵配置（yaml）
-docs/             协议、数据卡、报告大纲、任务书、代码模板
+docs/             协议、数据卡、报告大纲、任务书、代码模板、候选评估
+paper/            候选论文 PDF 与抽取文本（入库）
 data/raw/         原始数据（不入库）
 data/processed/   建模数据表 + splits.json（不入库）
 data/manifests/   数据契约清单（行数/特征/标签分布，入库）
