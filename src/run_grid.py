@@ -34,7 +34,8 @@ RESULTS = ROOT / "results"
 
 LEARNERS = {
     # C4.5 的代理：CART + 熵准则 + 训练折内 CCP 剪枝（见 src/learners.py、DEVIATIONS.md D1）
-    "dt": lambda seed: PrunedDecisionTree(criterion="entropy", random_state=seed),
+    "dt": lambda seed, n_alphas=20: PrunedDecisionTree(criterion="entropy",
+                                                     n_alphas=n_alphas, random_state=seed),
     # 剪枝代理的敏感性对照（报告 Discussion 用，不是主结果）
     "dt_raw": lambda seed: DecisionTreeClassifier(criterion="entropy", random_state=seed),
     "dt_msl5": lambda seed: DecisionTreeClassifier(criterion="entropy", min_samples_leaf=5,
@@ -44,8 +45,16 @@ LEARNERS = {
 }
 
 
+def make_learner(learner: str, seed: int, n_alphas: int = 20):
+    factory = LEARNERS[learner]
+    if learner == "dt":
+        return factory(seed=seed, n_alphas=n_alphas)
+    return factory(seed=seed)
+
+
 def run(dataset: str, specs: list[str], learner: str = "dt",
-        folds: int = 5, repeats: int = 2, seed: int = 0) -> pd.DataFrame:
+        folds: int = 5, repeats: int = 2, seed: int = 0,
+        n_alphas: int = 20) -> pd.DataFrame:
     X, y = D.load(dataset)
     rows = []
     for spec in specs:
@@ -55,18 +64,32 @@ def run(dataset: str, specs: list[str], learner: str = "dt",
                 y_tr = y[tr]
                 sampler, canon = S.build(spec, y=y_tr, seed=seed * 1000 + rep * 10 + k)
                 steps = ([] if sampler is None else [("sampler", sampler)]) + \
-                        [("clf", LEARNERS[learner](seed=seed + rep))]
+                        [("clf", make_learner(learner, seed + rep, n_alphas))]
                 pipe = ImbPipeline(steps)
                 t0 = time.time()
                 pipe.fit(X.iloc[tr], y_tr)
                 proba = pipe.predict_proba(X.iloc[te])[:, 1]
                 m = M.all_metrics(y[te], proba)
                 m.update(dataset=dataset, sampler=canon, learner=learner,
-                         repeat=rep, fold=k, n_train=int(len(tr)), n_train_resampled=None,
+                         repeat=rep, fold=k, n_train=int(len(tr)),
+                         n_nodes=_node_count(pipe), strategy=_strategy_str(sampler),
                          seconds=round(time.time() - t0, 3))
                 rows.append(m)
     df = pd.DataFrame(rows)
     return df
+
+
+def _node_count(pipe) -> float:
+    """C3 需要比较“树的大小”：SMOTE vs 简单复制。"""
+    clf = pipe.steps[-1][1]
+    tree = getattr(clf, "tree_", None)
+    if tree is None:
+        return float("nan")
+    return float(tree.tree_.node_count)
+
+
+def _strategy_str(sampler) -> str:
+    return "" if sampler is None else str(getattr(sampler, "sampling_strategy", ""))
 
 
 def summarize(df: pd.DataFrame) -> pd.DataFrame:
@@ -85,6 +108,8 @@ def main(argv=None) -> int:
     p.add_argument("--folds", type=int, default=5)
     p.add_argument("--repeats", type=int, default=2)
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--n-alphas", type=int, default=20,
+                   help="dt 的内层 CCP 剪枝候选数；大数据集可降到 8 省时间")
     p.add_argument("--out", default="results/grid.csv")
     a = p.parse_args(argv)
 
@@ -92,7 +117,8 @@ def main(argv=None) -> int:
     frames = []
     for ds in [d for d in a.datasets.split(",") if d.strip()]:
         t0 = time.time()
-        df = run(ds, specs, learner=a.learner, folds=a.folds, repeats=a.repeats, seed=a.seed)
+        df = run(ds, specs, learner=a.learner, folds=a.folds, repeats=a.repeats,
+                 seed=a.seed, n_alphas=a.n_alphas)
         frames.append(df)
         print(f"[{ds}] {len(df)} folds in {time.time() - t0:.1f}s", flush=True)
     raw = pd.concat(frames, ignore_index=True)
