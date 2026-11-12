@@ -46,3 +46,15 @@
 
 写句子需要量级时用 11-10 冒烟实测值（`results/smoke_umap/digits.json`、`coil20.json`；口径为主表同一套 t-SNE/UMAP 默认参数，10 折）：PenDigits t-SNE 0.987/0.951、UMAP-ref 0.988/0.921（k=10/160）；COIL-20 t-SNE 0.958/0.765/0.640、UMAP-ref 0.860/0.806/0.606（k=10/80/160）。**方向参考，不得当结论。**
 
+
+## 6 键名清单（C 只允许用这四种形式）
+
+| 形式 | 例 | 语义 |
+|---|---|---|
+| `{{knn.<dataset>.<method>.k<k>.mean}}` | `{{knn.coil20.umap_ours.k80.mean}}` | 10 折均值，来源 `grid_knn_summary.csv` |
+| `{{knn.<dataset>.<method>.k<k>.std}}` | `{{knn.coil20.umap_ours.k80.std}}` | 折间 std（ddof=1） |
+| `{{runtime.<dataset>.<method>.fit_s}}` | `{{runtime.coil20.tsne.fit_s}}` | 同机 fit 秒数中位数 |
+| `{{verdict.<dataset>.k<k>}}` | `{{verdict.coil20.k160}}` | 复现 / 部分复现 / 未复现 / 不可比 |
+
+- `<dataset>` ∈ `pendigits` `coil20`；`<method>` ∈ `pca` `tsne` `umap_ref` `umap_ours`；`<k>` ∈ `10` `20` `40` `80` `160`。
+- 只允许这四种；需要别的口径（如 per-fold）走附录表并注明来源列，不进正文占位符。
