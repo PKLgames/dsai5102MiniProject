@@ -31,7 +31,7 @@ python scripts/run_runtime.py --datasets pendigits coil20 --repeats 3
 - [ ] **重跑逐折差 = 0**（或 `max|diff| ≤ 1e-9`；超出必须在 DEVIATIONS 开条目）
 - [ ] `runtime.csv` 4 行、含 `median/min/max/timeout` 列；无 30 min 超时（有则记录）
 - [ ] `paper_vs_ours.csv` 的 `paper_acc` 与 `docs/goal/PAPER_DATA.md` 逐格一致（抽查 5 格）
-- [ ] `README_numbers.md` 无 `{{`、每个数字带 csv 行号、判定词齐全；被 C 拿走后能独立写出 §4
+- [ ] `README_numbers.md` 里的 `{{...}}` 键全部能在 `results/numbers.json` 找到（机读替换表）、每个数字带 csv 行号、判定词齐全；被 C 拿走后能独立写出 §4
 - [ ] `results/embeddings/coil20_{umapours,tsne}.npz` 键为 `E`(float32)/`y`(int64)，形状 `(1440,2)`/`(1440,)`
 - [ ] `git tag s3` + `HANDOFF_LOG.md` 一行
 

@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import csv
+import json
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -199,6 +200,24 @@ def main() -> int:
     A("| `{{verdict.<dataset>.k<k>}}` | `{{verdict.coil20.k160}}` | 该数据集判定词（见 §0/§4） |")
     A("")
     A("<dataset> ∈ pendigits / coil20；<method> ∈ pca / tsne / umap_ref / umap_ours；<k> ∈ 10/20/40/80/160。")
+
+    # 机读替换表：{{key}} -> 值（C 用 fill 脚本做机械替换，禁止手抄）
+    subs: dict[str, object] = {}
+    for r in summary:
+        ds, method, k = r["dataset"], r["method"], int(r["k"])
+        subs[f"knn.{ds}.{method}.k{k}.mean"] = f"{float(r['mean']):.4f}"
+        subs[f"knn.{ds}.{method}.k{k}.std"] = f"{float(r['std']):.4f}"
+    for (ds, method), r in sorted(rt.items()):
+        subs[f"runtime.{ds}.{method}.fit_s"] = f"{float(r['median_s']):.2f}"
+    for ds in datasets:
+        for k in ks:
+            g = gap(ds, k)
+            ok_dir = g >= -SMALL_K_SLACK if k in SMALL_K else g > 0
+            delta = float(paper[(ds, "umap_ours", k)]["delta"]) if (ds, "umap_ours", k) in paper else 0.0
+            ok_amp = abs(delta) <= verdicts[ds]["tol"]
+            subs[f"verdict.{ds}.k{k}"] = "复现" if ok_dir and ok_amp else ("部分复现" if ok_dir else "未复现")
+    (RESULTS / "numbers.json").write_text(json.dumps(subs, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
+                                          encoding="utf-8")
 
     out = RESULTS / "README_numbers.md"
     out.write_text("\n".join(L) + "\n", encoding="utf-8")

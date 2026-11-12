@@ -70,3 +70,8 @@
 - 分支 `report` / `slides`，只提交自己目录，push 后 A 合入 `main` 并打 tag（`s5`、`s6`）。
 - 提交前 ≥24 h 交 A 复核数字（A 只核数字与图，不改文字）。
 - 用了 AI 润色/改写：在贡献声明里披露范围（哪些段落、谁审校）。
+
+## 替换数字（P14 用）
+
+- 机读替换表：`results/numbers.json`（键 → 字符串值，98 个键）。报告里写 `{{knn.coil20.umap_ours.k80.mean}}`，提交前用脚本机械替换成 `numbers.json` 的值，**不要手抄**。
+- 替换后自检：`grep -n '{{' report/*.md report/*.tex` 必须为空；随机抽 3 个数字回查 `/home/pklgames/coding/dsai5102MiniProject/results/grid_knn.csv` 或 `runtime.csv`。

@@ -88,6 +88,22 @@ def read_done(grid: Path) -> set[tuple[str, int, str, int]]:
         return {(r["dataset"], int(r["fold"]), r["method"], int(r["k"])) for r in csv.DictReader(f)}
 
 
+def canonicalize(grid: Path) -> None:
+    """按 (dataset, method, k, fold) 排序并去重，保证两次运行字节一致（S3 验收项）。"""
+    if not grid.exists():
+        return
+    with grid.open(newline="") as f:
+        rows = list(csv.DictReader(f))
+    best: dict[tuple, dict] = {}
+    for r in rows:
+        best[(r["dataset"], r["method"], int(r["k"]), int(r["fold"]))] = r
+    ordered = [best[k] for k in sorted(best)]
+    with grid.open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=GRID_FIELDS)
+        w.writeheader()
+        w.writerows(ordered)
+
+
 def append_rows(grid: Path, rows: list[dict]) -> None:
     new = not grid.exists()
     with grid.open("a", newline="") as f:
@@ -178,6 +194,7 @@ def main() -> int:
             append_rows(grid, rows)
             print(f"[grid ] {name}/{method} 追加 {len(rows)} 行")
 
+    canonicalize(grid)
     acc = summarise(grid)
     write_paper_vs_ours(acc)
     print(f"[done] rows={sum(len(v) for v in acc.values())} -> results/grid_knn.csv, "
