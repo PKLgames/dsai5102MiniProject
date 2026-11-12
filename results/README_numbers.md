@@ -1,60 +1,155 @@
-# 报告数字表（Number Lock）· 模板 v0
+# 结果数字（唯一来源）
 
-> 发布：**S1**（Day1 10:00，模板）/ **S3**（Day2 22:00，终值）· 维护人：A · 消费者：C（报告/slides 唯一取数来源）
+> 本文件由 `scripts/fill_numbers.py` 从 `results/grid_knn.csv`、`grid_knn_summary.csv`、
+> `runtime.csv`、`paper_vs_ours.csv` 机械生成（Python 3.14 / sklearn 1.9.1 / umap-learn 0.6.0，
+> seed=42，10 折分层 CV，嵌入为 transductive 全量拟合）。C 写报告只允许引用本文件的数字。
 
-> **状态：模板**。表里的 `{{...}}` 是占位符，等 P5 主表与 P6 终值填入（S3 发布）；**当前不是结果，禁止引用**。
+## 0 结论速览
 
-
-## 规则（三条，别破）
-
-1. 报告/slides 里出现的**每一个**数值都必须能在这里找到对应键，并能再指到 `results/grid_knn.csv` 的行（`dataset, method, k, fold`）。
-2. 占位符键名固定，C 的正文直接写 `{{...}}`；P14 时用脚本整表替换，**不改句子**。
-3. 同一个数字只有一个来源：均值/标准差来自 `grid_knn.csv` 的逐折聚合，判定词来自 `paper_vs_ours.csv`。不许手抄。
-
-## 1 主结果：kNN 精度（10 折分层，均值 ± 折间 std）
-
-| 数据集 | 方法 | k=10 | k=20 | k=40 | k=80 | k=160 |
-|---|---|---|---|---|---|---|
-| PenDigits | PCA | {{knn.pendigits.pca.k10.mean}} ± {{knn.pendigits.pca.k10.std}} | {{knn.pendigits.pca.k20.mean}} ± {{knn.pendigits.pca.k20.std}} | {{knn.pendigits.pca.k40.mean}} ± {{knn.pendigits.pca.k40.std}} | {{knn.pendigits.pca.k80.mean}} ± {{knn.pendigits.pca.k80.std}} | {{knn.pendigits.pca.k160.mean}} ± {{knn.pendigits.pca.k160.std}} |
-| PenDigits | t-SNE | {{knn.pendigits.tsne.k10.mean}} ± {{knn.pendigits.tsne.k10.std}} | {{knn.pendigits.tsne.k20.mean}} ± {{knn.pendigits.tsne.k20.std}} | {{knn.pendigits.tsne.k40.mean}} ± {{knn.pendigits.tsne.k40.std}} | {{knn.pendigits.tsne.k80.mean}} ± {{knn.pendigits.tsne.k80.std}} | {{knn.pendigits.tsne.k160.mean}} ± {{knn.pendigits.tsne.k160.std}} |
-| PenDigits | UMAP-ref | {{knn.pendigits.umap_ref.k10.mean}} ± {{knn.pendigits.umap_ref.k10.std}} | {{knn.pendigits.umap_ref.k20.mean}} ± {{knn.pendigits.umap_ref.k20.std}} | {{knn.pendigits.umap_ref.k40.mean}} ± {{knn.pendigits.umap_ref.k40.std}} | {{knn.pendigits.umap_ref.k80.mean}} ± {{knn.pendigits.umap_ref.k80.std}} | {{knn.pendigits.umap_ref.k160.mean}} ± {{knn.pendigits.umap_ref.k160.std}} |
-| PenDigits | UMAP-ours | {{knn.pendigits.umap_ours.k10.mean}} ± {{knn.pendigits.umap_ours.k10.std}} | {{knn.pendigits.umap_ours.k20.mean}} ± {{knn.pendigits.umap_ours.k20.std}} | {{knn.pendigits.umap_ours.k40.mean}} ± {{knn.pendigits.umap_ours.k40.std}} | {{knn.pendigits.umap_ours.k80.mean}} ± {{knn.pendigits.umap_ours.k80.std}} | {{knn.pendigits.umap_ours.k160.mean}} ± {{knn.pendigits.umap_ours.k160.std}} |
-| COIL-20 | PCA | {{knn.coil20.pca.k10.mean}} ± {{knn.coil20.pca.k10.std}} | {{knn.coil20.pca.k20.mean}} ± {{knn.coil20.pca.k20.std}} | {{knn.coil20.pca.k40.mean}} ± {{knn.coil20.pca.k40.std}} | {{knn.coil20.pca.k80.mean}} ± {{knn.coil20.pca.k80.std}} | {{knn.coil20.pca.k160.mean}} ± {{knn.coil20.pca.k160.std}} |
-| COIL-20 | t-SNE | {{knn.coil20.tsne.k10.mean}} ± {{knn.coil20.tsne.k10.std}} | {{knn.coil20.tsne.k20.mean}} ± {{knn.coil20.tsne.k20.std}} | {{knn.coil20.tsne.k40.mean}} ± {{knn.coil20.tsne.k40.std}} | {{knn.coil20.tsne.k80.mean}} ± {{knn.coil20.tsne.k80.std}} | {{knn.coil20.tsne.k160.mean}} ± {{knn.coil20.tsne.k160.std}} |
-| COIL-20 | UMAP-ref | {{knn.coil20.umap_ref.k10.mean}} ± {{knn.coil20.umap_ref.k10.std}} | {{knn.coil20.umap_ref.k20.mean}} ± {{knn.coil20.umap_ref.k20.std}} | {{knn.coil20.umap_ref.k40.mean}} ± {{knn.coil20.umap_ref.k40.std}} | {{knn.coil20.umap_ref.k80.mean}} ± {{knn.coil20.umap_ref.k80.std}} | {{knn.coil20.umap_ref.k160.mean}} ± {{knn.coil20.umap_ref.k160.std}} |
-| COIL-20 | UMAP-ours | {{knn.coil20.umap_ours.k10.mean}} ± {{knn.coil20.umap_ours.k10.std}} | {{knn.coil20.umap_ours.k20.mean}} ± {{knn.coil20.umap_ours.k20.std}} | {{knn.coil20.umap_ours.k40.mean}} ± {{knn.coil20.umap_ours.k40.std}} | {{knn.coil20.umap_ours.k80.mean}} ± {{knn.coil20.umap_ours.k80.std}} | {{knn.coil20.umap_ours.k160.mean}} ± {{knn.coil20.umap_ours.k160.std}} |
-
-## 2 运行时间（同机 fit 秒数，3 次取中位数；硬件见报告附录）
-
-| 数据集 | PCA | t-SNE | UMAP-ref | UMAP-ours |
-|---|---|---|---|---|
-| PenDigits | {{runtime.pendigits.pca.fit_s}} | {{runtime.pendigits.tsne.fit_s}} | {{runtime.pendigits.umap_ref.fit_s}} | {{runtime.pendigits.umap_ours.fit_s}} |
-| COIL-20 | {{runtime.coil20.pca.fit_s}} | {{runtime.coil20.tsne.fit_s}} | {{runtime.coil20.umap_ref.fit_s}} | {{runtime.coil20.umap_ours.fit_s}} |
-
-## 3 判定词（复现 / 部分复现 / 未复现 / 不可比）
-
-| 数据集 | k=10 | k=20 | k=40 | k=80 | k=160 |
+| 数据集 | 判定（SPEC §5） | 方向 | 排序一致率 | 幅度 | 关键证据 |
 |---|---|---|---|---|---|
-| PenDigits | {{verdict.pendigits.k10}} | {{verdict.pendigits.k20}} | {{verdict.pendigits.k40}} | {{verdict.pendigits.k80}} | {{verdict.pendigits.k160}} |
-| COIL-20 | {{verdict.coil20.k10}} | {{verdict.coil20.k20}} | {{verdict.coil20.k40}} | {{verdict.coil20.k80}} | {{verdict.coil20.k160}} |
+| coil20 | **未复现** | 不过 | 9/15 = 60%（≥70% 为过） | 不过（tol 0.10） | `paper_vs_ours.csv` coil20 行 |
+| pendigits | **复现** | 过 | 11/15 = 73%（≥70% 为过） | 过（tol 0.03） | `paper_vs_ours.csv` pendigits 行 |
 
-## 4 原文数字从哪来
+## 1 kNN 精度（表 2 底稿；10 折 mean ± std, ddof=1）
 
-原文侧的数字**不在这里**，只在 `docs/goal/PAPER_DATA.md`（Table 1/2 全量转录 + 页码锚点）。这里只放**我们的**数字与判定，避免两边各存一份原文数字后对不上。
+| dataset | method | k | mean | std | 键 | grid_knn.csv 行 |
+|---|---|---|---|---|---|---|
+| coil20 | pca | 10 | 0.7188 | 0.0314 | `{{knn.coil20.pca.k10.mean}}` | 202, 207, …（步长 5，共 10 行） |
+| coil20 | pca | 20 | 0.6875 | 0.0229 | `{{knn.coil20.pca.k20.mean}}` | 203, 208, …（步长 5，共 10 行） |
+| coil20 | pca | 40 | 0.6458 | 0.0212 | `{{knn.coil20.pca.k40.mean}}` | 204, 209, …（步长 5，共 10 行） |
+| coil20 | pca | 80 | 0.5493 | 0.0203 | `{{knn.coil20.pca.k80.mean}}` | 205, 210, …（步长 5，共 10 行） |
+| coil20 | pca | 160 | 0.3812 | 0.0381 | `{{knn.coil20.pca.k160.mean}}` | 206, 211, …（步长 5，共 10 行） |
+| coil20 | tsne | 10 | 0.9611 | 0.0140 | `{{knn.coil20.tsne.k10.mean}}` | 252, 257, …（步长 5，共 10 行） |
+| coil20 | tsne | 20 | 0.9069 | 0.0243 | `{{knn.coil20.tsne.k20.mean}}` | 253, 258, …（步长 5，共 10 行） |
+| coil20 | tsne | 40 | 0.8708 | 0.0390 | `{{knn.coil20.tsne.k40.mean}}` | 254, 259, …（步长 5，共 10 行） |
+| coil20 | tsne | 80 | 0.7743 | 0.0454 | `{{knn.coil20.tsne.k80.mean}}` | 255, 260, …（步长 5，共 10 行） |
+| coil20 | tsne | 160 | 0.6062 | 0.0456 | `{{knn.coil20.tsne.k160.mean}}` | 256, 261, …（步长 5，共 10 行） |
+| coil20 | umap_ref | 10 | 0.8556 | 0.0287 | `{{knn.coil20.umap_ref.k10.mean}}` | 302, 307, …（步长 5，共 10 行） |
+| coil20 | umap_ref | 20 | 0.8507 | 0.0272 | `{{knn.coil20.umap_ref.k20.mean}}` | 303, 308, …（步长 5，共 10 行） |
+| coil20 | umap_ref | 40 | 0.8424 | 0.0298 | `{{knn.coil20.umap_ref.k40.mean}}` | 304, 309, …（步长 5，共 10 行） |
+| coil20 | umap_ref | 80 | 0.8063 | 0.0375 | `{{knn.coil20.umap_ref.k80.mean}}` | 305, 310, …（步长 5，共 10 行） |
+| coil20 | umap_ref | 160 | 0.5312 | 0.0553 | `{{knn.coil20.umap_ref.k160.mean}}` | 306, 311, …（步长 5，共 10 行） |
+| coil20 | umap_ours | 10 | 0.8535 | 0.0318 | `{{knn.coil20.umap_ours.k10.mean}}` | 352, 357, …（步长 5，共 10 行） |
+| coil20 | umap_ours | 20 | 0.8465 | 0.0303 | `{{knn.coil20.umap_ours.k20.mean}}` | 353, 358, …（步长 5，共 10 行） |
+| coil20 | umap_ours | 40 | 0.8347 | 0.0301 | `{{knn.coil20.umap_ours.k40.mean}}` | 354, 359, …（步长 5，共 10 行） |
+| coil20 | umap_ours | 80 | 0.8083 | 0.0436 | `{{knn.coil20.umap_ours.k80.mean}}` | 355, 360, …（步长 5，共 10 行） |
+| coil20 | umap_ours | 160 | 0.5486 | 0.0661 | `{{knn.coil20.umap_ours.k160.mean}}` | 356, 361, …（步长 5，共 10 行） |
+| pendigits | pca | 10 | 0.6444 | 0.0316 | `{{knn.pendigits.pca.k10.mean}}` | 52, 57, …（步长 5，共 10 行） |
+| pendigits | pca | 20 | 0.6516 | 0.0350 | `{{knn.pendigits.pca.k20.mean}}` | 53, 58, …（步长 5，共 10 行） |
+| pendigits | pca | 40 | 0.6550 | 0.0374 | `{{knn.pendigits.pca.k40.mean}}` | 54, 59, …（步长 5，共 10 行） |
+| pendigits | pca | 80 | 0.6572 | 0.0382 | `{{knn.pendigits.pca.k80.mean}}` | 55, 60, …（步长 5，共 10 行） |
+| pendigits | pca | 160 | 0.6383 | 0.0397 | `{{knn.pendigits.pca.k160.mean}}` | 56, 61, …（步长 5，共 10 行） |
+| pendigits | tsne | 10 | 0.9872 | 0.0102 | `{{knn.pendigits.tsne.k10.mean}}` | 102, 107, …（步长 5，共 10 行） |
+| pendigits | tsne | 20 | 0.9766 | 0.0104 | `{{knn.pendigits.tsne.k20.mean}}` | 103, 108, …（步长 5，共 10 行） |
+| pendigits | tsne | 40 | 0.9655 | 0.0141 | `{{knn.pendigits.tsne.k40.mean}}` | 104, 109, …（步长 5，共 10 行） |
+| pendigits | tsne | 80 | 0.9505 | 0.0162 | `{{knn.pendigits.tsne.k80.mean}}` | 105, 110, …（步长 5，共 10 行） |
+| pendigits | tsne | 160 | 0.9510 | 0.0152 | `{{knn.pendigits.tsne.k160.mean}}` | 106, 111, …（步长 5，共 10 行） |
+| pendigits | umap_ref | 10 | 0.9878 | 0.0097 | `{{knn.pendigits.umap_ref.k10.mean}}` | 152, 157, …（步长 5，共 10 行） |
+| pendigits | umap_ref | 20 | 0.9772 | 0.0113 | `{{knn.pendigits.umap_ref.k20.mean}}` | 153, 158, …（步长 5，共 10 行） |
+| pendigits | umap_ref | 40 | 0.9694 | 0.0132 | `{{knn.pendigits.umap_ref.k40.mean}}` | 154, 159, …（步长 5，共 10 行） |
+| pendigits | umap_ref | 80 | 0.9510 | 0.0150 | `{{knn.pendigits.umap_ref.k80.mean}}` | 155, 160, …（步长 5，共 10 行） |
+| pendigits | umap_ref | 160 | 0.9210 | 0.0205 | `{{knn.pendigits.umap_ref.k160.mean}}` | 156, 161, …（步长 5，共 10 行） |
+| pendigits | umap_ours | 10 | 0.9878 | 0.0090 | `{{knn.pendigits.umap_ours.k10.mean}}` | 2, 7, …（步长 5，共 10 行） |
+| pendigits | umap_ours | 20 | 0.9839 | 0.0142 | `{{knn.pendigits.umap_ours.k20.mean}}` | 3, 8, …（步长 5，共 10 行） |
+| pendigits | umap_ours | 40 | 0.9710 | 0.0126 | `{{knn.pendigits.umap_ours.k40.mean}}` | 4, 9, …（步长 5，共 10 行） |
+| pendigits | umap_ours | 80 | 0.9560 | 0.0127 | `{{knn.pendigits.umap_ours.k80.mean}}` | 5, 10, …（步长 5，共 10 行） |
+| pendigits | umap_ours | 160 | 0.9555 | 0.0126 | `{{knn.pendigits.umap_ours.k160.mean}}` | 6, 11, …（步长 5，共 10 行） |
 
-## 5 临时参考值（不是结果）
+## 2 运行时间（表 4 底稿；只计 fit，3 次取中位数，本机 16 vCPU / joblib 串行）
 
-写句子需要量级时用 11-10 冒烟实测值（`results/smoke_umap/digits.json`、`coil20.json`；口径为主表同一套 t-SNE/UMAP 默认参数，10 折）：PenDigits t-SNE 0.987/0.951、UMAP-ref 0.988/0.921（k=10/160）；COIL-20 t-SNE 0.958/0.765/0.640、UMAP-ref 0.860/0.806/0.606（k=10/80/160）。**方向参考，不得当结论。**
+| dataset | method | median_s | min_s | max_s | 键 |
+|---|---|---|---|---|---|
+| coil20 | pca | 0.62 | 0.59 | 0.64 | `{{runtime.coil20.pca.fit_s}}` |
+| coil20 | tsne | 7.74 | 7.27 | 7.91 | `{{runtime.coil20.tsne.fit_s}}` |
+| coil20 | umap_ref | 7.69 | 7.55 | 7.78 | `{{runtime.coil20.umap_ref.fit_s}}` |
+| coil20 | umap_ours | 4.68 | 3.72 | 5.23 | `{{runtime.coil20.umap_ours.fit_s}}` |
+| pendigits | pca | 0.06 | 0.05 | 0.07 | `{{runtime.pendigits.pca.fit_s}}` |
+| pendigits | tsne | 9.36 | 9.33 | 9.39 | `{{runtime.pendigits.tsne.fit_s}}` |
+| pendigits | umap_ref | 2.69 | 1.62 | 2.82 | `{{runtime.pendigits.umap_ref.fit_s}}` |
+| pendigits | umap_ours | 3.40 | 3.22 | 3.79 | `{{runtime.pendigits.umap_ours.fit_s}}` |
 
+口径提醒：t-SNE 用 sklearn 单线程而原文用 MulticoreTSNE（D3）→ **加速比偏乐观，报告须标注方向**。
 
-## 6 键名清单（C 只允许用这四种形式）
+## 3 原文 vs 我们（表 3 / Fig.3 底稿）
+
+| dataset | method | k | paper | ours | Δ | verifiable |
+|---|---|---|---|---|---|---|
+| coil20 | tsne | 10 | 0.934 ± 0.115 | 0.9611 ± 0.0140 | +0.0271 | true |
+| coil20 | tsne | 20 | 0.901 ± 0.133 | 0.9069 ± 0.0243 | +0.0059 | true |
+| coil20 | tsne | 40 | 0.857 ± 0.125 | 0.8708 ± 0.0390 | +0.0138 | true |
+| coil20 | tsne | 80 | 0.789 ± 0.118 | 0.7743 ± 0.0454 | -0.0147 | false |
+| coil20 | tsne | 160 | 0.609 ± 0.067 | 0.6062 ± 0.0456 | -0.0028 | false |
+| coil20 | umap_ref | 10 | 0.921 ± 0.075 | 0.8556 ± 0.0287 | -0.0654 | true |
+| coil20 | umap_ref | 20 | 0.907 ± 0.064 | 0.8507 ± 0.0272 | -0.0563 | true |
+| coil20 | umap_ref | 40 | 0.904 ± 0.056 | 0.8424 ± 0.0298 | -0.0616 | true |
+| coil20 | umap_ref | 80 | 0.899 ± 0.058 | 0.8063 ± 0.0375 | -0.0928 | false |
+| coil20 | umap_ref | 160 | 0.803 ± 0.138 | 0.5312 ± 0.0553 | -0.2718 | false |
+| coil20 | umap_ours | 10 | 0.921 ± 0.075 | 0.8535 ± 0.0318 | -0.0675 | true |
+| coil20 | umap_ours | 20 | 0.907 ± 0.064 | 0.8465 ± 0.0303 | -0.0605 | true |
+| coil20 | umap_ours | 40 | 0.904 ± 0.056 | 0.8347 ± 0.0301 | -0.0693 | true |
+| coil20 | umap_ours | 80 | 0.899 ± 0.058 | 0.8083 ± 0.0436 | -0.0907 | false |
+| coil20 | umap_ours | 160 | 0.803 ± 0.138 | 0.5486 ± 0.0661 | -0.2544 | false |
+| coil20 | pca | 10 | 0.667 ± 0.179 | 0.7188 ± 0.0314 | +0.0517 | true |
+| coil20 | pca | 20 | 0.663 ± 0.196 | 0.6875 ± 0.0229 | +0.0245 | true |
+| coil20 | pca | 40 | 0.620 ± 0.230 | 0.6458 ± 0.0212 | +0.0258 | true |
+| coil20 | pca | 80 | 0.531 ± 0.294 | 0.5493 ± 0.0203 | +0.0183 | false |
+| coil20 | pca | 160 | 0.375 ± 0.111 | 0.3812 ± 0.0381 | +0.0062 | false |
+| pendigits | tsne | 10 | 0.977 ± 0.033 | 0.9872 ± 0.0102 | +0.0102 | true |
+| pendigits | tsne | 20 | 0.973 ± 0.033 | 0.9766 ± 0.0104 | +0.0036 | true |
+| pendigits | tsne | 40 | 0.956 ± 0.064 | 0.9655 ± 0.0141 | +0.0095 | true |
+| pendigits | tsne | 80 | 0.948 ± 0.060 | 0.9505 ± 0.0162 | +0.0025 | true |
+| pendigits | tsne | 160 | 0.949 ± 0.065 | 0.9510 ± 0.0152 | +0.0020 | true |
+| pendigits | umap_ref | 10 | 0.973 ± 0.044 | 0.9878 ± 0.0097 | +0.0148 | true |
+| pendigits | umap_ref | 20 | 0.976 ± 0.035 | 0.9772 ± 0.0113 | +0.0012 | true |
+| pendigits | umap_ref | 40 | 0.954 ± 0.060 | 0.9694 ± 0.0132 | +0.0154 | true |
+| pendigits | umap_ref | 80 | 0.951 ± 0.072 | 0.9510 ± 0.0150 | +0.0000 | true |
+| pendigits | umap_ref | 160 | 0.951 ± 0.085 | 0.9210 ± 0.0205 | -0.0300 | true |
+| pendigits | umap_ours | 10 | 0.973 ± 0.044 | 0.9878 ± 0.0090 | +0.0148 | true |
+| pendigits | umap_ours | 20 | 0.976 ± 0.035 | 0.9839 ± 0.0142 | +0.0079 | true |
+| pendigits | umap_ours | 40 | 0.954 ± 0.060 | 0.9710 ± 0.0126 | +0.0170 | true |
+| pendigits | umap_ours | 80 | 0.951 ± 0.072 | 0.9560 ± 0.0127 | +0.0050 | true |
+| pendigits | umap_ours | 160 | 0.951 ± 0.085 | 0.9555 ± 0.0126 | +0.0045 | true |
+| pendigits | pca | 10 | 0.622 ± 0.092 | 0.6444 ± 0.0316 | +0.0224 | true |
+| pendigits | pca | 20 | 0.633 ± 0.082 | 0.6516 ± 0.0350 | +0.0186 | true |
+| pendigits | pca | 40 | 0.636 ± 0.078 | 0.6550 ± 0.0374 | +0.0190 | true |
+| pendigits | pca | 80 | 0.643 ± 0.085 | 0.6572 ± 0.0382 | +0.0142 | true |
+| pendigits | pca | 160 | 0.629 ± 0.107 | 0.6383 ± 0.0397 | +0.0093 | true |
+
+## 4 判定明细
+
+### coil20 → **未复现**
+
+- 方向：小 k（10, 20, 40）要求 `UMAP ≥ t-SNE − 0.03`；大 k（80, 160）要求 `UMAP > t-SNE`。我们的 UMAP−t-SNE：k=10: -0.1076；k=20: -0.0604；k=40: -0.0361；k=80: +0.0340；k=160: -0.0576
+- 排序：与原文逐 k 比对 pca/tsne/UMAP 三名次，一致 9/15 = 60%（阈值 70%）。
+- 幅度：|Δ| ≤ 0.10 → k=10: -0.0675；k=20: -0.0605；k=40: -0.0693；k=80: -0.0907；k=160: -0.2544
+- 逐 k 判定：k=10: 未复现（`{{verdict.coil20.k10}}`）；k=20: 未复现（`{{verdict.coil20.k20}}`）；k=40: 未复现（`{{verdict.coil20.k40}}`）；k=80: 复现（`{{verdict.coil20.k80}}`）；k=160: 未复现（`{{verdict.coil20.k160}}`）
+
+### pendigits → **复现**
+
+- 方向：小 k（10, 20, 40）要求 `UMAP ≥ t-SNE − 0.03`；大 k（80, 160）要求 `UMAP > t-SNE`。我们的 UMAP−t-SNE：k=10: +0.0006；k=20: +0.0072；k=40: +0.0056；k=80: +0.0056；k=160: +0.0045
+- 排序：与原文逐 k 比对 pca/tsne/UMAP 三名次，一致 11/15 = 73%（阈值 70%）。
+- 幅度：|Δ| ≤ 0.03 → k=10: +0.0148；k=20: +0.0079；k=40: +0.0170；k=80: +0.0050；k=160: +0.0045
+- 逐 k 判定：k=10: 复现（`{{verdict.pendigits.k10}}`）；k=20: 复现（`{{verdict.pendigits.k20}}`）；k=40: 复现（`{{verdict.pendigits.k40}}`）；k=80: 复现（`{{verdict.pendigits.k80}}`）；k=160: 复现（`{{verdict.pendigits.k160}}`）
+
+## 5 写报告时要主动讲的两点
+
+1. **COIL-20 的差距是全局的**（D9）：不只大 k，小 k 也比原文低约 0.06–0.07；
+   原文称对各算法调过参但未披露（D2），我们固定默认超参。敏感性探针：COIL-20 把 `n_neighbors`
+   从 15 提到 100，我们的 kNN@10 从 0.8569 升到 0.8799（仍低于原文 0.921）。
+2. **t-SNE 基线偏强**：我们 sklearn 单线程 t-SNE 在 COIL-20 上 0.961，高于原文 0.934；
+   这会让「UMAP ≥ t-SNE」的方向更容易失败——报告 §5 要写清这一点，而不是只说 UMAP 差。
+3. **COIL-20 k=80 是边界点**（D9）：Δ=-0.0907 落在 tol 0.10 内、方向也对，但该点在看主表前
+   已按冒烟结果预登记为「未复现」；报告写「预登记未复现，实测落在 tol 边界内侧」，
+   k=160（Δ=-0.2544）才是真正的未复现。数据集级判定以 §0 为准（方向在小 k 上就不过）。
+
+## 6 键名清单（C 只允许这四种形式）
 
 | 形式 | 例 | 语义 |
 |---|---|---|
-| `{{knn.<dataset>.<method>.k<k>.mean}}` | `{{knn.coil20.umap_ours.k80.mean}}` | 10 折均值，来源 `grid_knn_summary.csv` |
+| `{{knn.<dataset>.<method>.k<k>.mean}}` | `{{knn.coil20.umap_ours.k80.mean}}` | 10 折均值 |
 | `{{knn.<dataset>.<method>.k<k>.std}}` | `{{knn.coil20.umap_ours.k80.std}}` | 折间 std（ddof=1） |
-| `{{runtime.<dataset>.<method>.fit_s}}` | `{{runtime.coil20.tsne.fit_s}}` | 同机 fit 秒数中位数 |
-| `{{verdict.<dataset>.k<k>}}` | `{{verdict.coil20.k160}}` | 复现 / 部分复现 / 未复现 / 不可比 |
+| `{{runtime.<dataset>.<method>.fit_s}}` | `{{runtime.coil20.tsne.fit_s}}` | fit 秒数中位数 |
+| `{{verdict.<dataset>.k<k>}}` | `{{verdict.coil20.k160}}` | 该数据集判定词（见 §0/§4） |
 
-- `<dataset>` ∈ `pendigits` `coil20`；`<method>` ∈ `pca` `tsne` `umap_ref` `umap_ours`；`<k>` ∈ `10` `20` `40` `80` `160`。
-- 只允许这四种；需要别的口径（如 per-fold）走附录表并注明来源列，不进正文占位符。
+<dataset> ∈ pendigits / coil20；<method> ∈ pca / tsne / umap_ref / umap_ours；<k> ∈ 10/20/40/80/160。

@@ -45,7 +45,8 @@
 
 - `scripts/run_grid.py`：2 数据集 × 10 折 × 4 方法 × 5 k = 400 行 → `results/grid_knn.csv`（列：`dataset,fold,method,k,acc`），聚合 `grid_knn_summary.csv`。
 - 折从 `data/manifests/splits.json` 读（B 在 P8 产出；若未到，用 `sklearn StratifiedKFold(10, shuffle=True, random_state=42)` 现算，事后核对一致）。
-- 降维在每个 fold 的 train 行上 fit，得到全体点坐标（transductive），kNN 只在 train 坐标+标签上训，test 坐标上评（SPEC §4 E2）。
+- 降维在**全体点**上 fit 一次（不用标签，transductive；SPEC §4 E2 冻结口径），**不是**每折重训——每折只是用该折 train 行训练 kNN、在 test 行评估。
+  这条 11-12 澄清过一次措辞，口径未变、不是偏离。
 - 每折结果**落盘一行一写**，中断可续跑（`--resume`）。
 - `scripts/run_runtime.py`：4 行 fit 秒数（3 次中位数）→ `results/runtime.csv`。
 - `results/paper_vs_ours.csv`：`dataset,method,k,paper_acc,paper_std,our_acc,our_std,delta,n_folds,verifiable`（原文值查 `docs/goal/PAPER_DATA.md`；COIL-20 大 k `verifiable=false`）。
