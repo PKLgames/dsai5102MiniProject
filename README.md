@@ -57,3 +57,13 @@ tests/                     A 的契约测试
 - **编号只有两套**：节点 `P`、交付物 `S`；偏离用 `D`（日志编号）。
 - **数字纪律**：报告/slides 的数字只能来自 `results/README_numbers.md`；`transductive` 口径必须写明（SPEC §4 E2）；判据与 tol 冻结后不得事后放宽。
 - **不互相等**：A 从 `data/raw` 自建数组，不等 B 的 npz；C 用占位符写作，不等 A 的数字。详见 `PLAN.md` §3–§4。
+
+## 报告转换（C 的 docx → md → PDF）
+
+```bash
+.venv/bin/python scripts/docx_to_md.py report/DSAI5102_07_Report_draft.docx   # docx → md（表格/字号/高亮/图片全保留）
+.venv/bin/python scripts/build_report_pdf.py report/DSAI5102_07_Report_draft.md  # md → PDF（report/report.css）
+```
+
+- 彩色占位符：**蓝=A 数据**、**黄=B 交付物**、**紫=成稿后填写**；清单见 `report/PLACEHOLDERS.md`。
+- C 的提交记录与报告文件索引：`docs/log/C_SUBMISSIONS.md`。

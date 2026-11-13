@@ -1,0 +1,74 @@
+/* 与 report/DSAI5102_07_Report_draft.docx 对齐的排版样式（md → PDF 用）
+   由 scripts/docx_to_md.py 生成 md 保证结构，本文件负责字号/边距/表格/高亮还原。 */
+
+@page {
+  size: A4;
+  margin: 2.0cm 1.9cm 2.0cm 1.9cm;
+}
+
+body {
+  font-family: "Segoe UI", "Helvetica Neue", "DejaVu Sans", Arial, sans-serif;
+  font-size: 12pt;
+  line-height: 1.15;
+  color: #000;
+  text-align: justify;
+  hyphens: auto;
+}
+
+p { margin: 0 0 8pt 0; orphans: 2; widows: 2; }
+
+/* 标题：docx 里位于正文之前的居中两行，字号同为 12pt，靠字重区分 */
+p.title    { text-align: center; font-weight: 600; margin: 0 0 4pt 0; }
+p.subtitle { text-align: center; font-weight: 700; margin: 0 0 14pt 0; }
+
+/* 章节标题：docx 用 12pt 加粗，不放大，避免与原文文档不一致 */
+h2 { font-size: 12pt; font-weight: 700; margin: 14pt 0 6pt 0; page-break-after: avoid; }
+h3 { font-size: 12pt; font-weight: 700; margin: 12pt 0 6pt 0; page-break-after: avoid; }
+
+/* 图表标题：docx 为 9pt 斜体 */
+p.caption {
+  font-size: 9pt;
+  font-style: italic;
+  margin: 4pt 0 10pt 0;
+  text-align: left;
+  page-break-after: avoid;
+}
+
+/* 表格：与 docx 的 Table Grid 一致（0.5pt 全边框 + 表头 DBE5F1 浅蓝底） */
+table {
+  border-collapse: collapse;
+  hyphens: none;
+  width: 100%;
+  margin: 6pt 0 10pt 0;
+  font-size: 8.5pt;
+  line-height: 1.12;
+  page-break-inside: auto;
+}
+th, td {
+  border: 0.5pt solid #000;
+  padding: 2.5pt 4pt;
+  vertical-align: top;
+  text-align: left;
+}
+th { background: #DBE5F1; font-weight: 700; }
+tr { page-break-inside: avoid; }
+
+/* 代码块：docx 为 10pt Menlo */
+pre {
+  font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 9.5pt;
+  line-height: 1.25;
+  margin: 2pt 0 8pt 0;
+  white-space: pre-wrap;
+  page-break-inside: avoid;
+}
+code { font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace; font-size: 10pt; }
+
+img { max-width: 100%; }
+
+/* 彩色占位符：颜色与 Word highlight 原值一致 */
+mark.hl-a { background-color: #00FFFF; color: #000; }
+mark.hl-b { background-color: #FFFF00; color: #000; }
+mark.hl-c { background-color: #FF00FF; color: #000; }
+
+hr { border: none; border-top: 0.5pt solid #999; margin: 12pt 0; }
