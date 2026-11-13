@@ -74,7 +74,7 @@ On PenDigits (Table 2A), the ordering required by claim C2 holds across the enti
 
 On COIL-20 (Table 2B), the picture diverges from the paper immediately. At k = 10, UMAP-ours gives 0.853 ± 0.032, which is significantly below t-SNE’s 0.961 ± 0.014. This gap persists through k = 20 and k = 40. While UMAP-ours briefly overtakes t-SNE at k = 80 (0.808 ± 0.044 vs 0.774 ± 0.045), it falls behind again at k = 160, dropping to 0.549 ± 0.066 compared to t-SNE’s 0.606 ± 0.046. Because our UMAP accuracy sits well below the paper’s reported values for large k and fails to consistently beat t-SNE, the small-k regime on COIL-20 does not agree with the paper under our frozen protocol.
 
-| Dataset | \*k\* | Paper Accuracy | Our Accuracy | Δ (Ours − Paper) | Verdict |
+| Dataset | k | Paper Accuracy | Our Accuracy | Δ (Ours − Paper) | Verdict |
 | --- | --- | --- | --- | --- | --- |
 | PenDigits | 10 | 0.973 ± 0.044 | 0.988 ± 0.009 | +0.015 | Reproduced |
 | PenDigits | 160 | 0.951 ± 0.085 | 0.955 ± 0.013 | +0.004 | Reproduced |
@@ -163,13 +163,13 @@ AI Use Disclosure. In accordance with academic integrity guidelines, AI assistan
 | --- | --- | --- |
 | D1 | Python 3.14.7 and modern scikit-learn 1.9.1 used instead of the 2018 software stack. | None on accuracy; affects absolute runtimes. |
 | D2 | Experiments run on a shared 16 vCPU / 7.5 GB RAM machine instead of a MacBook Pro. | None on accuracy; limits cross-hardware speed comparison. |
-| D3 | t-SNE baseline run using single-threaded scikit-learn instead of the paper's parallel MulticoreTSNE. | Makes our UMAP speed advantage **optimistic**; accuracy unaffected. |
+| D3 | t-SNE baseline run using single-threaded scikit-learn instead of the paper's parallel MulticoreTSNE. | Makes our UMAP speed advantage optimistic; accuracy unaffected. |
 | D4 | A fixed random seed was used for all spectral initialisations and negative sampling. | None; reduces fold-to-fold variance compared to the paper. |
 | D5 | Pre-defined stratified 10-fold splits were used for all methods identically. | None; ensures fair comparison but may differ slightly from paper's exact splits. |
 | D6 | PCA baseline implemented via sklearn.decomposition.PCA rather than the paper's custom code. | None on accuracy; standardised implementation. |
 | D7 | COIL-20 pixel values were normalised to [0, 1] prior to embedding. | None; UMAP and t-SNE are invariant to global scaling of input distances. |
 | D8 | UMAP optimisation uses a fixed epoch count (500) rather than early stopping based on tolerance. | Negligible; the layout converges well before the epoch limit. |
-| D9 | COIL-20 at large \*k\* falls below the paper and fails to beat t-SNE. | Our values **lower** than paper; ranking versus t-SNE reverses. |
+| D9 | COIL-20 at large \*k\* falls below the paper and fails to beat t-SNE. | Our values lower than paper; ranking versus t-SNE reverses. |
 | D10 | The LargeVis baseline was omitted due to the project timeline. | None on UMAP; narrows the comparative baseline matrix. |
 | D11 | The Laplacian Eigenmaps (LE) baseline was omitted due to the project timeline. | None on UMAP; narrows the comparative baseline matrix. |
 | D12 | The kNN classifier uses Euclidean distance and uniform weights (default sklearn). | None; matches the paper's standard evaluation protocol. |
