@@ -84,7 +84,7 @@ On COIL-20 (Table 2B), the picture diverges from the paper immediately. At k = 1
 
 <p class="caption">Table 3 Comparison of UMAP Accuracy Between the Original Paper and This Reproduction</p>
 
-*Note: * Values represent mean ± standard deviation over 10 folds. Paper values are sourced from McInnes et al. (2018) Table 1. Δ is the absolute difference between our measured accuracy and the paper's reported accuracy. A cell is marked as "Reproduced" only if the absolute gap is within the frozen tolerance of 0.10 and the UMAP-versus-t-SNE ranking is preserved. The failure at COIL-20 large \*k\* is documented as deviation D9.
+*Note: * Values represent mean ± standard deviation over 10 folds. Paper values are sourced from McInnes et al. (2018) Table 1. Δ is the absolute difference between our measured accuracy and the paper's reported accuracy. A cell is marked as "Reproduced" only if the absolute gap is within the frozen tolerance of 0.10 and the UMAP-versus-t-SNE ranking is preserved. The failure at COIL-20 large k is documented as deviation D9.
 
 The absolute gaps at the COIL-20 cells for k = 80 and k = 160 exceed the tolerance of 0.10 frozen in Section 5 of the project specification. Furthermore, the UMAP versus t-SNE ranking reverses at these sizes (t-SNE overtakes UMAP at k = 160). Consequently, Table 3 marks these two cells as not reproduced. The direction requirement (UMAP at least as accurate as t-SNE at small k and strictly more accurate at large k) is satisfied on PenDigits and fails on COIL-20 at the largest neighbourhood sizes. Including those cells, the proportion of ranking agreements across the comparison matrix falls below the 70% threshold set in the specification.
 
@@ -169,7 +169,7 @@ AI Use Disclosure. In accordance with academic integrity guidelines, AI assistan
 | D6 | PCA baseline implemented via sklearn.decomposition.PCA rather than the paper's custom code. | None on accuracy; standardised implementation. |
 | D7 | COIL-20 pixel values were normalised to [0, 1] prior to embedding. | None; UMAP and t-SNE are invariant to global scaling of input distances. |
 | D8 | UMAP optimisation uses a fixed epoch count (500) rather than early stopping based on tolerance. | Negligible; the layout converges well before the epoch limit. |
-| D9 | COIL-20 at large \*k\* falls below the paper and fails to beat t-SNE. | Our values lower than paper; ranking versus t-SNE reverses. |
+| D9 | COIL-20 at large k falls below the paper and fails to beat t-SNE. | Our values lower than paper; ranking versus t-SNE reverses. |
 | D10 | The LargeVis baseline was omitted due to the project timeline. | None on UMAP; narrows the comparative baseline matrix. |
 | D11 | The Laplacian Eigenmaps (LE) baseline was omitted due to the project timeline. | None on UMAP; narrows the comparative baseline matrix. |
 | D12 | The kNN classifier uses Euclidean distance and uniform weights (default sklearn). | None; matches the paper's standard evaluation protocol. |
