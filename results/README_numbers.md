@@ -60,14 +60,14 @@
 
 | dataset | method | median_s | min_s | max_s | 键 |
 |---|---|---|---|---|---|
-| coil20 | pca | 0.62 | 0.59 | 0.64 | `{{runtime.coil20.pca.fit_s}}` |
-| coil20 | tsne | 7.74 | 7.27 | 7.91 | `{{runtime.coil20.tsne.fit_s}}` |
-| coil20 | umap_ref | 7.69 | 7.55 | 7.78 | `{{runtime.coil20.umap_ref.fit_s}}` |
-| coil20 | umap_ours | 4.68 | 3.72 | 5.23 | `{{runtime.coil20.umap_ours.fit_s}}` |
-| pendigits | pca | 0.06 | 0.05 | 0.07 | `{{runtime.pendigits.pca.fit_s}}` |
-| pendigits | tsne | 9.36 | 9.33 | 9.39 | `{{runtime.pendigits.tsne.fit_s}}` |
-| pendigits | umap_ref | 2.69 | 1.62 | 2.82 | `{{runtime.pendigits.umap_ref.fit_s}}` |
-| pendigits | umap_ours | 3.40 | 3.22 | 3.79 | `{{runtime.pendigits.umap_ours.fit_s}}` |
+| coil20 | pca | 0.43 | 0.35 | 0.50 | `{{runtime.coil20.pca.fit_s}}` |
+| coil20 | tsne | 6.06 | 5.83 | 6.40 | `{{runtime.coil20.tsne.fit_s}}` |
+| coil20 | umap_ref | 6.29 | 4.10 | 6.40 | `{{runtime.coil20.umap_ref.fit_s}}` |
+| coil20 | umap_ours | 4.11 | 4.02 | 4.25 | `{{runtime.coil20.umap_ours.fit_s}}` |
+| pendigits | pca | 0.04 | 0.01 | 0.06 | `{{runtime.pendigits.pca.fit_s}}` |
+| pendigits | tsne | 6.00 | 4.09 | 6.05 | `{{runtime.pendigits.tsne.fit_s}}` |
+| pendigits | umap_ref | 1.85 | 1.84 | 2.04 | `{{runtime.pendigits.umap_ref.fit_s}}` |
+| pendigits | umap_ours | 2.58 | 0.41 | 2.65 | `{{runtime.pendigits.umap_ours.fit_s}}` |
 
 口径提醒：t-SNE 用 sklearn 单线程而原文用 MulticoreTSNE（D3）→ **加速比偏乐观，报告须标注方向**。
 

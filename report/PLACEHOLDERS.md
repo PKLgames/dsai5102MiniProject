@@ -11,7 +11,10 @@
 | 5 | `hl-c` | 报告成稿后填写 | 表 63 | `«hashes»` | C（成稿后） |
 | 6 | `hl-c` | 报告成稿后填写 | 段 64 | `«which paragraphs»` | C（成稿后） |
 | 7 | `hl-c` | 报告成稿后填写 | 段 64 | `«who»` | C（成稿后） |
-| 8 | `hl-a` | A 数据占位符 | 段 79 | `«insert X minutes»` | A |
-| 9 | `hl-a` | A 数据占位符 | 段 81 | `«insert X.X»%` | A |
+| 8 | `hl-a` | A 数据占位符 | 段 79 | ~~`«insert X minutes»`~~ → **2.1 minutes**（v2 已填） | A ✅ |
+| 9 | `hl-a` | A 数据占位符 | 段 81 | ~~`«insert X.X»%`~~ → **0.22%**（v2 已填） | A ✅ |
 
-合计 9 处。
+合计 9 处（B 2 处待填、C 5 处待填、A 2 处已在 v2 填入）。
+
+> 本文件由 `scripts/docx_to_md.py` 从 **docx** 生成，`ce7e53e` 冻结版 docx 里这两处仍是占位符；
+> A 的填写只存在于 `report/DSAI5102_07_Report_v2.md` / `.pdf`。重跑生成脚本会覆盖本文件，届时需重新标注。

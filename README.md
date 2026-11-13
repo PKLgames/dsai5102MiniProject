@@ -62,8 +62,18 @@ tests/                     A 的契约测试
 
 ```bash
 .venv/bin/python scripts/docx_to_md.py report/DSAI5102_07_Report_draft.docx   # docx → md（表格/字号/高亮/图片全保留）
-.venv/bin/python scripts/build_report_pdf.py report/DSAI5102_07_Report_draft.md  # md → PDF（report/report.css）
+.venv/bin/python scripts/build_report_pdf.py report/DSAI5102_07_Report_v2.md     # md → PDF（report/report.css）
 ```
 
 - 彩色占位符：**蓝=A 数据**、**黄=B 交付物**、**紫=成稿后填写**；清单见 `report/PLACEHOLDERS.md`。
 - C 的提交记录与报告文件索引：`docs/log/C_SUBMISSIONS.md`。
+- **v2 与 docx 不同步**：`report/DSAI5102_07_Report_v2.{md,pdf}` 是 A 在 docx（`ce7e53e`）基础上填入真实数据后的版本，差异清单见 `docs/log/C_SUBMISSIONS.md` §7；重跑 `docx_to_md.py` 只会重新生成 `*_draft.md` 与 `PLACEHOLDERS.md`，不会更新 v2；docx 再次上传后需按 §7 的 4 条差异重新合并。
+
+## 端到端复现
+
+```bash
+bash scripts/fetch_data.sh   # 一次性数据（幂等；PenDigits 由 sklearn 自带）
+bash scripts/repro.sh        # 0 取数 → 1 契约 → 2 主表 400 行 → 3 计时 → 4 数字 → 5 查重 → 6 结果图(B)
+```
+
+实测本机单核约 **2.1 分钟**（不含 B 的图，`scripts/make_figures.py` 未提交时自动跳过）。

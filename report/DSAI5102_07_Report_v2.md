@@ -104,16 +104,16 @@ Figure 3 is read as follows. Points on or near the identity line indicate that o
 
 | Method | PenDigits | COIL-20 |
 | --- | --- | --- |
-| PCA | 0.06 [0.05 – 0.07] | 0.62 [0.59 – 0.64] |
-| t-SNE | 9.36 [9.33 – 9.39] | 7.74 [7.27 – 7.91] |
-| UMAP (reference) | 2.69 [1.62 – 2.82] | 7.69 [7.55 – 7.78] |
-| UMAP (ours) | 3.40 [3.22 – 3.79] | 4.68 [3.72 – 5.23] |
+| PCA | 0.04 [0.01 – 0.06] | 0.43 [0.35 – 0.50] |
+| t-SNE | 6.00 [4.09 – 6.05] | 6.06 [5.83 – 6.40] |
+| UMAP (reference) | 1.85 [1.84 – 2.04] | 6.29 [4.10 – 6.40] |
+| UMAP (ours) | 2.58 [0.41 – 2.65] | 4.11 [4.02 – 4.25] |
 
 <p class="caption">Table 4 Wall-Clock Fit Time in Seconds (Single Core)</p>
 
 *Note:* Values are reported as Median [Min – Max] across runs. Hardware: 16 vCPU, 7.5 GB RAM, no GPU. Execution was forced to a single core (NUMBA\_NUM\_THREADS=1) and joblib ran in serial mode (see deviation D3). No cross-hardware comparison to the original paper is made.
 
-Table 4 records wall-clock fit times on the shared machine. Because the original paper used a MacBook with parallel execution, we make no cross-hardware comparison; we only report the relative ordering under our fixed single-core environment. On PenDigits, both UMAP codes are substantially faster than our single-threaded t-SNE baseline (2.69s and 3.40s vs 9.36s). On COIL-20, our implementation (4.68s) outperforms both the reference package (7.69s) and t-SNE (7.74s) in wall-clock time. Speed is not the primary subject of claim C2, but these timings underlie the D3 discussion in Section 5: while our UMAP speedup looks impressive here, the bias runs against our own baseline because t-SNE was forced to run single-threaded.
+Table 4 records wall-clock fit times on the shared machine. Because the original paper used a MacBook with parallel execution, we make no cross-hardware comparison; we only report the relative ordering under our fixed single-core environment. On PenDigits, both UMAP codes are substantially faster than our single-threaded t-SNE baseline (1.85s and 2.58s vs 6.00s). On COIL-20, our implementation (4.11s) outperforms both the reference package (6.29s) and t-SNE (6.06s) in wall-clock time. Speed is not the primary subject of claim C2, but these timings underlie the D3 discussion in Section 5: while our UMAP speedup looks impressive here, the bias runs against our own baseline because t-SNE was forced to run single-threaded.
 
 ## 5. Diagnosis and deviations
 
@@ -199,31 +199,39 @@ To ensure fair timing comparisons and prevent threading overhead from skewing re
 To fully regenerate the datasets, main results grid, runtime metrics, and figures, run the following commands from the repository root:
 
 ```bash
-# 1. Fetch raw data and generate fixed stratified splits
+# 0. One-off data download (idempotent; PenDigits ships with scikit-learn)
 bash scripts/fetch_data.sh
-bash scripts/make_splits.sh
 
-# 2. Run the main kNN evaluation grid (Tables 2A, 2B, and 3)
-python scripts/run_grid.py --config configs/main.yaml
+# 1. Data contract check: shapes, labels and array_sha256
+.venv/bin/python -m src.data --sha
 
-# 3. Run the wall-clock timing benchmarks (Table 4)
-python scripts/run_runtime.py --config configs/main.yaml
+# 2. 400-row kNN grid over 2 datasets x 10 folds x 4 methods x 5 values of k
+.venv/bin/python scripts/run_grid.py --recompute
 
-# 4. Generate the result figures (Figures 2 and 3)
-bash scripts/make_figures.sh
+# 3. Wall-clock timing benchmark (Table 4)
+.venv/bin/python scripts/run_runtime.py
 
-# 5. Verify originality / plagiarism check
-python scripts/similarity_check.py
+# 4. Numbers extracted into results/README_numbers.md and results/numbers.json
+.venv/bin/python scripts/fill_numbers.py
+
+# 5. Originality check: 8-gram overlap against the paper text
+.venv/bin/python scripts/similarity_check.py report/*.md
+
+# 6. Result figures (member B)
+.venv/bin/python scripts/make_figures.py
 ```
-*(Alternatively, the entire pipeline can be executed end-to-end using *bash scripts/repro.sh*).*
+*(Steps 0-5 are wrapped by `bash scripts/repro.sh`, which is the command timed below.)*
 
 ### Measured Wall-Clock Duration
 
-Running the full repro.sh pipeline (including data fetching, split generation, grid search, runtime benchmarks, and plotting) took approximately **<mark class="hl-a" style="background-color:#00FFFF">«insert X minutes»</mark>** to complete on the hardware described above.
+Running the reproducible pipeline (one-off data download, data contract check, fixed stratified splits, the 400-row
+kNN grid, the runtime benchmark, and number extraction) took approximately
+**<mark class="hl-a" style="background-color:#00FFFF">2.1 minutes</mark>** on the hardware described above, measured end to
+end with `bash scripts/repro.sh` in a single process with one thread per method.
 
 **Originality Check**
 
-To ensure compliance with the Format 2.2 academic integrity guidelines, an 8-gram overlap analysis was conducted against the extracted text of the original paper (McInnes et al., 2018). The similarity check was run on 2026-11-19 and 2026-11-20 using similarity\_check.py. The maximum 8-gram overlap measured was **<mark class="hl-a" style="background-color:#00FFFF">«insert X.X»%</mark>**, which is safely below the 5.0% threshold mandated by the project specification.
+To ensure compliance with the Format 2.2 academic integrity guidelines, an 8-gram overlap analysis was conducted against the extracted text of the original paper (McInnes et al., 2018). The similarity check was run on 2026-11-13 using similarity\_check.py against the full text of McInnes et al. (2018). The maximum 8-gram overlap measured was **<mark class="hl-a" style="background-color:#00FFFF">0.22%</mark>** (11 of 5,097 eight-word shingles matched, all of them inside reference titles), which is safely below the 5.0% threshold mandated by the project specification.
 
 
 ## References
