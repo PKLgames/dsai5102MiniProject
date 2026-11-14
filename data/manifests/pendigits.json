@@ -1,0 +1,42 @@
+{
+  "array_sha256": "8b3b6ae90863430bdef06a3f7d1ec2f6a905a53d3375655b18cf63780ad98772",
+  "class_counts": {
+    "0": 178,
+    "1": 182,
+    "2": 177,
+    "3": 183,
+    "4": 181,
+    "5": 182,
+    "6": 181,
+    "7": 179,
+    "8": 174,
+    "9": 180
+  },
+  "dataset": "pendigits",
+  "duplicate_rows": 0,
+  "inf": 0,
+  "label_map": {
+    "0": "0",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+    "6": "6",
+    "7": "7",
+    "8": "8",
+    "9": "9"
+  },
+  "max": 1.0,
+  "min": 0.0,
+  "n": 1797,
+  "n_classes": 10,
+  "n_features": 64,
+  "nan": 0,
+  "notes": "float32 before division; C-order; first-appearance label encoding; no standardization, removal or augmentation",
+  "prep_seconds": 1.0829618640000263,
+  "prepared_utc": "2026-11-14T21:21:21.410594+00:00",
+  "retrieved_utc": "2026-11-14T21:21:04.106353+00:00",
+  "source": "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html",
+  "source_sha256": "f6d9e39f37dc45d327f6db33428ee58970ccceabb2535a5c179de35886b70443"
+}
