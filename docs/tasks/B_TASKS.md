@@ -23,7 +23,7 @@ def load_raw(name) -> tuple[np.ndarray, np.ndarray]: ...   # 未归一化，供 
 def build(name) -> tuple[np.ndarray, np.ndarray]: ...      # 规范数组：float32 / int64 / [0,1]
 ```
 - CLI 必须支持：`--datasets {all,名称}`、`--force`、`--out DIR`（A 重放核验用）、`--emit-card-table`（打印数据卡 §1 的表，A 核验用）。
-- 规范细节照抄 `docs/goal/SPEC.md` §3 R1–R8：float32 C 序、int64、类别按首次出现编码、**不标准化**（仅 `/255`）、行优先展平、不去重、fail-on-NaN、npz 键 `X`/`y`、UTC 时间。
+- 规范细节照抄 `docs/goal/SPEC.md` §3 R1–R8：float32 C 序、int64、类别按首次出现编码、**不标准化**（digits `/16`、COIL-20 `/255`）、行优先展平、不去重、fail-on-NaN、npz 键 `X`/`y`、UTC 时间。
 
 ### manifest 字段（固定，A 逐键读）
 ```json
@@ -72,7 +72,7 @@ for n in ('pendigits','coil20'):
 - `figures/eda/` 三张，英文标注、dpi ≥160、无中文方框：
   - `eda_01_class_counts.png`：两数据集类分布（PenDigits 10 类 ×179/180；COIL-20 20 类 ×72）
   - `eda_02_sample_grid.png`：COIL-20 每类 5×5 样本网格（含标签）
-  - `eda_03_pixel_hist.png`：像素值直方图（`/255` 前 vs 后）
+  - `eda_03_pixel_hist.png`：像素值直方图（digits `/16`、COIL-20 `/255` 前 vs 后）
 
 ## 5. P11 结果图（→ S4，只读 A 的 S3）
 
@@ -91,7 +91,7 @@ for n in ('pendigits','coil20'):
 1. COIL-20 命名 `obj{K}__{NN}.png`（双下划线），**用正则** `obj(\d+)__(\d+)\.png`，不要 `split('__')` 后乱取。
 2. PNG dtype：`PIL` 给 `uint8`、`plt.imread` 给 float 0–1。统一 `np.asarray(Image.open(p), dtype=np.float32)/255.0`，数据卡写明用了哪个库。
 3. `load_digits()` 是 **1797** 条、像素 0–16；拿到 10992 说明误用 OpenML did=32（口径不同）。
-4. `StratifiedKFold` 分层后每折 179/180；k 网格最大 160 时，**train 侧每类**只有 ~145，跑 kNN 要按每类检查 `k < 每类 train 数`。
+4. digits 的测试折共 179/180 条，COIL-20 的测试折共 144 条；普通 kNN 要求 `k <= train 总样本数`，不是每类训练数量。保留原定 `k=160`。
 5. `splits.json` 必须字节稳定：`sort_keys=True, indent=1`，不要 `ensure_ascii=False` 之外的随机键序。
 6. 不把 `data/processed/*.npz` 提交进 git（已 ignore）；只提交脚本 + manifest + splits。
 
@@ -106,3 +106,6 @@ git tag s2 && git push origin s2
 ```
 - S2 → `docs/log/HANDOFF_LOG.md` 记一行（时间、tag、自查输出、未解决项）。
 - S4 → tag `s4`，同样记一行。迟到后果见 `PLAN.md` §4（只影响自己那几格）。
+
+
+> V3 数据说明：只更正缩放与 kNN 样本数约束两处事实错误；原“每类 5×5”展示要求保留。当前 EDA 实际为每类 5 张、20 行×5 列，共 100 张；这是展示选择，尚不能声称逐字满足每类 25 张的要求。模型数据仍为全部 1,440 张。
