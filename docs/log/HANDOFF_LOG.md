@@ -34,3 +34,11 @@
 | COIL-20 k=80/160 偏低（D9） | 冒烟已见；主表跑完后写归因 | A |
 | t-SNE 单线程导致加速比偏乐观（D3） | 报告/slides 必须标注方向 | C |
 | 自研 SGD 与参考实现的差异幅度 | P4 用 kNN 差 ≤0.02 判定，超出即降级 | A |
+
+## B delivery · 2026-11-15
+- LU Yuqing / B: independent preprocessing, manifests, real-label stratified folds, data card, 3 EDA figures, 2 required result figures and 1 supplementary curve prepared locally.
+- Exact A/B equality on both datasets: max|dX|=0, labels equal; array hashes match the canonical loader and previously logged prefixes.
+- Verification outputs: handoff_B/VALIDATION.json, validation_stdout.txt, PYTEST.txt.
+- Pending A review: split reader uses the wrong schema and an all-zero-label fallback. Patch supplied separately, not applied; existing result tables not recomputed.
+- Result figures describe the supplied snapshot and are not certified final evaluation figures.
+- No Git tag/push or A acceptance claimed.
