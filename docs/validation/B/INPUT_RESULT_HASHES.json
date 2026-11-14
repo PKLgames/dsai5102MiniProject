@@ -1,0 +1,14 @@
+{
+  "results/numbers.json": "30840c9e1ef3b3dac28d5ac5340207810cf1b0c525183e023b32c48821a77b86",
+  "results/REPORT_MAP.md": "0523304ebc3f1a2e32a5fbe9c5004cda7e2a122caeca07354380288e8c13a4d1",
+  "results/grid_knn_summary.csv": "13b2a1ad9da3f7e28d1a5578d528a376b4221643c30f66b07b535cdb4173cbb4",
+  "results/README_numbers.md": "dd01d0aeb078c8dfe38b51bf377d5df8ba3c1786292d49c036048b08d8a2c07d",
+  "results/grid_knn.csv": "d0ca1b62189be54f3018de49d57877deef868e363f39f46197a330f34b9f7f9c",
+  "results/paper_vs_ours.csv": "73442f12913dca4e060cbc3d92a56ac1f2007f385ce070a5b0f230bda6910cce",
+  "results/runtime.csv": "320e5f6f7253bfd87447c2bcb02df6e14dbe0ee44f18ac53b630dd040697dafa",
+  "results/embeddings/coil20_umapours.npz": "c96569a379489189431950213b5fa023ea5fb4445ebb5eec597d0dfff21e5c0c",
+  "results/embeddings/coil20_tsne.npz": "d04d5a29588a50aadb0080b781ab31966f2a65b43beb575c652f36adc407965d",
+  "results/smoke_umap/digits.json": "fb3db4fb524eb884000bc37af8662bff31f4e62210c54bdf0e1a9b7c6480a573",
+  "results/smoke_umap/coil20.json": "f5ed260daaa063ed516ee61e6156305e962c3e981d8b850d26a0578c91d6840e",
+  "results/raw/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
