@@ -16,7 +16,7 @@ Sources:
 - https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html
 - https://www.cs.columbia.edu/CAVE/databases/SLAM_coil-20_coil-100/coil-20/coil-20-proc.zip
 
-All counts, ranges, duplicates and labels below were measured. Full numeric details and hashes are in data/manifests/{pendigits,coil20}.json. Source-byte provenance is copied to handoff_B/FETCH_PROVENANCE.json; raw files remain outside Git.
+All counts, ranges, duplicates and labels below were measured. Full numeric details and hashes are in data/manifests/{pendigits,coil20}.json. Source-byte provenance is copied to docs/validation/B/FETCH_PROVENANCE.json; raw files remain outside Git.
 
 ## 2. Preprocessing decisions and code trace
 
@@ -38,7 +38,7 @@ scripts/make_splits.py uses StratifiedKFold(n_splits=10, shuffle=True, random_st
 - data/processed/{name}.npz: X float32, y int64; generated locally and excluded from Git.
 - data/manifests/{name}.json: measured statistics and content hash.
 - data/manifests/splits.json: deterministic canonical folds; committed.
-- handoff_B/VALIDATION.json: independent comparison and fold/figure checks.
+- docs/validation/B/VALIDATION.json: independent comparison and fold/figure checks.
 
 ## 4. Exploratory figures
 
@@ -48,7 +48,7 @@ scripts/make_splits.py uses StratifiedKFold(n_splits=10, shuffle=True, random_st
 | eda_02_sample_grid.png | Five evenly selected view indices per object illustrate viewpoint variation; one row per object, 20 rows × 5 columns. These are illustrative views, not an independent random sample. |
 | eda_03_pixel_hist.png | Global rescaling changes the intensity scale while preserving the displayed pixel-frequency pattern. Both datasets contain many zero-valued pixels. A log y-axis exposes less common intensities. |
 
-All PNGs use English labels and nominal 300 dpi. Pixel histograms include every pixel; no sampling is used. Result figures read supplied A outputs without modifying them. Their captions and status are in handoff_B/REPORT_TEXT_AND_CAPTIONS.md.
+All PNGs use English labels and nominal 300 dpi. Pixel histograms include every pixel; no sampling is used. Result figures read supplied A outputs without modifying them. Their captions and status are in report/DSAI5102_07_Report_V3.md.
 
 ## 5. Verification
 
@@ -56,6 +56,6 @@ Both datasets: exact equality to A's src.data.load output (max absolute differen
 
 ## 6. Known issues and interpretation limits
 
-A's supplied scripts/run_grid.py does not read this nested split schema and falls back to stratification over all-zero labels. Therefore old CSVs cannot be asserted to use these canonical folds. A review patch is supplied separately; after integration A should recompute evaluation and all numeric summaries, then B should rerun figure generation.
+The historical scripts/run_grid.py did not read this nested split schema and fell back to stratification over all-zero labels. Therefore old CSVs cannot be asserted to use these canonical folds. V3 supplies the corrected script and scripts/run_fixed_evaluation.py to back up historical results and recompute evaluation and figures. The corrected full evaluation has not been run as part of this update.
 
 The intended evaluation is transductive: embedding on all unlabelled points, followed by CV on embedding coordinates. It assesses class structure on that dataset, not unseen-sample generalisation. Multiple views of each COIL object are related observations; fold SD is not an independent-run confidence interval. kNN k is bounded by the full training-set size, not per-class counts. UMAP n_neighbors and classifier k are different parameters.
