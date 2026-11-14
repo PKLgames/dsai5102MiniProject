@@ -10,8 +10,8 @@
   results/embeddings/*.npz      coil20 的 umap_ours / tsne 坐标（给 B 出图）
 
 用法：
-  NUMBA_NUM_THREADS=1 .venv/bin/python scripts/run_grid.py            # 全量，可中断续跑
-  ... --datasets pendigits --methods umap_ours                        # 只补一种
+  NUMBA_NUM_THREADS=1 .venv/bin/python scripts/run_grid.py            # 全量；仅可跳过同协议下完整完成的方法
+  ... --datasets pendigits --methods umap_ours                        # 只补一种（不与旧协议结果混用）
   ... --recompute                                                     # 忽略已有 csv 重算
 """
 
@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
+import json
 import sys
 import time
 import warnings
@@ -69,16 +71,32 @@ def make_embedding(name: str, method: str, X: np.ndarray) -> np.ndarray:
 
 
 def load_splits(name: str, n: int) -> list[tuple[np.ndarray, np.ndarray]]:
-    """优先读 B 的 data/manifests/splits.json；没有就现算（同 seed 同算法，事后核对）。"""
+    """Read B's validated nested schema; fail closed, never invent a fallback."""
+    import json
+    from src.data import array_sha256
     path = PROJECT / "data" / "manifests" / "splits.json"
-    if path.exists():
-        import json
-
-        obj = json.loads(path.read_text())
-        if name in obj:
-            return [(np.asarray(f["train"]), np.asarray(f["test"])) for f in obj[name]["folds"]]
-    skf = StratifiedKFold(N_FOLDS, shuffle=True, random_state=SEED)
-    return [(tr, te) for tr, te in skf.split(np.zeros(n), np.zeros(n))]
+    obj = json.loads(path.read_text())
+    d = obj["datasets"][name]
+    X, y = load(name)
+    if d["n"] != n or d["n_folds"] != N_FOLDS:
+        raise ValueError("Split dimensions disagree")
+    if d["array_sha256"] != array_sha256(X, y):
+        raise ValueError("Split row ordering/data hash mismatch")
+    folds = [(np.asarray(f["train"], dtype=int), np.asarray(f["test"], dtype=int)) for f in d["folds"]]
+    expected = list(StratifiedKFold(N_FOLDS, shuffle=True, random_state=SEED).split(X, y))
+    seen = np.zeros(n, dtype=int)
+    if len(folds) != N_FOLDS: raise ValueError("Wrong fold count")
+    for i, (tr, te) in enumerate(folds):
+        if (tr.ndim != 1 or te.ndim != 1 or
+            len(np.unique(tr)) != len(tr) or len(np.unique(te)) != len(te) or
+            np.any(tr < 0) or np.any(te < 0) or np.any(tr >= n) or np.any(te >= n) or
+            np.intersect1d(tr, te).size or len(np.union1d(tr, te)) != n):
+            raise ValueError("Invalid split")
+        if not (np.array_equal(tr, expected[i][0]) and np.array_equal(te, expected[i][1])):
+            raise ValueError("Split differs from agreed true-label stratified partitions")
+        seen[te] += 1
+    if not np.all(seen == 1): raise ValueError("Test coverage is not exactly once")
+    return folds
 
 
 def read_done(grid: Path) -> set[tuple[str, int, str, int]]:
@@ -89,7 +107,7 @@ def read_done(grid: Path) -> set[tuple[str, int, str, int]]:
 
 
 def canonicalize(grid: Path) -> None:
-    """按 (dataset, method, k, fold) 排序并去重，保证两次运行字节一致（S3 验收项）。"""
+    """Sort output deterministically; numeric reproducibility requires an independent rerun."""
     if not grid.exists():
         return
     with grid.open(newline="") as f:
@@ -144,7 +162,7 @@ def write_paper_vs_ours(acc: dict) -> None:
             if entry is None:
                 continue
             a = np.asarray(vals)
-            verifiable = not (ds == "coil20" and k >= 80)  # D9：COIL-20 大 k 已预登记未复现
+            verifiable = True  # Both published and computed values exist; NOT a success verdict.
             w.writerow([ds, m, k, f"{entry[0]:.3f}", f"{entry[1]:.3f}",
                         f"{a.mean():.6f}", f"{a.std(ddof=1):.6f}",
                         f"{a.mean() - entry[0]:+.4f}", len(a), str(verifiable).lower()])
@@ -165,20 +183,37 @@ def main() -> int:
     ap.add_argument("--recompute", action="store_true")
     args = ap.parse_args()
 
+    # Bind resumption to the repaired protocol so complete legacy CSVs cannot be skipped.
     RESULTS.mkdir(exist_ok=True)
     grid = RESULTS / "grid_knn.csv"
+    provenance = RESULTS / "evaluation_protocol.json"
+    source_paths = [PROJECT / "data/manifests/splits.json", Path(__file__)]
+    source_paths += sorted((PROJECT / "src").rglob("*.py"))
+    protocol = {"schema": "validated-stratified-v1", "seed": SEED,
+                "sha256": {str(p.relative_to(PROJECT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                           for p in source_paths}}
+    if not args.recompute and grid.exists():
+        if not provenance.exists() or json.loads(provenance.read_text()) != protocol:
+            raise RuntimeError("Legacy or changed-protocol results: use scripts/run_fixed_evaluation.py to back up and recompute.")
+    # Validate all selected dataset partitions before removing any result file.
+    for name in args.datasets:
+        _, labels = load(name)
+        load_splits(name, len(labels))
     done = set() if args.recompute else read_done(grid)
     if args.recompute and grid.exists():
         grid.unlink()
+    provenance.write_text(json.dumps(protocol, indent=2) + "\n")
 
     for name in args.datasets:
         X, y = load(name)
         folds = load_splits(name, len(y))
         for method in args.methods:
-            todo_k = [k for k in K_LIST if (name, 0, method, k) not in done and (name, 1, method, k) not in done]
-            if not todo_k or all((name, f, method, k) in done for f in range(N_FOLDS) for k in K_LIST):
+            if all((name, f, method, k) in done for f in range(N_FOLDS) for k in K_LIST):
                 print(f"[skip] {name}/{method} 已完成")
                 continue
+            present = {(f, k) for f in range(N_FOLDS) for k in K_LIST if (name, f, method, k) in done}
+            if present:
+                raise RuntimeError("Partial method results cannot safely resume: back up CSVs and use a full --recompute.")
             t = time.time()
             E = make_embedding(name, method, X)
             print(f"[embed] {name}/{method} {time.time()-t:.1f}s  range [{E.min():.2f}, {E.max():.2f}]")
@@ -188,7 +223,7 @@ def main() -> int:
                 for k in K_LIST:
                     if (name, fold, method, k) in done:
                         continue
-                    clf = KNeighborsClassifier(n_neighbors=k, n_jobs=1).fit(E[tr], y[tr])
+                    clf = KNeighborsClassifier(n_neighbors=k, metric="euclidean", weights="uniform", algorithm="brute", n_jobs=1).fit(E[tr], y[tr])
                     rows.append({"dataset": name, "fold": fold, "method": method,
                                  "k": k, "acc": f"{clf.score(E[te], y[te]):.6f}"})
             append_rows(grid, rows)

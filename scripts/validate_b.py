@@ -26,4 +26,5 @@ for p in figs:
  with Image.open(p) as im:
   assert im.info.get('dpi',(0,))[0]>=299
   report['figures'][str(p.relative_to(ROOT))]={'pixels':list(im.size),'dpi':list(im.info['dpi'])}
-(ROOT/'handoff_B/VALIDATION.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
+audit_dir=ROOT/'docs/validation/B';audit_dir.mkdir(parents=True,exist_ok=True)
+(audit_dir/'VALIDATION.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
