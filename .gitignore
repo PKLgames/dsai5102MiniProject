@@ -38,3 +38,6 @@ slides/**/*.tmp
 
 # --- 测试缓存 ---
 .pytest_cache/
+
+# --- 复核备份（旧协议结果，仅本地留档）---
+results_backup/**

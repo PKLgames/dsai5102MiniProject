@@ -1,0 +1,17 @@
+{
+  "schema": "validated-stratified-v1",
+  "seed": 42,
+  "sha256": {
+    "data/manifests/splits.json": "dcf7f22893ed89f775f6506a37ae57060ee47c77f2d0eabe3fbad61a398564c7",
+    "scripts/run_grid.py": "9662b8a30033f675f78eca3a25fab668d09ea4a9aef82e08c6f982a704e2ed71",
+    "src/__init__.py": "b25b003eab8eb3bc9b4f9e3d216ece7185082eecbfccc745ad138d7ac62ddf3d",
+    "src/data.py": "eb053482c1a7d9d852dde54f66b5ad6053844de67163a679d4ec2f809a68f975",
+    "src/data_prep.py": "d34b0e91f345b3cc3d35434692aabaa7216bf7d736a68ef92a63e3b3230a82b5",
+    "src/paper_ref.py": "ca7034b0fade5fddad86a2312c5e5a728f1799fd9972740359c7c28c96701f37",
+    "src/umap_impl/__init__.py": "e58c383a34b204121bb8ded402e599ec1584c3fe8b9df8b20141f46a1f4d3ae5",
+    "src/umap_impl/fuzzy.py": "a59636a8297edd9686c8ae08c5f60bd66bd210c3495b3d10d6bd1a00a4d8be0c",
+    "src/umap_impl/optimize.py": "70a556ef2ac6ede32fe302be30c52cf9f6acfc5dd4bf83432ac9deeac55f92ae",
+    "src/umap_impl/spectral.py": "e24e02ca3960134889853a46dda51b9cf7913d1436d32cdaa5518b3e6d7fa588",
+    "src/umap_impl/umap.py": "680c5178fffdcb243e3c2a0935dc150df65353964f7d998d2b0c42bffd2eb7c5"
+  }
+}

@@ -54,9 +54,9 @@
   "n_features": 16384,
   "nan": 0,
   "notes": "float32 before division; C-order; first-appearance label encoding; no standardization, removal or augmentation",
-  "prep_seconds": 0.3432889619998605,
-  "prepared_utc": "2026-11-14T21:21:22.289138+00:00",
-  "retrieved_utc": "2026-11-14T21:21:04.299892+00:00",
+  "prep_seconds": 0.625205741000002,
+  "prepared_utc": "2026-11-15T15:57:15.309700+00:00",
+  "retrieved_utc": "2026-11-15T15:57:11.723821+00:00",
   "source": "https://www.cs.columbia.edu/CAVE/databases/SLAM_coil-20_coil-100/coil-20/coil-20-proc.zip",
   "source_sha256": "517c5594820eb40066ba0ff6842e7f09392bf7fde849bf9cb9c28445b0f29e88"
 }

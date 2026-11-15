@@ -34,9 +34,9 @@
   "n_features": 64,
   "nan": 0,
   "notes": "float32 before division; C-order; first-appearance label encoding; no standardization, removal or augmentation",
-  "prep_seconds": 1.0829618640000263,
-  "prepared_utc": "2026-11-14T21:21:21.410594+00:00",
-  "retrieved_utc": "2026-11-14T21:21:04.106353+00:00",
+  "prep_seconds": 1.7103851140000188,
+  "prepared_utc": "2026-11-15T15:57:13.890865+00:00",
+  "retrieved_utc": "2026-11-15T15:57:11.572927+00:00",
   "source": "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html",
   "source_sha256": "f6d9e39f37dc45d327f6db33428ee58970ccceabb2535a5c179de35886b70443"
 }
