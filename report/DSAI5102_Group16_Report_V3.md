@@ -4,6 +4,8 @@
 
 ## Abstract
 
+## Abstract
+
 We reproduce the embedding-classification experiment in Section 5.2 and Table 1 of UMAP (McInnes et al., 2018, revised 2020), referred to as C2 in our plan. The reproduction retains the two small datasets, two-dimensional embeddings, kNN neighbourhood sizes of 10, 20, 40, 80 and 160, and the validated ten-fold stratified evaluation. PCA and t-SNE serve as the baseline families; a transparent UMAP implementation is compared with the reference package. Independent data preparation matches the canonical arrays exactly. Under the corrected stratified partitions, PenDigits results are close to several published values, whereas COIL-20 UMAP accuracy is lower, particularly at k = 160, and does not consistently exceed t-SNE. We therefore report a partial numerical reproduction under the documented settings. The scope is one experiment, not the full paper.
 
 ## 1. Introduction and the paper reproduced
@@ -46,7 +48,7 @@ In three steps: (i) UMAP constructs a weighted k-nearest-neighbour graph in the 
 
 UMAP first connects nearby images in the original feature space. Distances are adjusted locally so neighbourhood connections have weights between zero and one. It then positions points in two dimensions and optimises those positions: strongly connected images are encouraged to remain close, while sampled other points provide repulsion. This is an intuitive summary of the graph construction and layout procedures in McInnes et al. (2018, revised 2020, §§3–4), not a reconstruction of the full topology proof.
 
-For the classifier, accuracy = number of correct predictions / number of test observations. In ten-fold cross-validation, each fold uses nine partitions to train this classifier and the remaining partition to evaluate it. In our intended transductive design, the embedding itself is fitted once using all unlabelled images; only the classifier is split into training and test folds. Consequently, this experiment measures class separation within a known dataset, not performance on images unavailable during embedding fitting. Both classifier k and UMAP n_neighbors refer to neighbours, but they belong to different stages.
+For the classifier, accuracy = number of correct predictions / number of test observations. In ten-fold cross-validation, each fold uses nine partitions to train this classifier and the remaining partition to evaluate it. In the implemented transductive design, the embedding is fitted once using all unlabelled images, only the classifier is split into training and test folds. Consequently, this experiment measures class separation within a known dataset, not performance on images unavailable during embedding fitting. Both classifier k and UMAP n_neighbors refer to neighbours, but they belong to different stages.
 
 ### 2.2 Correspondence with the original experiment
 
@@ -57,7 +59,7 @@ Our objective is to reproduce a defined experiment, rather than substitute a dif
 | Data identity and size | PenDigits, 1,797 × 64; COIL-20, 1,440 × 16,384 (§5) | Same stated sample counts, feature counts and image representations | Matched at the documented dataset level; pixel-for-pixel identity to the authors' arrays cannot be established |
 | Embedding evaluation | Classify labels from a low-dimensional representation (§5.2) | Two-dimensional coordinates followed by Euclidean kNN | Same experimental task; not an unseen-point prediction claim |
 | Classifier neighbourhood sizes | k = 10, 20, 40, 80, 160 for the small datasets (Table 1) | Identical five values | Matched |
-| Validation | Stratified ten-fold cross-validation on small datasets (§5.2) | Correct partitions generated with shuffle=True and seed 42 | Intended match; current result files need rerun after fold-reader repair |
+| Validation | Stratified ten-fold cross-validation on small datasets (§5.2) | Correct partitions generated with shuffle=True and seed 42 | Validated match; the corrected grid reader uses the true-label stratified partitions in `data/manifests/splits.json`. |
 | Baseline families | PCA, t-SNE, UMAP, LargeVis and Laplacian Eigenmaps | PCA, t-SNE, reference UMAP and transparent UMAP | Three original families retained; two omitted; implementation comparison added |
 | Hyperparameters and software | Original implementations; tuning attempted where possible (§5.1) | Fixed documented settings and modern packages | Approximate reproduction; original full tuning/seed configuration not recovered |
 | Outcome | kNN accuracy across k, including UMAP versus t-SNE | Same accuracy measures and explicit paper-to-reproduction differences | Matched outcome; agreement must be measured, not assumed |
@@ -78,13 +80,13 @@ We compare the project UMAP implementation with the reference package under comm
 
 It departs from the reference package in three respects that are useful for diagnosis: every random seed is logged, execution is forced single-threaded throughout, and the code exposes the constructed fuzzy graph and final embedding. The optimiser does not currently return a per-epoch loss history. Component ownership is split between A (src/umap\_impl/, evaluation scripts) and B (src/data\_prep.py, manifest/splits). To ensure reproducibility, inputs are rebuilt directly from data/raw, meaning our arrays do not depend on B's intermediate npz artefacts.
 
-Component tests and data-contract checks provide implementation diagnostics. Similar downstream accuracy is useful supporting evidence but does not establish identical coordinates, identical optimisation dynamics or statistical equivalence. For example, at PenDigits k = 160, reference UMAP accuracy is 0.920984 and our implementation gives 0.955484. Their 0.034500 difference exceeds either reported fold standard deviation. We therefore describe the code as a transparent implementation of the same high-level UMAP pipeline, with remaining implementation differences, rather than an exact replica of the reference mapping.
+Component tests and data-contract checks provide implementation diagnostics. Similar downstream accuracy is useful supporting evidence but does not establish identical coordinates, identical optimisation dynamics or statistical equivalence. For example, at PenDigits k = 160, reference UMAP accuracy is 0.920972 and our implementation gives 0.954358. Their 0.033386 difference exceeds either reported fold standard deviation. We therefore describe the code as a transparent implementation of the same high-level UMAP pipeline, with remaining implementation differences, rather than an exact replica of the reference mapping.
 
 The team records a shared machine with 16 vCPU, 7.5 GB memory and no GPU for model fitting, with NUMBA_NUM_THREADS=1 and joblib serial execution. These settings document execution constraints but do not independently certify all BLAS/OpenMP thread counts. Table 4 retains the recorded timings; Appendix A identifies the implemented scope and known deviations.
 
 ## 4. Results
 
-All reported metrics below are the existing supplied means over 10 folds; numerical tables have been retained unchanged except for interpretation labels. The complete results are available in the accompanying repository.
+All reported metrics below are the corrected means over 10 folds from the validated stratified evaluation. The complete results are available in the accompanying repository.
 
 **Evaluation status.** The corrected grid reader now uses the nested `datasets` schema in `data/manifests/splits.json` and the validated true-label stratified ten-fold partitions. The earlier all-zero-label fallback has been removed. The tables below are the corrected results and supersede the previous snapshot.
 
@@ -128,11 +130,11 @@ On COIL-20 (Table 2b), the pattern departs from the paper at the smallest k. At 
 
 At COIL-20 k = 80, the gap is −0.0816, inside the 0.10 tolerance, and UMAP-ours exceeds the corrected t-SNE value (0.817361 vs 0.783333). At k = 160, the gap is −0.2245, outside 0.10, and t-SNE is higher (0.653472 vs 0.578472). At small k, COIL UMAP remains below t-SNE, so numerical closeness to the paper alone does not recover the original comparison. On PenDigits, several UMAP-ours values are close to the paper, but the reference implementation does not exceed t-SNE at every k.
 
-These results are mixed rather than an exact replication of Table 1. The study retains the selected original task, dataset sizes and k-grid, while testing whether the published pattern survives the documented implementation choices. The current numerical discrepancy is an outcome to investigate, not evidence that the original paper is incorrect. All comparative conclusions remain provisional pending the stratified-fold rerun.
+These results are mixed rather than an exact replication of Table 1. The study retains the selected original task, dataset sizes and k-grid, while testing whether the published pattern survives the documented implementation choices. The current numerical discrepancy is an outcome to investigate, not evidence that the original paper is incorrect.
 
 ![COIL-20 UMAP and t-SNE embeddings](../figures/results/fig2_qualitative_coil20.png)
 
-<p class="caption">Figure 2 The supplied COIL-20 embeddings show object-specific trajectories and overlapping regions. Left: UMAP-ours; right: t-SNE. Colours consistently identify the same 20 objects. Axes have no direct feature meaning; orientations and between-panel distances are not comparable. This is a qualitative reproduction display, not a formal cluster-quality score.</p>
+<p class="caption">Figure 2 The corrected COIL-20 embeddings show object-specific trajectories and overlapping regions. Left: UMAP-ours; right: t-SNE. Colours consistently identify the same 20 objects. Axes have no direct feature meaning; orientations and between-panel distances are not comparable. This is a qualitative reproduction display, not a formal cluster-quality score.</p>
 
 Figure 2 addresses the same qualitative comparison used to accompany embedding evaluation in the original study. The exact spatial arrangement is not expected to match the paper because embedding solutions depend on settings and stochastic optimisation. The display cannot by itself establish global-distance preservation or biological/physical clusters.
 
@@ -140,7 +142,7 @@ Figure 2 addresses the same qualitative comparison used to accompany embedding e
 
 <p class="caption">Figure 3 Published versus corrected kNN accuracies for 40 dataset–method–k combinations. The dashed line marks equality. Marker shape identifies the dataset and colour identifies the method; overlapping points may obscure one another. No binary pass/fail flag is shown, because the earlier flags were set by hand rather than computed from the full protocol.</p>
 
-Points below the identity line indicate lower supplied accuracy than the corresponding published value. This direct comparison preserves the paper's evaluation target while displaying departures explicitly. It does not replace the original comparative question about UMAP versus t-SNE. Figure 4 additionally shows how accuracy changes across the original k-grid.
+Points below the identity line indicate lower reproduced accuracy than the corresponding published value. This direct comparison preserves the paper's evaluation target while displaying departures explicitly. It does not replace the original comparative question about UMAP versus t-SNE. Figure 4 additionally shows how accuracy changes across the original k-grid.
 
 ![Accuracy across the original k grid](../figures/results/fig4_knn_accuracy_by_k.png)
 
@@ -155,13 +157,13 @@ Points below the identity line indicate lower supplied accuracy than the corresp
 
 <p class="caption">Table 4 Recorded Wall-Clock Fit Time in Seconds</p>
 
-*Note:* Values are reported as Median [Min – Max] across runs. Hardware: 16 vCPU, 7.5 GB RAM, no GPU. The team set NUMBA_NUM_THREADS=1 and recorded serial joblib execution; complete library-thread counts were not independently checked (see D3/D14). No cross-hardware comparison to the original paper is made.
+*Note:* Timings should therefore be read as the recorded machine-specific measurements, without a universal speed or accuracy-invariance claim. A timing difference is not an explanation for the kNN accuracy gap.
 
 Table 4 records wall-clock fit times on the shared machine. Because the original paper used a MacBook with parallel execution, we make no cross-hardware comparison; we only report the relative ordering under our recorded execution settings. On PenDigits, both UMAP codes are substantially faster than our single-threaded t-SNE baseline (1.85s and 2.58s vs 6.00s). On COIL-20, our implementation (4.11s) outperforms both the reference package (6.29s) and t-SNE (6.06s) in wall-clock time. Speed is not the primary subject of embedding-classification experiment, but these timings underlie the D3 discussion in Section 5: while our UMAP speedup looks impressive here, the bias runs against our own baseline because t-SNE was forced to run single-threaded.
 
 ## 5. Diagnosis and deviations
 
-The COIL-20 discrepancy is recorded as D9 in the project deviation log. Our priority is to establish that the reproduction follows the declared evaluation before attributing numerical differences to the manifold-learning algorithm. The fold-reader defect identified in Section 4 is a concrete implementation issue: the validated file exists, but the historical reader did not use its nested schema. The corrected grid script included with V3 reads and validates the partitions; the classifier evaluation and all derived summaries still need recomputation. A new evaluation record should distinguish the old snapshot from corrected results.
+The COIL-20 discrepancy is recorded as D9 in the project deviation log. Our priority was to establish that the reproduction follows the declared evaluation before attributing numerical differences to the manifold-learning algorithm. The fold-reader defect identified earlier was a concrete implementation issue: the validated file existed, but the historical reader did not use its nested schema. The corrected grid script now reads and validates the partitions, and the classifier evaluation and derived summaries have been recomputed. The tables in Section 4 reflect the corrected results.
 
 The original paper reports attempts to tune embedding methods where possible, whereas this study uses fixed settings. Modern package versions, exact split indices, initialisation and optimiser details may also contribute. These are candidate explanations rather than established causes. The current experiments do not isolate an ambient-dimension effect or rank its importance relative to negative sampling or hyperparameters. Damrich and Hamprecht (2021) motivates examining UMAP's sampled optimisation objective, but that work alone does not identify the cause of this project's COIL-20 shortfall.
 
@@ -173,11 +175,11 @@ We retain the team's declared tolerance values and report signed differences tra
 
 ## 6. Conclusion and limitations
 
-This project reproduces the structure of the selected UMAP experiment: the two documented small-data representations, two-dimensional embeddings, the original five classifier neighbourhood sizes and the accuracy comparison with PCA and t-SNE. Independent preprocessing confirms that the two team data pipelines agree exactly. The supplied UMAP-ours results approximate several published PenDigits values; COIL-20 shows mixed agreement, including a substantial deficit at k = 160. We therefore report a partial numerical correspondence under the present implementation, with final reproduction success unresolved until the validated stratified folds are used and results are regenerated. Neither the data audit nor similar classifier scores establishes an exact algorithmic or result replication.
+This project reproduces the structure of the selected UMAP experiment: the two documented small-data representations, two-dimensional embeddings, the original five classifier neighbourhood sizes and the accuracy comparison with PCA and t-SNE. Independent preprocessing confirms that the two team data pipelines agree exactly. The corrected UMAP-ours results approximate several published PenDigits values; COIL-20 shows mixed agreement, including a substantial deficit at k = 160. We therefore report a partial numerical reproduction under the documented settings. Neither the data audit nor similar classifier scores establishes an exact algorithmic or result replication.
 
 Several limitations must be acknowledged regarding this work. Only two of the original paper's datasets (PenDigits and COIL-20) were examined. Due to the project timeline, we also did not run the Laplacian Eigenmaps or LargeVis baselines reported in the original paper, which narrows our comparison matrix. Furthermore, no stability analysis, nine-dataset timing table, or hyperparameter heatmap were run. Methodologically, the t-SNE timing baseline is single-threaded (D3), so speed comparisons are implementation- and threading-dependent, and the evaluation is strictly transductive, meaning it says nothing about out-of-sample generalisation.
 
-After repairing and rerunning the evaluation, controlled changes to n_neighbors, initialisation or optimisation could examine sensitivity. Any such analysis should be identified as an extension rather than silently replacing the reproduction settings. This report does not claim to have established which change would resolve the gap.
+Controlled changes to n_neighbors, initialisation or optimisation could examine sensitivity in future work. Any such analysis should be identified as an extension rather than silently replacing the reproduction settings. This report does not claim to have established which change would resolve the gap.
 
 <br>
 
@@ -185,7 +187,7 @@ After repairing and rerunning the evaluation, controlled changes to n_neighbors,
 
 As summarised in Table 1, this round evaluates two of the five datasets from the original paper. PenDigits was obtained through scikit-learn's load\_digits routine (scikit-learn developers, n.d.), which returns the 1797-sample subset rather than the larger OpenML release. COIL-20 was taken from the processed archive distributed by the Columbia University Computer Vision Laboratory (n.d.), with pixel values divided by 255 so that every coordinate lies in the unit interval.
 
-B generated and validated a single set of true-label stratified ten-fold splits in data/manifests/splits.json. The current stored accuracy tables cannot yet be attributed to those splits because the historical grid reader had the schema defect described in Section 4. Raw images and processed X/y arrays are not distributed in the repository snapshot; manifests describe those arrays, while results/embeddings/*.npz contains only low-dimensional coordinates and labels. The source data can be reconstructed using scripts/fetch_data.py and src/data_prep.py, and partitions using scripts/make_splits.py. A JSON manifest is documentation, not a copy of the image dataset.
+B generated and validated a single set of true-label stratified ten-fold splits in `data/manifests/splits.json`. The reported accuracy tables are generated from those validated splits using the corrected grid reader. Raw images and processed X/y arrays are not distributed in the repository snapshot; manifests describe those arrays, while results/embeddings/*.npz contains only low-dimensional coordinates and labels. The source data can be reconstructed using scripts/fetch_data.py and src/data_prep.py, and partitions using scripts/make_splits.py. A JSON manifest is documentation, not a copy of the image dataset.
 
 All results are transductive: the embedding is fitted on all points and k-nearest-neighbour accuracy is evaluated on that same embedding. It measures the class structure retained by the embedding, not generalisation to unseen points.
 
@@ -251,7 +253,7 @@ python scripts/run_fixed_evaluation.py
 
 The driver first tests the corrected split reader. It then copies the current results, result figures and V3 report to a timestamped results_backup/ directory, reconstructs the data, checks the existing data contract and partitions, recomputes the full 400-row grid, generates descriptive comparisons and figures, and validates B's outputs. It uses the active Python interpreter. Existing model settings and scope are retained; it does not install packages or change requirements.txt. Missing dependencies must be installed in the project environment, including Pillow for image loading.
 
-The driver does not automatically rewrite the report's numerical prose or tables. After a successful run, update Tables 2a, 2b and 3 from results/grid_knn_summary.csv and results/paper_vs_ours.csv, then update the abstract, results and conclusion before removing the provisional status. Table 4 remains a separate recorded timing supplement. The legacy fill_numbers.py and repro.sh do not incorporate these corrections and must not be used to overwrite the new report.
+The driver does not automatically rewrite the report's numerical prose or tables. The current report already reflects the corrected results; if the driver is rerun, Tables 2a, 2b and 3 should be checked against `results/grid_knn_summary.csv` and `results/paper_vs_ours.csv`. Table 4 remains a separate recorded timing supplement. The legacy `fill_numbers.py` and `repro.sh` do not incorporate these corrections and must not be used to overwrite the new report.
 
 ### Measured Wall-Clock Duration
 
