@@ -159,7 +159,7 @@ Points below the identity line indicate lower reproduced accuracy than the corre
 
 Table 4 records wall-clock fit times on the shared machine. Because the original paper used a MacBook with parallel execution, we make no cross-hardware comparison; we only report the relative ordering under our recorded execution settings. On PenDigits, both UMAP codes are substantially faster than our single-threaded t-SNE baseline (1.85s and 2.58s vs 6.00s). On COIL-20, our implementation (4.11s) outperforms both the reference package (6.29s) and t-SNE (6.06s) in wall-clock time. Speed is not the primary subject of embedding-classification experiment, but these timings underlie the D3 discussion in Section 5: while our UMAP speedup looks impressive here, the bias runs against our own baseline because t-SNE was forced to run single-threaded.
 
-## 5. Diagnosis and deviations
+## 5. Discussion and deviations
 
 The COIL-20 discrepancy is recorded as D9 in the project deviation log. Our priority was to establish that the reproduction follows the declared evaluation before attributing numerical differences to the manifold-learning algorithm. The fold-reader defect identified earlier was a concrete implementation issue: the validated file existed, but the historical reader did not use its nested schema. The corrected grid script now reads and validates the partitions, and the classifier evaluation and derived summaries have been recomputed. The tables in Section 4 reflect the corrected results.
 
