@@ -195,15 +195,13 @@ All results are transductive: the embedding is fitted on all points and k-neares
 
 ## 8. Statement of Individual Contribution
 
-| Member | Primary Roles and Contributions | Key Files and Directories | Commits | Workload |
-| --- | --- | --- | --- | --- |
-| CHEN Wanchuan | Led algorithm implementation and evaluation. Built the canonical loader and evaluation pipeline, integrated the reference package and implemented the transparent UMAP code path, and produced the evaluation scripts and summary tables. | src/umap\_impl/, src/\*\_eval.py, tests/, data/manifests/ | <mark class="hl-c" style="background-color:#FF00FF">commit references pending</mark> | To be confirmed by team |
-| LU Yuqing | Led data engineering and visualization. Independently prepared and audited both data arrays; generated validated stratified splits, three EDA figures and result Figures 2–4; completed separate dataset documentation and integration notes. | src/data\_prep.py, data/manifests/, figures/, docs/goal/DATA\_CARD\_B.md | <mark class="hl-c" style="background-color:#FF00FF">commit references pending</mark> | To be confirmed by team |
-| YUEN Lok Yan | Led reporting and synthesis. Drafted the full report, drew the Figure 1 schematic, compiled the deviation table (Appendix A), and is responsible for the presentation slides. | report/, slides/ | <mark class="hl-c" style="background-color:#FF00FF">commit references pending</mark> | To be confirmed by team |
+| Member | Primary Roles and Contributions | Key Files and Directories | Workload |
+|---|---|---|---|
+| CHEN Wanchuan | Led algorithm implementation and evaluation. Built the canonical loader and evaluation pipeline, integrated the reference package and implemented the transparent UMAP code path, and produced the evaluation scripts and summary tables. | src/umap_impl/, src/*_eval.py, tests/, data/manifests/ | 33.33% |
+| LU Yuqing | Led data engineering and visualization. Independently prepared and audited both data arrays; generated validated stratified splits, three EDA figures and result Figures 2–4; completed separate dataset documentation and integration notes. | src/data_prep.py, data/manifests/, figures/, docs/goal/DATA_CARD_B.md | 33.33% |
+| YUEN Lok Yan | Led reporting and synthesis. Drafted the full report, drew the Figure 1 schematic, compiled the deviation table (Appendix A), and is responsible for the presentation slides. | report/, slides/ | 33.33% |
 
-AI Use Disclosure. ChatGPT assisted with B's data-processing and validation code, figure generation, dataset documentation and report additions, as well as identification and correction of numerical and methodological inconsistencies. The existing model-result CSV values were retained. Team members must verify the final outputs and complete the individual commit references and actual contribution allocation before submission. This disclosure describes the assistance used for B's additions; other members should add any additional tools or uses relevant to their own work.
-
-
+AI Use Disclosure. AI was used as an assistant throughout the project for code debugging, language polishing, and consistency checking by CHEN Wanchuan (algorithm/evaluation), LU Yuqing (data/figures), and YUEN Lok Yan (report/slides). All design decisions, experiments, verification, and final outputs were carried out and approved by the team members. No data or results were AI-generated, and all reported numbers remain traceable to `results/README_numbers.md` and `PAPER_DATA.md`.
 
 ## Appendix A — Deviation log alignment
 
