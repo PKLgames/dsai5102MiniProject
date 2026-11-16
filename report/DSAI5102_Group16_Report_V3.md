@@ -91,20 +91,20 @@ All reported metrics below are the existing supplied means over 10 folds; numeri
 **Evaluation status.** The intended stratified protocol is not yet verified for these stored results. The historical scripts/run_grid.py looked for dataset keys at the JSON top level, while the agreed file stores them under datasets. Its fallback passed all-zero labels to StratifiedKFold. The historical script did not consume B's validated stratified partitions; the replacement included with V3 repairs this, but no new full model run is claimed here. The repaired script must be run and the evaluation recomputed before these tables support a final reproduction verdict.
 
 | Method | k=10 | k=20 | k=40 | k=80 | k=160 |
-| --- | --- | --- | --- | --- | --- |
-| PCA | 0.644 ± 0.032 | 0.652 ± 0.035 | 0.655 ± 0.037 | 0.657 ± 0.038 | 0.638 ± 0.040 |
-| t-SNE | 0.987 ± 0.010 | 0.977 ± 0.010 | 0.965 ± 0.014 | 0.950 ± 0.016 | 0.951 ± 0.015 |
-| UMAP (reference) | 0.988 ± 0.010 | 0.977 ± 0.011 | 0.969 ± 0.013 | 0.951 ± 0.015 | 0.921 ± 0.020 |
-| UMAP (ours) | 0.988 ± 0.009 | 0.984 ± 0.014 | 0.971 ± 0.013 | 0.956 ± 0.013 | 0.955 ± 0.013 |
+|---|---|---|---|---|---|
+| PCA | 0.649 ± 0.030 | 0.641 ± 0.037 | 0.646 ± 0.036 | 0.652 ± 0.031 | 0.640 ± 0.032 |
+| t-SNE | 0.987 ± 0.010 | 0.977 ± 0.011 | 0.965 ± 0.016 | 0.950 ± 0.013 | 0.951 ± 0.014 |
+| UMAP (reference) | 0.988 ± 0.009 | 0.977 ± 0.012 | 0.968 ± 0.012 | 0.951 ± 0.014 | 0.921 ± 0.015 |
+| UMAP (ours) | 0.988 ± 0.010 | 0.984 ± 0.013 | 0.971 ± 0.015 | 0.956 ± 0.014 | 0.954 ± 0.014 |
 
 <p class="caption">Table 2a K-Nearest-Neighbour Class-Preservation Accuracy on PenDigits</p>
 
 | Method | k=10 | k=20 | k=40 | k=80 | k=160 |
-| --- | --- | --- | --- | --- | --- |
-| PCA | 0.719 ± 0.031 | 0.688 ± 0.023 | 0.646 ± 0.021 | 0.549 ± 0.020 | 0.381 ± 0.038 |
-| t-SNE | 0.961 ± 0.014 | 0.907 ± 0.024 | 0.871 ± 0.039 | 0.774 ± 0.045 | 0.606 ± 0.046 |
-| UMAP (reference) | 0.856 ± 0.029 | 0.851 ± 0.027 | 0.842 ± 0.030 | 0.806 ± 0.038 | 0.531 ± 0.055 |
-| UMAP (ours) | 0.853 ± 0.032 | 0.847 ± 0.030 | 0.835 ± 0.030 | 0.808 ± 0.044 | 0.549 ± 0.066 |
+|---|---|---|---|---|---|
+| PCA | 0.723 ± 0.042 | 0.705 ± 0.042 | 0.647 ± 0.038 | 0.549 ± 0.033 | 0.394 ± 0.040 |
+| t-SNE | 0.965 ± 0.016 | 0.912 ± 0.022 | 0.869 ± 0.016 | 0.783 ± 0.016 | 0.653 ± 0.021 |
+| UMAP (reference) | 0.858 ± 0.010 | 0.858 ± 0.010 | 0.856 ± 0.018 | 0.815 ± 0.011 | 0.570 ± 0.033 |
+| UMAP (ours) | 0.857 ± 0.014 | 0.849 ± 0.022 | 0.849 ± 0.014 | 0.817 ± 0.012 | 0.578 ± 0.037 |
 
 <p class="caption">Table 2b K-Nearest-Neighbour Class-Preservation Accuracy on COIL-20</p>
 
@@ -117,12 +117,12 @@ On PenDigits (Table 2A), UMAP-ours gives 0.988 ± 0.009 at k = 10 and 0.955 ± 0
 On COIL-20 (Table 2B), the picture diverges from the paper immediately. At k = 10, UMAP-ours gives 0.853 ± 0.032, which is lower than t-SNE’s 0.961 ± 0.014. This gap persists through k = 20 and k = 40. While UMAP-ours briefly overtakes t-SNE at k = 80 (0.808 ± 0.044 vs 0.774 ± 0.045), it falls behind again at k = 160, dropping to 0.549 ± 0.066 compared to t-SNE’s 0.606 ± 0.046. Because our UMAP accuracy sits well below the paper’s reported values for large k and fails to consistently beat t-SNE, the small-k regime on COIL-20 does not agree with the paper under our frozen protocol.
 
 | Dataset | k | Paper Accuracy | Our Accuracy | Δ (Ours − Paper) | Numerical gap check only |
-| --- | --- | --- | --- | --- | --- |
-| PenDigits | 10 | 0.973 ± 0.044 | 0.988 ± 0.009 | +0.015 | Within 0.03 |
-| PenDigits | 160 | 0.951 ± 0.085 | 0.955 ± 0.013 | +0.004 | Within 0.03 |
-| COIL-20 | 10 | 0.921 ± 0.075 | 0.853 ± 0.032 | −0.068 | Within 0.10 |
-| COIL-20 | 80 | 0.899 ± 0.058 | 0.808 ± 0.044 | −0.091 | Within 0.10 |
-| COIL-20 | 160 | 0.803 ± 0.138 | 0.549 ± 0.066 | −0.254 | Outside 0.10 |
+|---|---|---|---|---|---|
+| PenDigits | 10 | 0.973 ± 0.044 | 0.988 ± 0.010 | +0.015 | Within 0.03 |
+| PenDigits | 160 | 0.951 ± 0.085 | 0.954 ± 0.014 | +0.003 | Within 0.03 |
+| COIL-20 | 10 | 0.921 ± 0.075 | 0.857 ± 0.014 | −0.064 | Within 0.10 |
+| COIL-20 | 80 | 0.899 ± 0.058 | 0.817 ± 0.012 | −0.082 | Within 0.10 |
+| COIL-20 | 160 | 0.803 ± 0.138 | 0.578 ± 0.037 | −0.225 | Outside 0.10 |
 
 <p class="caption">Table 3 Comparison of UMAP Accuracy Between the Original Paper and This Reproduction</p>
 
