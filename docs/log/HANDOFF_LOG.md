@@ -8,12 +8,12 @@
 | 成果 | 时间 | tag | 核验人 | 结论 | 备注 |
 |---|---|---|---|---|---|
 | S1 契约 + 模板 | 11-12 12:30 | `s1` | A 自验 | ✅ PASS | `pytest` 20 passed；`load()` 两次 sha 相同（pendigits 8b3b6ae9…、coil20 d3bf54a4…）；`README_numbers.md` 含键名清单 |
-| S2 数据包 | Day1 22:00 | `s2` | B 自验 → A 验 | ⚪ 待执行 | 哈希重放 + 双实现对拍 |
+| S2 数据包 | 11-15 06:53 | 未打 tag | B 自验 + A 审计 | ✅ PASS（形式改为 loader + manifest） | `VALIDATION.json`：`max_abs_difference_vs_A = 0.0`、`labels_equal = true`、`array_sha256` 与 A 一致；`splits.json` 逐折 = `StratifiedKFold(10, shuffle=True, random_state=42)` 真标签；`pytest` 26 passed |
 | S3 数字终版 | 11-12 21:40 | `s3` | A 自验 | ✅ PASS | 400 行无重复键、两次跑字节一致（`canonicalize`）、`runtime.csv` 8 行、`numbers.json` 98 键与 `README_numbers.md` 对齐、判定见 `results/README_numbers.md` §0（pendigits 复现 / coil20 未复现） |
-| S3 数字终版 | Day2 22:00 | `s3` | A 自验 | ⚪ 待执行 | 400 行 + 重跑差 0 |
-| S4 结果图 | S3+3h | `s4` | B 自验 → A 验 | ⚪ 待执行 | dpi + 点数与 csv 一致 |
-| S5 报告 | 11-21 23:59 | `s5` | A 复核数字 | ⚪ 待执行 | 见 `C_ACCEPTANCE.md` |
-| S6 slides | 11-24 12:00 | `s6` | A 复核数字 | ⚪ 待执行 | — |
+| S3 数字终版（重算） | 11-16 21:30 | `s3` | A 自验 | ✅ PASS | 按 B 的验证划分重算 400 行；`results/evaluation_protocol.json` 记协议哈希；判定：PenDigits 5/5 复现，COIL-20 k=40/80 复现、k=10/20/160 未复现 |
+| S4 结果图 | 11-15 06:53 | 未打 tag | B 自验 + A 抽验 | ✅ PASS | fig2/3/4 + 3 张 EDA，dpi = 300；fig3 有 40 个点 = `paper_vs_ours.csv` 中 `paper_acc` 非空行数 |
+| S5 报告 | 11-16 22:50 | `s5` | A 渲染 + 数字复核 | ✅ PASS（A 侧） | `report/DSAI5102_Group16_Report.pdf`（17 页，由 C 的 V3 md 渲染）；Table 3 补满 10 行、§4 句、D9、贡献表 Key Files 已修；数字全部来自 `results/numbers.json` |
+| S6 slides | 11-16 22:55 | 待打 `s6` | A 文本核对 | ⚠️ 待 C 导出 PDF | `slides/DSAI5102_Group16_slides_V2.pptx` 已改第 5 页气泡与第 9 页判定表；第 5 页红色 "Fails here" 仍把 k=80 圈在内，需 C 重画后导 PDF |
 
 ## 记录模板
 

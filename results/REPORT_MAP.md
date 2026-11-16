@@ -8,7 +8,7 @@
 |---|---|---|
 | `results/grid_knn.csv` | 逐折明细（2 数据集 × 10 折 × 4 方法 × 5 k = 400 行） | 表 2 的底层数据；附录可给列说明 |
 | `results/grid_knn_summary.csv` | 聚合 mean ± std(ddof=1) | **表 2** |
-| `results/paper_vs_ours.csv` | `dataset,method,k,paper_acc,paper_std,our_acc,our_std,delta,n_folds,verifiable` | **表 3** + **Fig.3** |
+| `results/paper_vs_ours.csv` | `dataset,method,k,paper_acc,paper_std,our_acc,our_std,delta,n_folds,verifiable` | **表 3** + **Fig.3**。注：`verifiable` 现在只表示「两列都有数值、可以比较」，不再代表复现成功；成功/失败看 `results/numbers.json` 的 `verdict.*` |
 | `results/runtime.csv` | `dataset,method,median_s,min_s,max_s,timeout` | **表 4** |
 | `results/embeddings/coil20_{umapours,tsne}.npz` | `E`(1440×2 float32)、`y`(1440 int64) | Fig.2 的输入（B 渲染） |
 | `figures/results/fig2_qualitative_coil20.png` | COIL-20 定性两联图 | **Fig.2** |

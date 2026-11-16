@@ -93,3 +93,5 @@ $ 哈希重放（见 `docs/tasks/B_ACCEPTANCE.md`）
 ## 7. 交接一句话
 
 B 交 **S2** 时本文件只需 §1–§3 与 §5 的前三项为真；**S4** 前补齐 §4/§6，并让「数据卡数字 = manifest」与「图可读」两项检查通过。核验细节见 `docs/tasks/B_ACCEPTANCE.md`。
+
+> 审计补充：B 的独立实现与比对结果见 `docs/goal/DATA_CARD_B.md` 与 `docs/validation/B/VALIDATION.json`（`max|dX| = 0`、`labels_equal = true`、`duplicate_rows = 0`）。本文件保留 A 的口径，不再重复记录 B 的实现细节。

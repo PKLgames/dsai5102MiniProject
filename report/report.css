@@ -42,7 +42,8 @@ table {
   margin: 6pt 0 10pt 0;
   font-size: 8.5pt;
   line-height: 1.12;
-  page-break-inside: auto;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 th, td {
   border: 0.5pt solid #000;

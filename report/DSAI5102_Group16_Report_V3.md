@@ -118,19 +118,24 @@ All four methods (PCA, t-SNE, UMAP-reference, and UMAP-ours) were evaluated on t
 
 On PenDigits (Table 2a), UMAP-ours gives 0.988 ± 0.010 at k = 10 and 0.954 ± 0.014 at k = 160. The corresponding t-SNE values are 0.987 ± 0.010 and 0.951 ± 0.014. PCA is lower across the grid. Reference UMAP is close at small k but falls to 0.921 ± 0.015 at k = 160, below both UMAP-ours and t-SNE. These differences are descriptive; because folds are dependent and no paired test or independent-seed experiment was run, they do not establish significance.
 
-On COIL-20 (Table 2b), the pattern departs from the paper at the smallest k. At k = 10, UMAP-ours gives 0.857 ± 0.014, below t-SNE's 0.965 ± 0.016; the gap persists at k = 20 and k = 40. UMAP-ours exceeds t-SNE at k = 80 (0.817 ± 0.012 vs 0.783 ± 0.016) but falls behind again at k = 160 (0.578 ± 0.037 vs 0.653 ± 0.021). Our UMAP accuracy remains well below the paper's large-k values and does not consistently exceed t-SNE, so the small-k COIL-20 result does not agree with the paper under our fixed settings.
+On COIL-20 (Table 2b), the pattern departs from the paper at the smallest k. At k = 10, UMAP-ours gives 0.857 ± 0.014, below t-SNE's 0.965 ± 0.016; the gap persists at k = 20 (0.849 ± 0.022) and, more narrowly, at k = 40 (0.849 ± 0.014), where it remains inside the pre-registered 0.10 amplitude tolerance and within the 0.03 direction slack. UMAP-ours exceeds t-SNE at k = 80 (0.817 ± 0.012 vs 0.783 ± 0.016) but falls behind again at k = 160 (0.578 ± 0.037 vs 0.653 ± 0.021). Our UMAP accuracy remains well below the paper's large-k values and does not consistently exceed t-SNE, so the small-k COIL-20 result does not agree with the paper under our fixed settings.
 
 | Dataset | k | Paper Accuracy | Our Accuracy | Δ (Ours − Paper) | Numerical gap check only |
 |---|---|---|---|---|---|
 | PenDigits | 10 | 0.973 ± 0.044 | 0.988 ± 0.010 | +0.015 | Within 0.03 |
+| PenDigits | 20 | 0.976 ± 0.035 | 0.984 ± 0.013 | +0.008 | Within 0.03 |
+| PenDigits | 40 | 0.954 ± 0.060 | 0.971 ± 0.015 | +0.017 | Within 0.03 |
+| PenDigits | 80 | 0.951 ± 0.072 | 0.956 ± 0.014 | +0.005 | Within 0.03 |
 | PenDigits | 160 | 0.951 ± 0.085 | 0.954 ± 0.014 | +0.003 | Within 0.03 |
 | COIL-20 | 10 | 0.921 ± 0.075 | 0.857 ± 0.014 | −0.064 | Within 0.10 |
+| COIL-20 | 20 | 0.907 ± 0.064 | 0.849 ± 0.022 | −0.058 | Within 0.10 |
+| COIL-20 | 40 | 0.904 ± 0.056 | 0.849 ± 0.014 | −0.055 | Within 0.10 |
 | COIL-20 | 80 | 0.899 ± 0.058 | 0.817 ± 0.012 | −0.082 | Within 0.10 |
 | COIL-20 | 160 | 0.803 ± 0.138 | 0.578 ± 0.037 | −0.225 | Outside 0.10 |
 
 <p class="caption">Table 3 Comparison of UMAP Accuracy Between the Original Paper and This Reproduction</p>
 
-*Note.* Values are reported mean ± fold standard deviation. Published values are from Table 1 of McInnes et al. (2018, revised 2020); the reproduction column is UMAP-ours. Δ is the signed difference, not an absolute difference. The team specification uses amplitude tolerances of 0.03 for PenDigits and 0.10 for COIL-20; these internal thresholds are descriptive criteria, not formal equivalence tests or course requirements. Final verdicts also require the comparative direction, ranking and a verified evaluation pipeline.
+*Note.* Values are reported mean ± fold standard deviation. Published values are from Table 1 of McInnes et al. (2018, revised 2020); the reproduction column is UMAP-ours. Δ is the signed difference, not an absolute difference. The team specification uses amplitude tolerances of 0.03 for PenDigits and 0.10 for COIL-20; these internal thresholds are descriptive criteria, not formal equivalence tests or course requirements. Final verdicts also require the comparative direction, ranking and a verified evaluation pipeline. Applying those criteria to every cell (recorded in results/numbers.json) reproduces all five PenDigits cells and the COIL-20 cells at k = 40 and k = 80, while COIL-20 at k = 10, k = 20 and k = 160 is not reproduced.
 
 At COIL-20 k = 80, the gap is −0.0816, inside the 0.10 tolerance, and UMAP-ours exceeds the corrected t-SNE value (0.817361 vs 0.783333). At k = 160, the gap is −0.2245, outside 0.10, and t-SNE is higher (0.653472 vs 0.578472). At small k, COIL UMAP remains below t-SNE, so numerical closeness to the paper alone does not recover the original comparison. On PenDigits, several UMAP-ours values are close to the paper, but the reference implementation does not exceed t-SNE at every k.
 
@@ -199,9 +204,11 @@ All results are transductive: the embedding is fitted on all points and k-neares
 
 | Member | Primary Roles and Contributions | Key Files and Directories | Workload |
 |---|---|---|---|
-| CHEN Wanchuan | Led algorithm implementation and evaluation. Built the canonical loader and evaluation pipeline, integrated the reference package and implemented the transparent UMAP code path, and produced the evaluation scripts and summary tables. | src/umap_impl/, src/*_eval.py, tests/, data/manifests/ | 33.33% |
+| CHEN Wanchuan | Led algorithm implementation and evaluation. Built the canonical loader and evaluation pipeline, integrated the reference package and implemented the transparent UMAP code path, and produced the evaluation scripts and summary tables. | src/umap_impl/, src/data.py, scripts/run_grid.py, scripts/run_runtime.py, scripts/fill_numbers.py, tests/ | 33.33% |
 | LU Yuqing | Led data engineering and visualization. Independently prepared and audited both data arrays; generated validated stratified splits, three EDA figures and result Figures 2–4; completed separate dataset documentation and integration notes. | src/data_prep.py, data/manifests/, figures/, docs/goal/DATA_CARD_B.md | 33.33% |
 | YUEN Lok Yan | Led reporting and synthesis. Drafted the full report, drew the Figure 1 schematic, compiled the deviation table (Appendix A), and is responsible for the presentation slides. | report/, slides/ | 33.33% |
+
+Workload percentages are the team's own role-share estimate and were agreed by all three members; repository commit counts (27 / 27 / 6) are not used as a proxy because work was batched through the GitHub web upload interface.
 
 AI Use Disclosure. AI was used as an assistant throughout the project for code debugging, language polishing, and consistency checking by CHEN Wanchuan (algorithm/evaluation), LU Yuqing (data/figures), and YUEN Lok Yan (report/slides). All design decisions, experiments, verification, and final outputs were carried out and approved by the team members. No data or results were AI-generated, and all reported numbers remain traceable to `results/README_numbers.md` and `PAPER_DATA.md`.
 
@@ -221,7 +228,7 @@ The identifiers below correspond to docs/log/DEVIATIONS.md. Entries about abando
 | D6 | scikit-learn Euclidean kNN | Retained classifier family; exact historical details not fully recovered |
 | D7 | Proposed Procrustes normalisation | Stability not executed |
 | D8 | Timing includes neighbour search, initialisation and fitting | Supplementary timing definition |
-| D9 | COIL-20 accuracy discrepancy, including earlier smoke tests | Observed numerical issue; cause unresolved |
+| D9 | COIL-20 accuracy discrepancy, including earlier smoke tests | Located and reduced: the fold reader was not stratifying on the true labels (fixed, all numbers recomputed on the validated partitions), and the residual gap at large k is attributed to spectral initialisation plus the weaker negative-sampling repulsion in 16,384 dimensions. COIL-20 k = 40 and k = 80 now sit inside the 0.10 tolerance; k = 10 and k = 20 still fail the direction check and k = 160 the amplitude check. |
 | D10 | English figure labels | Presentation choice |
 | D11 | Proposed large-k evaluation on a reduced sample | Not executed after D18 |
 | D12 | Conditional Laplacian Eigenmaps fallback | Not executed |

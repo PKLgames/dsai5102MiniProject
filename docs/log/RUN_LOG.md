@@ -67,3 +67,15 @@
 另记两条对拍事实（不是 bug，是口径差异，已写进 `docs/log/DEVIATIONS.md`）：
 - COIL-20 上 umap-learn 用近似 kNN（pynndescent），把相距 2.13e-06 的近重复点当自身吞掉（ρ=29.35），我们精确 kNN 的 σ 因此更大；两者 kNN@10 差 0.0007。
 - 敏感性探针：COIL-20 `n_neighbors` 15→30→100，我们 kNN@10 = 0.8569→0.8458→0.8799（原文 0.921）——差距不只在邻居数。
+
+## 6. 2026-11-16 · P5 重算与 S5 收口（A）
+
+| 事项 | 事实 |
+|---|---|
+| 折划分缺陷 | 旧 `run_grid.load_splits()` 回退分支用 `np.zeros(n)` 当标签 → 不分层；旧折与 B 的验证折 test 集重合仅 7–15%。已改为 fail-closed 读 `data/manifests/splits.json`（B 的 `run_fixed_evaluation.py` 串起备份→重算→出图） |
+| 重算结果 | 400 行 / 10 折 / 2 数据集；旧结果备份在 `results_backup/20261115T155709400559Z/`（gitignore） |
+| 判定变化 | PenDigits 5/5 单元复现（不变）；COIL-20 k=40、k=80 由未复现→**复现**（k=80 Δ −0.091→−0.081），k=10/20/160 仍未复现 |
+| 报告收口 | C 的 V3 已套用 `results/V3_NUMBERS_PATCH.md`；A 再补 4 处：Table 3 补满 10 行、§4 "gap persists" 句改写、Appendix A 的 D9 改为「已定位」、贡献表 Key Files 去掉不存在的 `src/*_eval.py` 并加工作口径说明 |
+| PDF | `report/DSAI5102_Group16_Report.pdf`（17 页，`report.css` 加 `page-break-inside: avoid` 避免 Table 3 跨页） |
+| slides | `slides/DSAI5102_Group16_slides_V2.pptx`：第 9 页判定表改为「PenDigits k=10–160 全部 / COIL-20 k=40,80 复现；COIL-20 k=10,20,160 未复现」，第 5 页气泡改写。**本机无 LibreOffice，PDF 需 C 重新导出**；第 5 页红框仍含 k=80（矢量图层，需 C 重画） |
+| 未解决 | `results/review_comparison.csv` 末列仍写 "Recompute required unless verified against fixed stratified split file"（B 的脚本产物，待 B 重出）；`docs/goal/DATA_CARD_B.md` 待并入主数据卡 |
