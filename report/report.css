@@ -1,75 +1,205 @@
-/* 与 report/DSAI5102_07_Report_draft.docx 对齐的排版样式（md → PDF 用）
-   由 scripts/docx_to_md.py 生成 md 保证结构，本文件负责字号/边距/表格/高亮还原。 */
+/* 学术论文版式（单栏 A4）：serif 正文、首行缩进、页脚页码、书眉章节名、
+   booktabs 风格表格、图注/表注 8.8pt 斜体并加粗编号。
+   结构由 md 决定，本文件只负责排版；内容与数字不改。 */
 
 @page {
   size: A4;
-  margin: 2.0cm 1.9cm 2.0cm 1.9cm;
+  margin: 2.45cm 2.3cm 2.3cm 2.3cm;
+
+  @bottom-center {
+    content: counter(page);
+    font-family: "Latin Modern Roman", "DejaVu Serif", serif;
+    font-size: 9.5pt;
+    color: #222;
+  }
+
+  @top-right {
+    content: string(section);
+    font-family: "Latin Modern Roman", "DejaVu Serif", serif;
+    font-size: 8pt;
+    font-style: italic;
+    color: #555;
+  }
 }
 
+@page :first {
+  @top-right { content: none; }
+}
+
+html { font-size: 10.5pt; }
+
 body {
-  font-family: "Segoe UI", "Helvetica Neue", "DejaVu Sans", Arial, sans-serif;
-  font-size: 12pt;
-  line-height: 1.15;
+  font-family: "Latin Modern Roman", "DejaVu Serif", serif;
+  font-size: 10.5pt;
+  line-height: 1.42;
   color: #000;
   text-align: justify;
   hyphens: auto;
 }
 
-p { margin: 0 0 8pt 0; orphans: 2; widows: 2; }
+/* ---------- 标题块 ---------- */
+h1 {
+  font-size: 15.5pt;
+  line-height: 1.28;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 10pt 0;
+  text-indent: 0;
+}
 
-/* 标题：docx 里位于正文之前的居中两行，字号同为 12pt，靠字重区分 */
-p.title    { text-align: center; font-weight: 600; margin: 0 0 4pt 0; }
-p.subtitle { text-align: center; font-weight: 700; margin: 0 0 14pt 0; }
-
-/* 章节标题：docx 用 12pt 加粗，不放大，避免与原文文档不一致 */
-h2 { font-size: 12pt; font-weight: 700; margin: 14pt 0 6pt 0; page-break-after: avoid; }
-h3 { font-size: 12pt; font-weight: 700; margin: 12pt 0 6pt 0; page-break-after: avoid; }
-
-/* 图表标题：docx 为 9pt 斜体 */
-p.caption {
-  font-size: 9pt;
+div[align="center"] h3 {
+  font-size: 12pt;
+  font-weight: 400;
   font-style: italic;
-  margin: 4pt 0 10pt 0;
-  text-align: left;
+  text-align: center;
+  margin: 0 0 12pt 0;
+}
+
+div[align="center"] p {
+  text-align: center;
+  text-indent: 0;
+  font-size: 11pt;
+  margin: 0 0 2pt 0;
+}
+
+/* ---------- 正文 ---------- */
+p {
+  margin: 0;
+  text-indent: 1.1em;
+  orphans: 2;
+  widows: 2;
+}
+
+h2 {
+  font-size: 12pt;
+  font-weight: 700;
+  margin: 17pt 0 6pt 0;
+  text-indent: 0;
+  page-break-after: avoid;
+  string-set: section content();
+}
+
+h3 {
+  font-size: 10.8pt;
+  font-weight: 700;
+  font-style: italic;
+  margin: 12pt 0 4pt 0;
+  text-indent: 0;
   page-break-after: avoid;
 }
 
-/* 表格：与 docx 的 Table Grid 一致（0.5pt 全边框 + 表头 DBE5F1 浅蓝底） */
+/* ---------- 摘要（build_report_pdf.py 包 <div class="abstract">） ---------- */
+.abstract {
+  margin: 6pt 1.2em 14pt 1.2em;
+}
+
+.abstract p {
+  text-indent: 0;
+  font-size: 9.9pt;
+  line-height: 1.38;
+  margin-bottom: 6pt;
+}
+
+.abstract h2 {
+  margin-top: 0;
+  font-size: 11pt;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 图 ---------- */
+p.figure {
+  text-align: center;
+  text-indent: 0;
+  margin: 12pt 0 2pt 0;
+  page-break-inside: avoid;
+}
+
+p.figure img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 21cm;
+}
+
+/* ---------- 图注 / 表注 ---------- */
+p.caption {
+  font-size: 8.8pt;
+  font-style: italic;
+  text-indent: 0;
+  text-align: left;
+  line-height: 1.3;
+  margin: 2pt 0 13pt 0;
+  page-break-before: avoid;
+}
+
+p.caption b {
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* ---------- 表格（booktabs：只有横线，无竖线、无底色） ---------- */
 table {
   border-collapse: collapse;
-  hyphens: none;
+  border-top: 1.1pt solid #000;
+  border-bottom: 1.1pt solid #000;
   width: 100%;
-  margin: 6pt 0 10pt 0;
-  font-size: 8.5pt;
-  line-height: 1.12;
+  margin: 7pt 0 3pt 0;
+  font-size: 8.6pt;
+  line-height: 1.25;
+  hyphens: none;
   page-break-inside: avoid;
   break-inside: avoid;
 }
+
 th, td {
-  border: 0.5pt solid #000;
-  padding: 2.5pt 4pt;
+  border: none;
+  padding: 3.2pt 5pt;
   vertical-align: top;
   text-align: left;
 }
-th { background: #DBE5F1; font-weight: 700; }
+
+th {
+  font-weight: 700;
+  border-bottom: 0.6pt solid #000;
+}
+
+td { border-bottom: 0.25pt solid #CFCFCF; }
+tr:last-child td { border-bottom: none; }
 tr { page-break-inside: avoid; }
 
-/* 代码块：docx 为 10pt Menlo */
+/* ---------- 参考文献（build_report_pdf.py 包 <div class="refs">） ---------- */
+.refs p {
+  text-indent: -1.4em;
+  padding-left: 1.4em;
+  font-size: 9.6pt;
+  margin-bottom: 5pt;
+}
+
+/* ---------- 代码 ---------- */
 pre {
-  font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 9.5pt;
-  line-height: 1.25;
-  margin: 2pt 0 8pt 0;
+  font-family: "Latin Modern Mono", "DejaVu Sans Mono", monospace;
+  font-size: 8.8pt;
+  line-height: 1.28;
+  margin: 6pt 0 10pt 0;
+  padding: 4pt 6pt;
+  border-left: 2pt solid #B0B0B0;
   white-space: pre-wrap;
+  text-indent: 0;
   page-break-inside: avoid;
 }
-code { font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace; font-size: 10pt; }
 
+code {
+  font-family: "Latin Modern Mono", "DejaVu Sans Mono", monospace;
+  font-size: 9.2pt;
+}
+
+/* ---------- 列表 ---------- */
+ul, ol { margin: 4pt 0 8pt 1.4em; padding: 0; }
+li { margin-bottom: 3pt; text-indent: 0; }
+
+/* ---------- 其他 ---------- */
 img { max-width: 100%; }
-
-/* 彩色占位符：颜色与 Word highlight 原值一致 */
-mark.hl-a { background-color: #00FFFF; color: #000; }
-mark.hl-b { background-color: #FFFF00; color: #000; }
-mark.hl-c { background-color: #FF00FF; color: #000; }
-
-hr { border: none; border-top: 0.5pt solid #999; margin: 12pt 0; }
+hr { border: none; border-top: 0.4pt solid #BBB; margin: 12pt 0; }
+mark.hl-a { background-color: #00FFFF; }
+mark.hl-b { background-color: #FFFF00; }
+mark.hl-c { background-color: #FF00FF; }

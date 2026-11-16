@@ -101,3 +101,15 @@
 | slides PDF | `slides/DSAI5102_Group16_Slides.pdf`（959,918 B，10 页），由同一 pptx 导出；第 9 页判定表与 `results/numbers.json` 一致 |
 | 删除旧件 | `slides/Final_DSAI5102_Group16_slides.{pptx,pdf}` 已删（第 9 页为旧判定） |
 | 提交包 | `/home/pklgames/coding/dsai5102_group16_submission.zip`（21 MB，87 文件，sha256 `5d77fff3…`）；包内 report PDF、slides pptx+pdf 与仓库同源 |
+
+## 9. 2026-11-17 00:20 · 报告版式学术化（A）
+
+| 事项 | 事实 |
+|---|---|
+| 旧档归档 | `report/archive/DSAI5102_Group16_Report_2026-11-16_preprint.{md,pdf}` + `report/archive/report.css.preprint` |
+| 版式 | 单栏 A4（边距 2.45/2.3/2.3/2.3 cm）；正文 10.5pt Latin Modern Roman（回退 DejaVu Serif）、行高 1.42、两端对齐 + 自动断字、首行缩进 1.1em；标题 15.5pt 居中；页脚页码居中；书眉为当前章节名（首页不显示）；表格改 booktabs（只有上下横线，去掉竖线与底色）；图注/表注 8.8pt 斜体、编号加粗；参考文献悬挂缩进 |
+| 实现 | `report/report.css` 全量重写 + `scripts/build_report_pdf.py` 的 `postprocess()`（只包 `<div class="abstract">`/`<div class="refs">`、给图片段落加 `class="figure"`、给图注编号加 `<b>`，不触碰任何文字与数字） |
+| 内容零改动 | `git diff --stat report/DSAI5102_Group16_Report.md` 为空；Markdown 未改，只有 CSS/渲染脚本变化 |
+| 产物 | `report/DSAI5102_Group16_Report.pdf` 16 页（原 17 页），sha256 `cdf67b87…` |
+| 图 1 修复 | `report/media/` 之前被归档，导致 Figure 1 只剩 alt 文字；已从 `report/archive/media/image1.png` 恢复到 `report/media/image1.png`（103,770 B），并纳入版本控制以保证 PDF 可重建 |
+| 提交包 | `report/DSAI5102_Group16_Report.pdf` 已同步（与仓库同 sha256），zip 重打后记录新哈希 |
