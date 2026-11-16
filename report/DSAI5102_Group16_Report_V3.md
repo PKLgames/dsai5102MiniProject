@@ -302,8 +302,8 @@ Jolliffe, I. T. (2002). Principal component analysis (2nd ed.). Springer.
 
 McInnes, L., Healy, J., &amp; Melville, J. (2018). UMAP: Uniform manifold approximation and projection for dimension reduction (arXiv:1802.03426v3; revised 2020). arXiv. https://arxiv.org/abs/1802.03426v3
 
-scikit-learn developers. (n.d.). sklearn.datasets.load\_digits. https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html
+Scikit-learn developers. (n.d.). sklearn.datasets.load\_digits. https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html
 
 Tang, J., Liu, J., Zhang, M., &amp; Mei, Q. (2016). Visualizing large-scale and high-dimensional data. In Proceedings of the 25th International Conference on World Wide Web (pp. 287–297).
 
-van der Maaten, L., &amp; Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9, 2579–2605.
+Van der Maaten, L., &amp; Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9, 2579–2605.
