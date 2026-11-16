@@ -1,6 +1,6 @@
-<p class="title">DSAI5102 Mini-Project · Format 2.2 Academic Paper Reproduction</p>
+<p class="title" style="text-align: center; font-weight: bold;">DSAI5102 Mini-Project · Format 2.2 Academic Paper Reproduction</p>
 
-<p class="subtitle">Reproducing UMAP embedding classification on PenDigits and COIL-20</p>
+<h1 align="center">Reproducing UMAP embedding classification on PenDigits and COIL-20</h1>
 
 ## Abstract
 
