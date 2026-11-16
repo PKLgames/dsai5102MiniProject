@@ -2,8 +2,6 @@
 
 <p class="subtitle">Reproducing UMAP embedding classification on PenDigits and COIL-20</p>
 
-Version: V3. Numerical tables and result figures retain the historical snapshot; the corrected evaluation has not yet been run.
-
 ## Abstract
 
 We attempt to reproduce the quantitative embedding experiment in Section 5.2 and Table 1 of UMAP (McInnes et al., 2018, revised 2020), called C2 in our internal plan. We retain the two small datasets, two-dimensional embeddings, kNN classifier neighbourhood sizes of 10, 20, 40, 80 and 160, and the intended ten-fold stratified evaluation. PCA and t-SNE provide the original baseline families; a transparent UMAP implementation is additionally compared with the reference package. Independent data preparation matches the canonical project arrays exactly. The supplied results are close to several published PenDigits accuracies but show lower COIL-20 UMAP accuracy, particularly at k = 160. A code audit identified a fold-file loading defect, so these numerical findings remain provisional until evaluation is rerun using the validated stratified partitions. This is a targeted experimental reproduction, not a claim that all original results or settings have been recovered.
