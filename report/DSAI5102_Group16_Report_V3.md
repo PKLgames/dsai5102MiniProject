@@ -4,7 +4,7 @@
 
 ## Abstract
 
-We attempt to reproduce the quantitative embedding experiment in Section 5.2 and Table 1 of UMAP (McInnes et al., 2018, revised 2020), called C2 in our internal plan. We retain the two small datasets, two-dimensional embeddings, kNN classifier neighbourhood sizes of 10, 20, 40, 80 and 160, and the intended ten-fold stratified evaluation. PCA and t-SNE provide the original baseline families; a transparent UMAP implementation is additionally compared with the reference package. Independent data preparation matches the canonical project arrays exactly. The supplied results are close to several published PenDigits accuracies but show lower COIL-20 UMAP accuracy, particularly at k = 160. A code audit identified a fold-file loading defect, so these numerical findings remain provisional until evaluation is rerun using the validated stratified partitions. This is a targeted experimental reproduction, not a claim that all original results or settings have been recovered.
+We reproduce the embedding-classification experiment in Section 5.2 and Table 1 of UMAP (McInnes et al., 2018, revised 2020), referred to as C2 in our plan. The reproduction retains the two small datasets, two-dimensional embeddings, kNN neighbourhood sizes of 10, 20, 40, 80 and 160, and the validated ten-fold stratified evaluation. PCA and t-SNE serve as the baseline families; a transparent UMAP implementation is compared with the reference package. Independent data preparation matches the canonical arrays exactly. Under the corrected stratified partitions, PenDigits results are close to several published values, whereas COIL-20 UMAP accuracy is lower, particularly at k = 160, and does not consistently exceed t-SNE. We therefore report a partial numerical reproduction under the documented settings. The scope is one experiment, not the full paper.
 
 ## 1. Introduction and the paper reproduced
 
@@ -86,7 +86,7 @@ The team records a shared machine with 16 vCPU, 7.5 GB memory and no GPU for mod
 
 All reported metrics below are the existing supplied means over 10 folds; numerical tables have been retained unchanged except for interpretation labels. The complete results are available in the accompanying repository.
 
-**Evaluation status.** The intended stratified protocol is not yet verified for these stored results. The historical scripts/run_grid.py looked for dataset keys at the JSON top level, while the agreed file stores them under datasets. Its fallback passed all-zero labels to StratifiedKFold. The historical script did not consume B's validated stratified partitions; the replacement included with V3 repairs this, but no new full model run is claimed here. The repaired script must be run and the evaluation recomputed before these tables support a final reproduction verdict.
+**Evaluation status.** The corrected grid reader now uses the nested `datasets` schema in `data/manifests/splits.json` and the validated true-label stratified ten-fold partitions. The earlier all-zero-label fallback has been removed. The tables below are the corrected results and supersede the previous snapshot.
 
 | Method | k=10 | k=20 | k=40 | k=80 | k=160 |
 |---|---|---|---|---|---|
@@ -108,11 +108,11 @@ All reported metrics below are the existing supplied means over 10 folds; numeri
 
 *Note.* Values represent mean ± standard deviation over 10 folds. The evaluation is transductive: kNN measures the class structure retained by the embedding, not generalisation to unseen data. The full k-grid is available in results/grid\_knn\_summary.csv.
 
-All four methods (PCA, t-SNE, UMAP-reference, and UMAP-ours) were evaluated over the same k-grid (k = 10, 20, 40, 80, and 160) defined in configs/main.yaml. The choice of grid is not arbitrary: embedding-classification experiment in McInnes et al. (2018) distinguishes small k (10 to 40) from large k (80 to 160), and the claim is reproduced only if both ends of the grid are separately evaluated. Tables 2A and 2B report the mean and standard deviation across 10 folds.
+All four methods (PCA, t-SNE, UMAP-reference, and UMAP-ours) were evaluated on the same k-grid (k = 10, 20, 40, 80, and 160) defined in `configs/main.yaml`. The grid follows the original experiment, which separates small k (10 to 40) from large k (80 to 160); both ends are therefore reported. Tables 2a and 2b give the mean and standard deviation over 10 folds.
 
-On PenDigits (Table 2A), UMAP-ours gives 0.988 ± 0.009 at k = 10 and 0.955 ± 0.013 at k = 160, compared with t-SNE's 0.987 ± 0.010 and 0.951 ± 0.015. PCA is lower across the grid. Reference UMAP is close at small k but drops to 0.921 ± 0.020 at k = 160, below both UMAP-ours and t-SNE. These descriptive differences do not establish significance because folds are dependent and no paired inferential analysis or independent-seed experiment was performed.
+On PenDigits (Table 2a), UMAP-ours gives 0.988 ± 0.010 at k = 10 and 0.954 ± 0.014 at k = 160. The corresponding t-SNE values are 0.987 ± 0.010 and 0.951 ± 0.014. PCA is lower across the grid. Reference UMAP is close at small k but falls to 0.921 ± 0.015 at k = 160, below both UMAP-ours and t-SNE. These differences are descriptive; because folds are dependent and no paired test or independent-seed experiment was run, they do not establish significance.
 
-On COIL-20 (Table 2B), the picture diverges from the paper immediately. At k = 10, UMAP-ours gives 0.853 ± 0.032, which is lower than t-SNE’s 0.961 ± 0.014. This gap persists through k = 20 and k = 40. While UMAP-ours briefly overtakes t-SNE at k = 80 (0.808 ± 0.044 vs 0.774 ± 0.045), it falls behind again at k = 160, dropping to 0.549 ± 0.066 compared to t-SNE’s 0.606 ± 0.046. Because our UMAP accuracy sits well below the paper’s reported values for large k and fails to consistently beat t-SNE, the small-k regime on COIL-20 does not agree with the paper under our frozen protocol.
+On COIL-20 (Table 2b), the pattern departs from the paper at the smallest k. At k = 10, UMAP-ours gives 0.857 ± 0.014, below t-SNE's 0.965 ± 0.016; the gap persists at k = 20 and k = 40. UMAP-ours exceeds t-SNE at k = 80 (0.817 ± 0.012 vs 0.783 ± 0.016) but falls behind again at k = 160 (0.578 ± 0.037 vs 0.653 ± 0.021). Our UMAP accuracy remains well below the paper's large-k values and does not consistently exceed t-SNE, so the small-k COIL-20 result does not agree with the paper under our fixed settings.
 
 | Dataset | k | Paper Accuracy | Our Accuracy | Δ (Ours − Paper) | Numerical gap check only |
 |---|---|---|---|---|---|
@@ -126,7 +126,7 @@ On COIL-20 (Table 2B), the picture diverges from the paper immediately. At k = 1
 
 *Note.* Values are reported mean ± fold standard deviation. Published values are from Table 1 of McInnes et al. (2018, revised 2020); the reproduction column is UMAP-ours. Δ is the signed difference, not an absolute difference. The team specification uses amplitude tolerances of 0.03 for PenDigits and 0.10 for COIL-20; these internal thresholds are descriptive criteria, not formal equivalence tests or course requirements. Final verdicts also require the comparative direction, ranking and a verified evaluation pipeline.
 
-At COIL-20 k = 80, the unrounded gap is −0.090667, within 0.10, and UMAP-ours exceeds the supplied t-SNE accuracy (0.808333 versus 0.774305). At k = 160, the gap is −0.254389, outside 0.10, and t-SNE is higher (0.606250 versus 0.548611). At small k, COIL UMAP remains below t-SNE, so numerical closeness to the paper alone cannot establish the original comparative result. On PenDigits, several original UMAP values are closely approximated by UMAP-ours, but the reference implementation does not dominate t-SNE at every k.
+At COIL-20 k = 80, the gap is −0.0816, inside the 0.10 tolerance, and UMAP-ours exceeds the corrected t-SNE value (0.817361 vs 0.783333). At k = 160, the gap is −0.2245, outside 0.10, and t-SNE is higher (0.653472 vs 0.578472). At small k, COIL UMAP remains below t-SNE, so numerical closeness to the paper alone does not recover the original comparison. On PenDigits, several UMAP-ours values are close to the paper, but the reference implementation does not exceed t-SNE at every k.
 
 These results are mixed rather than an exact replication of Table 1. The study retains the selected original task, dataset sizes and k-grid, while testing whether the published pattern survives the documented implementation choices. The current numerical discrepancy is an outcome to investigate, not evidence that the original paper is incorrect. All comparative conclusions remain provisional pending the stratified-fold rerun.
 
@@ -138,15 +138,13 @@ Figure 2 addresses the same qualitative comparison used to accompany embedding e
 
 ![Published and current accuracies](../figures/results/fig3_paper_vs_ours.png)
 
-<p class="caption">Figure 3 Published versus supplied kNN accuracies for 40 dataset–method–k combinations. The dashed identity line marks numerical equality. Marker shape identifies the dataset and colour identifies the method; coincident points can overlap. No binary reproduction verdict is encoded because the existing verifiable flags are hard-coded rather than computed from the full protocol.</p>
+<p class="caption">Figure 3 Published versus corrected kNN accuracies for 40 dataset–method–k combinations. The dashed line marks equality. Marker shape identifies the dataset and colour identifies the method; overlapping points may obscure one another. No binary pass/fail flag is shown, because the earlier flags were set by hand rather than computed from the full protocol.</p>
 
 Points below the identity line indicate lower supplied accuracy than the corresponding published value. This direct comparison preserves the paper's evaluation target while displaying departures explicitly. It does not replace the original comparative question about UMAP versus t-SNE. Figure 4 additionally shows how accuracy changes across the original k-grid.
 
 ![Accuracy across the original k grid](../figures/results/fig4_knn_accuracy_by_k.png)
 
-<p class="caption">Figure 4 kNN accuracy versus classifier neighbourhood size on the two original-scale datasets. Error bars are fold standard deviations, not confidence intervals or variability across independently refitted embeddings. Curves reproduce the supplied summary CSV and remain provisional pending evaluation with the corrected fold reader.</p>
-
-
+<p class="caption">Figure 4 kNN accuracy versus classifier neighbourhood size on the two original-scale datasets. Error bars are fold standard deviations, not confidence intervals or variation across refitted embeddings. Curves are drawn from the corrected summary CSV.</p>
 
 | Method | PenDigits | COIL-20 |
 | --- | --- | --- |
@@ -201,6 +199,8 @@ All results are transductive: the embedding is fitted on all points and k-neares
 
 AI Use Disclosure. AI was used as an assistant throughout the project for code debugging, language polishing, and consistency checking by CHEN Wanchuan (algorithm/evaluation), LU Yuqing (data/figures), and YUEN Lok Yan (report/slides). All design decisions, experiments, verification, and final outputs were carried out and approved by the team members. No data or results were AI-generated, and all reported numbers remain traceable to `results/README_numbers.md` and `PAPER_DATA.md`.
 
+
+
 ## Appendix A — Deviation log alignment
 
 The identifiers below correspond to docs/log/DEVIATIONS.md. Entries about abandoned datasets or stability analyses are historical planning records, not executed experiments. The earlier report's renumbered list has been corrected to prevent conflicting references.
@@ -226,13 +226,13 @@ The identifiers below correspond to docs/log/DEVIATIONS.md. Entries about abando
 | D17 | Distinguish original paper from 2024 Primer | Citation clarification |
 | D18 | Scope restricted to C2 on PenDigits and COIL-20 | Final selected scope |
 
-The split-reader defect is an additional audited issue identified during B's integration, recorded separately in docs/validation/B/UPDATE_NOTES.md; the existing D identifiers are retained. Existing Boolean verifiable fields must not be treated as independently computed success decisions: the supplied code marks all COIL-20 k ≥ 80 rows false, irrespective of the actual gap or method.
+The split-reader defect is a separate issue found during B's integration and is recorded in `docs/validation/B/UPDATE_NOTES.md`. The D identifiers are unchanged. The `verifiable` column in `paper_vs_ours.csv` should not be read as a computed success flag: the current file marks every row true, whereas earlier code marked all COIL-20 k ≥ 80 rows false. We therefore do not treat that column as a reproduction verdict.
 
 
 
 ## Appendix B — Reproduction guide
 
-This appendix describes the intended reconstruction workflow. The current model-result snapshot is preserved for comparison; a verified stratified evaluation requires the fold-reader repair before the grid command is rerun.
+This appendix describes how to rebuild the reported results. The corrected stratified evaluation has been run; the steps below reproduce the current tables.
 
 ### Environment and Hardware
 
@@ -260,6 +260,8 @@ The previous team run recorded approximately 2.1 minutes for its legacy pipeline
 ### Originality check
 
 The previous team draft records 0.22% eight-word overlap (11 of 5,097 shingles). That historical figure does not assess this updated report and should be rerun if used. The team's internal 5% threshold is not stated in the provided course rubric and is not a substitute for correct attribution, independent analysis or an accurate AI disclosure.
+
+
 
 ## Appendix C — Exploratory data displays
 
