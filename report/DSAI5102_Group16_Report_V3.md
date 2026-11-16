@@ -1,8 +1,12 @@
-<p class="title" style="text-align: center; font-weight: bold;">DSAI5102 Mini-Project · Format 2.2 Academic Paper Reproduction</p>
+<div align="center">
 
-<p class="subtitle" style="text-align: center;">Reproducing UMAP embedding classification on PenDigits and COIL-20</p>
+<h1>DSAI5102 Mini-Project · Format 2.2 Academic Paper Reproduction</h1>
 
-<p align="center"><b>Group 16 | Chen Wanchuan | Lu Yuqing | Yuen Lok Yan</b></p>
+<h3><i>Reproducing UMAP embedding classification on PenDigits and COIL-20</i></h3>
+
+<p><b>Group 16 | Chen Wanchuan | Lu Yuqing | Yuen Lok Yan</b></p>
+
+</div>
 
 ## Abstract
 
