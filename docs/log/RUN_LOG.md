@@ -112,4 +112,4 @@
 | 内容零改动 | `git diff --stat report/DSAI5102_Group16_Report.md` 为空；Markdown 未改，只有 CSS/渲染脚本变化 |
 | 产物 | `report/DSAI5102_Group16_Report.pdf` 16 页（原 17 页），sha256 `cdf67b87…` |
 | 图 1 修复 | `report/media/` 之前被归档，导致 Figure 1 只剩 alt 文字；已从 `report/archive/media/image1.png` 恢复到 `report/media/image1.png`（103,770 B），并纳入版本控制以保证 PDF 可重建 |
-| 提交包 | `report/DSAI5102_Group16_Report.pdf` 已同步（与仓库同 sha256），zip 重打后记录新哈希 |
+| 提交包 | `report/DSAI5102_Group16_Report.pdf` 已同步（与仓库同 sha256 `cdf67b87…`）；`dsai5102_group16_submission.zip` 重打为 21.5 MB / 68 文件，sha256 `5112137927629d2a92d0e88e4ebda675c123212cabed8b5a4270cdf98e32855a`（README §7 已把「17 页」改为「16 页，学术单栏版式」） |
