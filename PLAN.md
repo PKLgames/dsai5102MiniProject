@@ -70,7 +70,7 @@
 | **S5** | `DSAI5102_<GroupID>_Report.pdf` | C | 课程 | 11-21 23:59 |
 | **S6** | `DSAI5102_<GroupID>_Slides.pdf` | C | 课程 | 11-24 12:00 |
 
-**当前状态（2026-11-16，A 记录）**：S1 ✅（tag `s1`）、S2 ✅（loader + manifest，审计 `max|dX|=0`）、S3 ✅（tag `s3`，已按验证划分重算 400 行）、S4 ✅（fig2/3/4 + EDA，300 dpi）、S5 ✅（`report/DSAI5102_Group16_Report.pdf`，17 页，tag `s5`）、S6 ⚠️（`slides/..._V2.pptx` 文本已修，待 C 重画第 5 页红框并导 PDF）。
+**当前状态（2026-11-16 23:56，A 记录）**：S1 ✅（tag `s1`）、S2 ✅（loader + manifest，审计 `max|dX|=0`）、S3 ✅（tag `s3`，已按验证划分重算 400 行）、S4 ✅（fig2/3/4 + EDA，300 dpi）、S5 ✅（`report/DSAI5102_Group16_Report.pdf`，17 页，tag `s5`）、S6 ✅（`slides/DSAI5102_Group16_Slides.{pptx,pdf}`，10 页、同源，含 C 的新第 5 页图；tag `s6`）。**S1–S6 全部完成**；提交包 `dsai5102_group16_submission.zip`（21 MB，可离线复现，`PASS`）。
 
 ```
 Day1 10:00         Day1 22:00            Day2 22:00        +3 h
