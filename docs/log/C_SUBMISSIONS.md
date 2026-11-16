@@ -15,6 +15,10 @@
 
 ## 2. 报告文件索引
 
+> **2026-11-16 收口（A）**：最新版只保留在根目录，标准命名 `report/DSAI5102_Group16_Report.md` + `.pdf`、`slides/DSAI5102_Group16_Slides.pptx`（PDF 待 C 导出为 `DSAI5102_Group16_Slides.pdf`）。
+> 下表及本文件 §7 记录的是 11-13～11-16 的历史产物，相关文件已移入 `report/archive/`、`slides/archive/`，仅作可追溯性保留。
+
+
 | 文件 | 类型 | 状态 | 说明 |
 |---|---|---|---|
 | `report/DSAI5102_07_Report_draft.docx` | C 原稿（二进制） | ✅ 最新（`ce7e53e`） | C 用 Word 写，含 7 张表、1 张内嵌图（Fig.1 流程图）、9 处彩色占位符 |

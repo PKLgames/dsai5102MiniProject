@@ -13,7 +13,7 @@
 | S3 数字终版（重算） | 11-16 21:30 | `s3` | A 自验 | ✅ PASS | 按 B 的验证划分重算 400 行；`results/evaluation_protocol.json` 记协议哈希；判定：PenDigits 5/5 复现，COIL-20 k=40/80 复现、k=10/20/160 未复现 |
 | S4 结果图 | 11-15 06:53 | 未打 tag | B 自验 + A 抽验 | ✅ PASS | fig2/3/4 + 3 张 EDA，dpi = 300；fig3 有 40 个点 = `paper_vs_ours.csv` 中 `paper_acc` 非空行数 |
 | S5 报告 | 11-16 22:50 | `s5` | A 渲染 + 数字复核 | ✅ PASS（A 侧） | `report/DSAI5102_Group16_Report.pdf`（17 页，由 C 的 V3 md 渲染）；Table 3 补满 10 行、§4 句、D9、贡献表 Key Files 已修；数字全部来自 `results/numbers.json` |
-| S6 slides | 11-16 22:55 | 待打 `s6` | A 文本核对 | ⚠️ 待 C 导出 PDF | `slides/DSAI5102_Group16_slides_V2.pptx` 已改第 5 页气泡与第 9 页判定表；第 5 页红色 "Fails here" 仍把 k=80 圈在内，需 C 重画后导 PDF |
+| S6 slides | 11-16 23:30 | 待打 `s6` | A 文本核对 | ⚠️ 待 C 导 PDF | 源文件名为 `slides/DSAI5102_Group16_Slides.pptx`（10 页，页数不变）：第 5 页气泡与第 9 页判定表已按 `numbers.json` 修正；第 5 页红色 "Fails here" 仍把 k=80 圈在内 → 需 C 换第 5 页新图后导出 `DSAI5102_Group16_Slides.pdf` |
 
 ## 记录模板
 

@@ -62,12 +62,14 @@ tests/                     A 的契约测试
 
 ```bash
 .venv/bin/python scripts/docx_to_md.py report/DSAI5102_07_Report_draft.docx   # docx → md（表格/字号/高亮/图片全保留）
-.venv/bin/python scripts/build_report_pdf.py report/DSAI5102_Group16_Report_V3.md  # 最终正文 → report/DSAI5102_Group16_Report.pdf
+.venv/bin/python scripts/build_report_pdf.py report/DSAI5102_Group16_Report.md     # 最终正文 → report/DSAI5102_Group16_Report.pdf
 ```
 
 - 彩色占位符：**蓝=A 数据**、**黄=B 交付物**、**紫=成稿后填写**；清单见 `report/PLACEHOLDERS.md`。
 - C 的提交记录与报告文件索引：`docs/log/C_SUBMISSIONS.md`。
-- **最终版**：正文 `report/DSAI5102_Group16_Report_V3.md`（C 维护），PDF `report/DSAI5102_Group16_Report.pdf`（A 用 `build_report_pdf.py` 渲染）。
+- **最终版（唯一）**：正文 `report/DSAI5102_Group16_Report.md`（C 维护），PDF `report/DSAI5102_Group16_Report.pdf`（A 渲染）；slides 源文件 `slides/DSAI5102_Group16_Slides.pptx`，PDF 由 C 导出为 `slides/DSAI5102_Group16_Slides.pdf`。
+- **旧版本一律归档**：`report/archive/`、`slides/archive/`，不进最终提交。
+- **统一口径见 `docs/goal/SPEC.md` §8（全组唯一）**。
 - **归档**：11-13 的 `_v2.md/.pdf`、`PLACEHOLDERS.md`、`media/` 已移入 `report/archive/`（旧数字，勿提交），差异清单见 `docs/log/C_SUBMISSIONS.md` §7 与 `report/archive/README.md`。
 
 ## 端到端复现

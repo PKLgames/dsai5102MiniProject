@@ -121,3 +121,15 @@ python scripts/run_grid.py --datasets pendigits coil20 --methods pca tsne umap_r
 ```
 
 产物命名：`results/{exp}_{dataset}_{method}.csv` 为逐折，`results/{exp}_summary.csv` 为聚合；图 `figures/results/figN_*.png`。
+
+## 8. 统一口径（全组唯一，2026-11-16 定稿）
+
+报告、slides、日志、代码注释都按这五条，不得各写各的：
+
+1. **数字来源唯一**：`results/numbers.json` → `results/README_numbers.md` → 报告/slides。任何人不得手打数字；报告里每个数字都要能指回 `results/grid_knn.csv` 的行（`README_numbers.md` 已给行号）。
+2. **判定词唯一**：复现 / 部分复现 / 未复现 / 不可比。判据 = 方向（小 k `UMAP ≥ t-SNE − 0.03`、大 k `UMAP > t-SNE`）+ 排序一致率 ≥70% + 幅度（PenDigits 0.03、COIL-20 0.10）。tol **冻结**，不得事后放宽；逐单元判定见 `results/numbers.json` 的 `verdict.*`。
+3. **transductive 必须写明**：降维用全体点（不用标签），分类器只在 train 折训练、test 折评估；不得暗示 out-of-sample 能力。
+4. **不跨机比秒数**：Table 4 只报本机单核相对排序；t-SNE 为 sklearn 单线程（原文 MulticoreTSNE，D3）→ UMAP 加速比偏乐观，必须标注方向。
+5. **文件命名与版次**：报告 `DSAI5102_Group16_Report.pdf`、slides `DSAI5102_Group16_Slides.pdf`；只保留最新版在 `report/`、`slides/` 根目录，旧版一律进 `report/archive/`、`slides/archive/`；`.md`/`.pptx` 为源文件，`.pdf` 为交付物，二者必须同源（改源即重出 PDF）。
+
+补充：`verifiable` 字段（`paper_vs_ours.csv`）只表示「两列都有数值、可比较」，**不代表复现成功**；成败只看 `verdict.*`。

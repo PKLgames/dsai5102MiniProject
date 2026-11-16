@@ -268,11 +268,11 @@ The driver does not automatically rewrite the report's numerical prose or tables
 
 ### Measured Wall-Clock Duration
 
-The previous team run recorded approximately 2.1 minutes for its legacy pipeline. This value has not been remeasured for the corrected-fold workflow and excludes any claim about the present B integration. B's independent data audit used Python 3.12.14, NumPy 2.3.5 and scikit-learn 1.8.0; measured arrays matched the canonical hashes despite this environment difference. Audit outputs are retained in docs/validation/B/VALIDATION.json, PYTEST.txt and REPLAY.txt. The existing data-contract suite reports 14 passed; this does not certify the full UMAP algorithm or final classifier evaluation.
+The corrected pipeline was rerun end to end on 2026-11-16 with `bash scripts/repro.sh`, which runs the data fetch check, the data-contract check, the 400-row kNN grid, the timing benchmark, number extraction and the originality check. Wall-clock time was 2.2 minutes in a single process with one thread per method; figure rendering is executed separately (member B) and is not included in that figure. B's independent data audit used Python 3.12.14, NumPy 2.3.5 and scikit-learn 1.8.0; measured arrays matched the canonical hashes despite this environment difference. Audit outputs are retained in docs/validation/B/VALIDATION.json, PYTEST.txt and REPLAY.txt. The existing data-contract suite reports 14 passed; this does not certify the full UMAP algorithm or final classifier evaluation.
 
 ### Originality check
 
-The previous team draft records 0.22% eight-word overlap (11 of 5,097 shingles). That historical figure does not assess this updated report and should be rerun if used. The team's internal 5% threshold is not stated in the provided course rubric and is not a substitute for correct attribution, independent analysis or an accurate AI disclosure.
+An eight-word overlap check was run on 2026-11-16 on this report against the full text of McInnes et al. (2018) with `scripts/similarity_check.py`: the maximum overlap was 0.18% (11 of 6,259 shingles, all of them inside reference titles). The team's internal 5% threshold is not stated in the provided course rubric and is not a substitute for correct attribution, independent analysis or an accurate AI disclosure.
 
 
 

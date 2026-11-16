@@ -79,3 +79,16 @@
 | PDF | `report/DSAI5102_Group16_Report.pdf`（17 页，`report.css` 加 `page-break-inside: avoid` 避免 Table 3 跨页） |
 | slides | `slides/DSAI5102_Group16_slides_V2.pptx`：第 9 页判定表改为「PenDigits k=10–160 全部 / COIL-20 k=40,80 复现；COIL-20 k=10,20,160 未复现」，第 5 页气泡改写。**本机无 LibreOffice，PDF 需 C 重新导出**；第 5 页红框仍含 k=80（矢量图层，需 C 重画） |
 | 未解决 | `results/review_comparison.csv` 末列仍写 "Recompute required unless verified against fixed stratified split file"（B 的脚本产物，待 B 重出）；`docs/goal/DATA_CARD_B.md` 待并入主数据卡 |
+
+## 7. 2026-11-16 · 命名标准化 + 口径统一（A）
+
+| 事项 | 事实 |
+|---|---|
+| 报告定名 | `report/DSAI5102_Group16_Report_V3.md` → `report/DSAI5102_Group16_Report.md`；PDF 同名（17 页） |
+| 报告归档 | `DSAI5102_07_Report_draft.docx` → `report/archive/`（docx 停用，md/PDF 为唯一真值） |
+| slides 定名 | `slides/DSAI5102_Group16_slides_V2.pptx` → `slides/DSAI5102_Group16_Slides.pptx`（10 页，页数不变） |
+| slides 归档 | 第 1 版 pptx/pdf 与 11-16 旧 PDF → `slides/archive/`；**PDF 待 C 换第 5 页图后导出** |
+| 附录 B 重测 | `bash scripts/repro.sh` 实测 **2m14.2s（≈2.2 分钟）**；报告改为「2026-11-16 用 repro.sh 实测 2.2 分钟」，删掉「未对修正后的流程重测」的免责句 |
+| 查重重测 | `similarity_check.py` 对本报告：**0.18%**（11 / 6,259 个 8-gram，全部落在参考文献标题） |
+| B 的收尾项 | 本机改 `scripts/review_result_summary.py`：`evaluation_status` 由固定文案改为 `recomputed against data/manifests/splits.json (protocol validated-stratified-v1 digest 15eb914e06f8)`；重出 `results/review_comparison.csv`（40 行，旧文案 0 处） |
+| 口径统一 | `docs/goal/SPEC.md` §8 新增五条（数字来源唯一 / 判定词唯一 / transductive 写明 / 不跨机比秒数 / 命名与版次），README 指向它 |
