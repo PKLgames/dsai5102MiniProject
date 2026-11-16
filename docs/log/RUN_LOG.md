@@ -92,3 +92,12 @@
 | 查重重测 | `similarity_check.py` 对本报告：**0.18%**（11 / 6,259 个 8-gram，全部落在参考文献标题） |
 | B 的收尾项 | 本机改 `scripts/review_result_summary.py`：`evaluation_status` 由固定文案改为 `recomputed against data/manifests/splits.json (protocol validated-stratified-v1 digest 15eb914e06f8)`；重出 `results/review_comparison.csv`（40 行，旧文案 0 处） |
 | 口径统一 | `docs/goal/SPEC.md` §8 新增五条（数字来源唯一 / 判定词唯一 / transductive 写明 / 不跨机比秒数 / 命名与版次），README 指向它 |
+
+## 8. 2026-11-16 23:54 · S6 收口（C 导出 + A 核对）
+
+| 事项 | 事实 |
+|---|---|
+| slides 源文件 | `slides/DSAI5102_Group16_Slides.pptx`（10 页）：第 5 页已换成 C 的新图（COIL-20 k=80 我们的 UMAP 0.817 > t-SNE 0.783，失败点在 k=160） |
+| slides PDF | `slides/DSAI5102_Group16_Slides.pdf`（959,918 B，10 页），由同一 pptx 导出；第 9 页判定表与 `results/numbers.json` 一致 |
+| 删除旧件 | `slides/Final_DSAI5102_Group16_slides.{pptx,pdf}` 已删（第 9 页为旧判定） |
+| 提交包 | `/home/pklgames/coding/dsai5102_group16_submission.zip`（21 MB，87 文件，sha256 `5d77fff3…`）；包内 report PDF、slides pptx+pdf 与仓库同源 |
