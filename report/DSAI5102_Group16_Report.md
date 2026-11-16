@@ -159,16 +159,16 @@ Points below the identity line indicate lower reproduced accuracy than the corre
 
 | Method | PenDigits | COIL-20 |
 | --- | --- | --- |
-| PCA | 0.04 [0.01 – 0.06] | 0.43 [0.35 – 0.50] |
-| t-SNE | 6.00 [4.09 – 6.05] | 6.06 [5.83 – 6.40] |
-| UMAP (reference) | 1.85 [1.84 – 2.04] | 6.29 [4.10 – 6.40] |
-| UMAP (ours) | 2.58 [0.41 – 2.65] | 4.11 [4.02 – 4.25] |
+| PCA | 0.05 [0.05 – 0.06] | 0.39 [0.31 – 0.41] |
+| t-SNE | 6.06 [6.02 – 6.12] | 5.75 [3.47 – 5.82] |
+| UMAP (reference) | 1.88 [1.87 – 1.89] | 6.49 [6.48 – 6.54] |
+| UMAP (ours) | 2.68 [2.68 – 2.69] | 3.74 [1.27 – 3.84] |
 
 <p class="caption">Table 4 Recorded Wall-Clock Fit Time in Seconds</p>
 
 *Note:* Timings should therefore be read as the recorded machine-specific measurements, without a universal speed or accuracy-invariance claim. A timing difference is not an explanation for the kNN accuracy gap.
 
-Table 4 records wall-clock fit times on the shared machine. Because the original paper used a MacBook with parallel execution, we make no cross-hardware comparison; we only report the relative ordering under our recorded execution settings. On PenDigits, both UMAP codes are substantially faster than our single-threaded t-SNE baseline (1.85s and 2.58s vs 6.00s). On COIL-20, our implementation (4.11s) outperforms both the reference package (6.29s) and t-SNE (6.06s) in wall-clock time. Speed is not the primary subject of embedding-classification experiment, but these timings underlie the D3 discussion in Section 5: while our UMAP speedup looks impressive here, the bias runs against our own baseline because t-SNE was forced to run single-threaded.
+Table 4 records wall-clock fit times on the shared machine. Because the original paper used a MacBook with parallel execution, we make no cross-hardware comparison; we only report the relative ordering under our recorded execution settings. On PenDigits, both UMAP codes are substantially faster than our single-threaded t-SNE baseline (1.88s and 2.68s vs 6.06s). On COIL-20, our implementation (3.74s) is faster than both the reference package (6.49s) and t-SNE (5.75s) in wall-clock time. Speed is not the primary subject of embedding-classification experiment, but these timings underlie the D3 discussion in Section 5: while our UMAP speedup looks impressive here, the bias runs against our own baseline because t-SNE was forced to run single-threaded.
 
 ## 5. Discussion and deviations
 

@@ -3,6 +3,7 @@
 # 用法：bash scripts/fetch_data.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
+PY="${PY:-.venv/bin/python}"
 
 URL="https://www.cs.columbia.edu/CAVE/databases/SLAM_coil-20_coil-100/coil-20/coil-20-proc.zip"
 RAW="data/raw/coil20"
@@ -21,7 +22,7 @@ else
   unzip -qo "$ZIP" -d "$RAW"
 fi
 
-.venv/bin/python - "$ZIP" "$DIR" <<'PY'
+"$PY" - "$ZIP" "$DIR" <<'PY'
 import datetime, hashlib, json, pathlib, sys
 
 zip_path, dir_path = (pathlib.Path(x) for x in sys.argv[1:3])
