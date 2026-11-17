@@ -113,3 +113,13 @@
 | 产物 | `report/DSAI5102_Group16_Report.pdf` 16 页（原 17 页），sha256 `cdf67b87…` |
 | 图 1 修复 | `report/media/` 之前被归档，导致 Figure 1 只剩 alt 文字；已从 `report/archive/media/image1.png` 恢复到 `report/media/image1.png`（103,770 B），并纳入版本控制以保证 PDF 可重建 |
 | 提交包 | `report/DSAI5102_Group16_Report.pdf` 已同步（与仓库同 sha256 `cdf67b87…`）；`dsai5102_group16_submission.zip` 重打为 21.5 MB / 68 文件，sha256 `5112137927629d2a92d0e88e4ebda675c123212cabed8b5a4270cdf98e32855a`（README §7 已把「17 页」改为「16 页，学术单栏版式」） |
+
+## 10. 2026-11-17 19:35 · C 上传新版报告/slides 后重新打包（A）
+
+| 事项 | 事实 |
+|---|---|
+| 拉取 | `git pull --ff-only`：`e36eed6..901d62f`（12 个提交，全部 C 上传）；报告 md 改 102 行、PDF 21 页、新增 `report/media/{pipeline_evaluation.png, umap_pipeline_original_updated.png/.svg}`、`report/report.css` 换为 C 的版式；slides pptx/pdf 各更新一次 |
+| 报告核对 | 新 PDF 21 页；关键数字仍在（0.857 / 0.849 / 0.817 / 0.578 / −0.082 / 0.225），图表编号 Figure 1–4 + S1–S3、Table 1/1b/2a/2b/3/4 |
+| 包内复跑 | `bash scripts/repro_submission.sh` 全程通过：26 测试 → 400 行主表 → 计时 → `numbers.json` 90 个非计时键全一致 → `PASS`（PenDigits 复现 73% / COIL-20 未复现 60%）；复跑后已用 `expected/results/` 复原包内 `results/`，并删除解包出来的 `data/raw/coil20/coil-20-proc/` |
+| 包内容 | 新增 `report/{DSAI5102_Group16_Report.md, report.css, media/}`；report PDF 与 slides PDF 与仓库字节相同（`cd1700ac…` / `5d100b84…`） |
+| zip | `dsai5102_group16_submission.zip` 21.7 MB / 75 文件，sha256 `6d1be23bb2e70e168f8f9b0c27b1c3797a264da399adc7e035085e53b2152e71` |
