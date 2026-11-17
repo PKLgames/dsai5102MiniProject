@@ -34,9 +34,9 @@ The question for classmates is concrete: after compressing an image into two coo
 
 In three steps: (i) UMAP constructs a weighted k-nearest-neighbour graph in the ambient space and converts local distances into fuzzy membership strengths, which define a simplicial set; (ii) a low-dimensional layout is initialised spectrally; (iii) that layout is optimised so that its own fuzzy set minimises cross-entropy against the high-dimensional set, using negative sampling. We do not restate the derivation here. Section 3 describes only what we built, and McInnes et al. (2018) remains the reference for the mathematics. Two important UMAP parameters are the number of neighbours fixing the local scale and a parameter controlling how tightly neighbouring points can be packed (not a strict lower bound on every pairwise distance); both were held at the defaults endorsed by Healy and McInnes (2024), namely 15 neighbours and a minimum distance of 0.1, whereas t-SNE used its own parameters: perplexity = 30, PCA initialisation, an automatically selected learning rate and 1,000 iterations. UMAP used two components, 500 epochs, spectral initialisation and seed 42. The UMAP graph-neighbour parameter controls graph construction; classifier k controls a separate downstream classification step. No hyperparameter search was performed.
 
-<p class="center"><img src="media/pipeline_evaluation.png" alt="figure" style="width:100%; max-width:16cm"/></p>
+<p class="center"><img src="media/umap_pipeline_original_updated.png" alt="figure" style="width:100%; max-width:16cm"/></p>
 
-<p class="caption">Figure 1 Our pipeline produces a two-dimensional embedding; the selected experiment then evaluates kNN classification using ten-fold cross-validation.</p>
+<p class="caption">Figure 1 The UMAP pipeline constructs a weighted neighbourhood graph and optimises a two-dimensional embedding. This report evaluates the resulting embedding using kNN classification with ten-fold stratified cross-validation.</p>
 
 | Dataset | Source (URL / OpenML id) | Paper n × d | Measured n × d | Classes | Counts per class | Use in this project |
 | --- | --- | --- | --- | --- | --- | --- |
